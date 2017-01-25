@@ -38,6 +38,6 @@ Our project is to build a module where users can upload their custom images to c
 
 
 
-![alt text](./carl.png "This is Carl")
+![alt text](./doc/carl.png "This is Carl")
 
 
