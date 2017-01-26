@@ -34,7 +34,9 @@ Our project is to build a module where users can upload their custom images to c
 * dockerizing a Node application
     * will be connecting Node, MySQL, and NGINX containers
     * https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
-
+* Fabric js
+    * saving current Canvas state into JSON
+        * http://stackoverflow.com/questions/37328570/how-can-i-make-fabric-js-save-the-state-position-of-each-object-in-canvas-and-r
 
 
 
