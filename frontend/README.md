@@ -1,8 +1,8 @@
-![](http://i.imgur.com/DUiL9yn.png)
-
 # React/Sass/Redux Boilerplate
 
-Boilerplate and guide for a React/Sass/Redux build.
+## Summary
+npm is used to install pre-packaged javascript modules. Webpack is then used to bundle all dependencies in your React application to create static assets. Then, our transpiled React application can be run with a npm command.
+
 
 ## Getting Started
 
@@ -23,11 +23,11 @@ Start the development server (changes will now update live in browser)
 
 To view your project, go to: [http://localhost:3000/](http://localhost:3000/)
 
-## Links
+## Notes
+* When you add a dependency in the React application, update package.json. You will need to re-run npm install to update your local npm module library.
+* Keep in mind our React application is following Redux architecture.
 
-- [Donate](https://www.patreon.com/thenewboston)
-- [thenewboston.com](https://thenewboston.com/)
-- [Facebook](https://www.facebook.com/TheNewBoston-464114846956315/)
-- [Twitter](https://twitter.com/bucky_roberts)
-- [Google+](https://plus.google.com/+BuckyRoberts)
-- [reddit](https://www.reddit.com/r/thenewboston/)
+
+# React/Sass/Redux architecture outline
+
+![](http://i.imgur.com/DUiL9yn.png)
