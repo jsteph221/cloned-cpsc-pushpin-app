@@ -4,6 +4,7 @@ import GoogleMap from "react-google-map"
 import GoogleMapLoader from "react-google-maps-loader"
 require('../../scss/style.scss');
 
+
 var canvasWidth = screen.width/2;
 var canvasHeight = screen.height*0.9;
 
