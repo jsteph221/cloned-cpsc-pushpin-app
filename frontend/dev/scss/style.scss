@@ -3,3 +3,39 @@ $primary: #006699;
 h2 {
 	color: $primary;
 }
+
+
+.toolbar {
+	width: 100%;
+	border: solid;
+	color: red;
+	text-align: center;
+	height: 30px;
+}
+
+.mainApp {
+	border-style: solid;
+	margin: auto;
+	min-height: 800px;
+	width: 100%;
+	float: left;
+	background-color: white;
+}
+
+.fabricApp{
+	border-style: solid;
+	color: pink;
+	width: 50%;
+	min-height: 800px;
+	float: left;
+}
+
+.mapApp{
+	border-style: solid;
+	color: blue;
+	width: 49%;
+	height: 800px;
+	min-height: 800px;
+	float: left;
+	text-align: center;
+}
