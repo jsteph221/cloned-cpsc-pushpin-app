@@ -17,7 +17,6 @@ h2 {
 	border-style: solid;
 	margin: auto;
 	min-height: 800px;
-	width: 100%;
 	float: left;
 	background-color: white;
 }
@@ -25,17 +24,20 @@ h2 {
 .fabricApp{
 	border-style: solid;
 	color: pink;
-	width: 50%;
-	min-height: 800px;
 	float: left;
 }
 
 .mapApp{
 	border-style: solid;
 	color: blue;
-	width: 49%;
 	height: 800px;
 	min-height: 800px;
 	float: left;
+	text-align: center;
+}
+
+.fabrictools{
+	border-style: solid;
+	color: black;
 	text-align: center;
 }
