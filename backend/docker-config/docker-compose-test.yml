@@ -1,9 +1,11 @@
 version: "2"
 services:
   web:
-    build: .
+    build:
+      context: "../"
+      dockerfile: Dockerfile-test
     volumes:
-      - "./app:/src/app"
+      - "../app:/src/app"
     ports:
       - "3030:3000"
     links:
@@ -13,4 +15,4 @@ services:
     ports:
       - "27017:27017"
     volumes:
-         - "./data:/data/db"
+         - "../data:/data/db"
