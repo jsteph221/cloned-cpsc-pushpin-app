@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 import fabric, {Canvas, Text, IText, Circle, Path} from 'react-fabricjs';
 import GoogleMap from "react-google-map"
 import GoogleMapLoader from "react-google-maps-loader"
+import $ from "jquery"
 require('../../scss/style.scss');
 
 
 var canvasWidth = screen.width/2;
 var canvasHeight = screen.height*0.9;
+var wwidth = $( window ).width() / 2;
+var wheight = $( window ).height() * 0.8;
 
 
 const HelloFabric = React.createClass({
@@ -16,8 +19,8 @@ const HelloFabric = React.createClass({
 
     			<div className = "fabricApp">
 			      <Canvas
-			        width={canvasWidth}
-			        height="800">
+			        width={wwidth}
+			        height= {wheight}>
 			          	<Text
 			            text="Fabric App!!"
 			            left={300}
