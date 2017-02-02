@@ -49,6 +49,8 @@ router.post('/authenticate', function(req, res) {
           expiresIn : 60*60*24 // expires in 24 hours
         });
 
+        res.cookie('token', token, {maxAge: 60*60*24, httpOnly:true});
+
         // return the information including token as JSON
         res.json({
           success: true,
@@ -92,7 +94,7 @@ router.post('/signup', function(req, res) {
 
 // Middleware validating token
 router.use(function(req, res, next) {
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.cookies.token;
 
   // verifies secret and checks exp
   if (token) {
