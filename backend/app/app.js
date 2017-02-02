@@ -8,16 +8,19 @@ var db = require('./config/db');
 var s3 = require('./config/aws');
 var app = express();
 
+// set environment variables
+app.set('token_secret', 'uCJ4HDcAGNANSUpLnTjz');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// set router
 app.use('/api', routes);
 
 // catch 404 and forward to error handler
