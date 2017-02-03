@@ -1,4 +1,5 @@
-var express = require('express');
+var express = require('express')
+    , app = express();
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -6,13 +7,14 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var AWS = require('aws-sdk');
 
+
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var app = express();
 
 // connect db
-mongoose.connect('mongodb://mongo:27017');
+//mongoose.connect('mongodb://mongo:27017');
 
 // connect aws S3
 var s3Config = { "accessKeyId": "AKIAIV2MK57QBCDG2PIQ", 
@@ -43,6 +45,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
+
 // error handlers
 
 // development error handler
@@ -61,10 +64,12 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    console.log("ERROR: "+ err.message);
+    if (!res.headersSent){
+        res.send('error', {
+            message: err.message,
+            error: {}
+        });}
 });
 
 
