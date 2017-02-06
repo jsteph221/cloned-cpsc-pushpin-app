@@ -46,13 +46,14 @@ const Container = React.createClass({
 
         return (
             <Map google={this.props.google}
-                 style={{width: '100%', height: '100%', position: 'relative'}}
+                 style={{width: '50%', height: '50%', position: 'relative'}}
                  className={'map'}
                  zoom={14}
                  containerStyle={{}}
                  centerAroundCurrentLocation={true}
                  onClick={this.onMapClicked}
-                 onDragend={this.onMapMoved}>
+                 onDragend={this.onMapMoved}
+                >
                 <Marker onClick={this.onMarkerClick} name={'Current location'} />
                 <InfoWindow onClose={this.onInfoWindowClose}>
                     <div>
