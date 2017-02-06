@@ -8,3 +8,6 @@ test:
 
 test-only:
 	docker-compose -f ./docker-config/docker-compose-test.yml up
+
+clean:
+	sudo rm -rf ./data
