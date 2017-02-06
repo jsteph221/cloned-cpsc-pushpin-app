@@ -22,6 +22,27 @@ function postPng(image, title){
         });
 }
 
+const LogInScreen = React.createClass({
+	render: function(){
+		return (
+			<section className = "Log In Screen">
+				<div className = "log-in-app">
+					<h1>Hello, please log in</h1>
+					<table>
+						<tr>
+							<td><b>Username</b></td>
+							<input type='text'></input>
+						</tr>
+						<tr>
+							<td><b>Password</b></td>
+							<input type='text'></input>
+						</tr>
+					</table>
+				</div>
+			</section>
+		);
+	}
+});
 
 const HelloFabric = React.createClass({
   render: function() {
@@ -68,9 +89,9 @@ const HelloFabric = React.createClass({
 						}>save canvas</button>
 					</div>
 
-
 					<div className = "mapApp">
 						Insert map here
+						<GoogleMap/>
 					</div>
 
 				</section>
