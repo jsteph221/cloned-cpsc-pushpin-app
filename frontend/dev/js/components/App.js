@@ -26,6 +26,7 @@ function postPng(image, title){
         });
 }
 
+/*
 function logIn(){
 	//var username = document.getElementById('name').value;
 	//var password = document.getElementById('password').value;
@@ -51,7 +52,7 @@ function logIn(){
 				var token = data.token;
 			}
 			else{
-				alert("No account found for the given username and password");
+				alert(data.message);
 			}
 		}
 	})
@@ -87,10 +88,10 @@ function signUp(){
 		dataType : "json",
 		success : function(data) {  
 			if (data.success === true){
-				alert("Successfully created account");
+				alert(data.message);
 			}
 			else{
-				alert("An account with that name already exists");
+				alert(data.message);
 			}
 		}
 	})
@@ -104,34 +105,8 @@ function signUp(){
 		function() { alert("ajax call complete");}
 	);
 }
+*/
 
-const LogInScreen = React.createClass({
-	render: function(){
-		return (
-			<section className = "Log In Screen">
-				<div className = "log-in-app">
-					<h1>Hello, please log in</h1>
-					<table>
-						<tbody>
-						<tr>
-							<td><b>Username</b></td>
-							<td><input name='name' type='text'></input></td>
-						</tr>
-						<tr>
-							<td><b>Password</b></td>
-							<td><input name='password' type='text'></input></td>
-						</tr>
-						<tr>
-							<td />
-							<td><button type="button" onClick={function(){signUp()}}>Sign up</button><button type="button" onClick={function(){logIn()}}>Log in</button></td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
-			</section>
-		);
-	}
-});
 
 const HelloFabric = React.createClass({
   render: function() {
@@ -176,4 +151,4 @@ const HelloFabric = React.createClass({
   }
 });
 
-export default LogInScreen;
+export default HelloFabric;
