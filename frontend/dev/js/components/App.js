@@ -5,7 +5,6 @@ import GoogleMapLoader from "react-google-maps-loader"
 import $ from "jquery"
 require('../../scss/style.scss');
 
-
 var canvasWidth = screen.width/2;
 var canvasHeight = screen.height*0.9;
 var wwidth = $( window ).width();
@@ -25,88 +24,6 @@ function postPng(image, title){
             console.log("Data: "+data + "\nStatus: "+ status);
         });
 }
-
-/*
-function logIn(){
-	//var username = document.getElementById('name').value;
-	//var password = document.getElementById('password').value;
-	var username = 'jack';
-	var password = 'password';
-	$.ajax(
-	{
-		url : server+"/api/authenticate",
-		type : "POST",
-		headers : 
-		{
-			'Content-Type' : 'x-www-form-urlencoded'
-		},
-		data :
-		{
-			'name' : username,
-			'password' : password
-		},
-		dataType : "json",
-		success : function(data) {
-			if (data.success === true){
-				alert("You have now logged in");
-				var token = data.token;
-			}
-			else{
-				alert(data.message);
-			}
-		}
-	})
-	.done(
-		function() { alert("log in works");}
-	)
-	.fail(
-		function() { alert("ajax failure");}
-	)
-	.always(
-		function() { alert("ajax call complete");}
-	);
-}
-
-function signUp(){
-	//var username = document.getElementById('name').value;
-	//var password = document.getElementById('password').value;
-	var username = 'jack';
-	var password = 'password';
-	$.ajax(
-	{
-		url : server+"/api/signup",
-		type : "POST",
-		headers : 
-		{
-			'Content-Type' : 'x-www-form-urlencoded'
-		},
-		data :
-		{
-			'name' : username,
-			'password' : password
-		},
-		dataType : "json",
-		success : function(data) {  
-			if (data.success === true){
-				alert(data.message);
-			}
-			else{
-				alert(data.message);
-			}
-		}
-	})
-	.done(
-		function() { alert("sign up works");}
-	)
-	.fail(
-		function() { alert("ajax failure");}
-	)
-	.always(
-		function() { alert("ajax call complete");}
-	);
-}
-*/
-
 
 const HelloFabric = React.createClass({
   render: function() {
