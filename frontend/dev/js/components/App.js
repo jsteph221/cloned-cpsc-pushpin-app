@@ -22,6 +22,80 @@ function postPng(image, title){
         });
 }
 
+function logIn(username, password){
+	$.ajax(
+	{
+		url : server+"/api/authenticate",
+		type : "POST",
+		headers : 
+		{
+			'ContentType' : 'x-www-form-urlencoded'
+		},
+		data :
+		{
+			'name' : username,
+			'password' : password
+		},
+		dataType : "json",
+		success : function(data) { 
+			if (data.success == 'true'){
+				alert("success");
+				alert(data.message);
+			}
+			else{
+				alert("failure");
+				alert(data.message);
+			}
+		}
+	})
+	.done(
+		function() { alert("sign up works");}
+	)
+	.fail(
+		function() { alert("ajax failure");}
+	)
+	.always(
+		function() { alert("ajax call complete");}
+	);
+}
+
+function signUp(username, password){
+	$.ajax(
+	{
+		url : server+"/api/signup",
+		type : "POST",
+		headers : 
+		{
+			'ContentType' : 'x-www-form-urlencoded'
+		},
+		data :
+		{
+			'name' : username,
+			'password' : password
+		},
+		dataType : "json",
+		success : function(data) {  
+			if (data.success == 'true'){
+				alert("success");
+				alert(data.message);
+			}
+			else{
+				alert("failure");
+				alert(data.message);
+			}
+		}
+	})
+	.done(
+		function() { alert("sign up works");}
+	)
+	.fail(
+		function() { alert("ajax failure");}
+	)
+	.always(
+		function() { alert("ajax call complete");}
+	);
+}
+
 const LogInScreen = React.createClass({
 	render: function(){
 		return (
@@ -36,6 +110,10 @@ const LogInScreen = React.createClass({
 						<tr>
 							<td><b>Password</b></td>
 							<input type='text'></input>
+						</tr>
+						<tr>
+							<td />
+							<td><button type="button" onClick={function(){signUp("jack", "password");}}>Sign up</button><button type="button" onClick={function(){logIn("jack", "password");}}>Log in</button></td>
 						</tr>
 					</table>
 				</div>
@@ -100,4 +178,4 @@ const HelloFabric = React.createClass({
 });
 
 
-export default HelloFabric;
+export default LogInScreen;
