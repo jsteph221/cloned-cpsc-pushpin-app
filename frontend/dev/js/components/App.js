@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import fabric, {Canvas, Text, IText, Circle, Path} from 'react-fabricjs';
-import GoogleMap from "react-google-map"
-import GoogleMapLoader from "react-google-maps-loader"
 import $ from "jquery"
 require('../../scss/style.scss');
 

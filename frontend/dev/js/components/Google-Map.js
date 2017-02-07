@@ -1,6 +1,16 @@
 import React from 'react'
-//import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom'
+import fabric, {Canvas, Text, IText, Circle, Path} from 'react-fabricjs';
+import $ from "jquery"
 import Map, {Marker,GoogleApiWrapper} from 'google-maps-react'
+require('../../scss/style.scss');
+
+var canvasWidth = screen.width/2;
+var canvasHeight = screen.height*0.9;
+var wwidth = $( window ).width();
+var nheight = $( window ).height();
+var wheight = $( window ).height() * 0.50;
+var theight = $( window ).height() * 0.50;
 
 const Container = React.createClass({
     getInitialState: function() {
@@ -38,23 +48,59 @@ const Container = React.createClass({
         }
 
         return (
-            <Map google={this.props.google}
-                 style={{width: '100%', height: '100%', position: 'relative'}}
-                 className={'map'}
-                 initialCenter= {{
+        <section className = "mainApp" style={{"width": wwidth, "height": nheight}}>
+
+            <div className = "fabricApp" style={{"width": wwidth / 2, "height": wheight}}>
+                <Canvas
+                    width={wwidth/2}
+                    height= {wheight}>
+                    <Text
+                        text="Fabric App!!"
+                        left={300}
+                        top={300}
+                        fill="#000000"
+                        fontFamily="Arial"
+                    />
+
+                    <Path
+                        path="M 0 0 L 300 100 L 200 300 z"
+                        fill="red"
+                        stroke="green"
+                        strokeWidth={10}
+                        opacity={0.5}
+                    />
+
+                    <fabric.Triangle
+                        fill="pink"/>
+                </Canvas>
+                <div className = "fabrictools" style={{"height": theight, "width": wwidth}}>
+                    Fabric toolbar here
+                </div>
+            </div>
+
+            <div className = "mapApp" style={{"width": (wwidth/2),
+												  "height": wheight}}>
+                <Map google={this.props.google}
+                     style={{"width": wwidth / 2, "height": wheight}}
+                     className={'map'}
+                     initialCenter= {{
                     lat:49.2820,
                     lng:-123.1171
                     }}
-                 zoom={15}
-                 containerStyle={{}}
-                 //centerAroundCurrentLocation={true}
-                 onClick={this.onMapClicked}
-                 onDragend={this.onMapMoved}
+                     zoom={15}
+                     containerStyle={{}}
+                    //centerAroundCurrentLocation={true}
+                     onClick={this.onMapClicked}
+                     onDragend={this.onMapMoved}
                 >
-                <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1171}} />
-                <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1171}} />
-                <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1171}} />
-            </Map>
+                    <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1171}} />
+                    <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1171}} />
+                    <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1171}} />
+                </Map>
+            </div>
+
+        </section>
+
         )
     }
 });
