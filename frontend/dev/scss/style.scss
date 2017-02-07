@@ -3,3 +3,42 @@ $primary: #006699;
 h2 {
 	color: $primary;
 }
+
+
+.toolbar {
+	width: 100%;
+	color: red;
+	text-align: center;
+	height: 30px;
+}
+
+.mainApp {
+    -webkit-box-shadow:inset 0px 0px 0px 10px #f00;
+    -moz-box-shadow:inset 0px 0px 0px 10px #f00;
+    box-shadow:inset 0px 0px 0px 10px #f00;
+	margin: auto;
+	float: left;
+	background-color: white;
+}
+
+.fabricApp{
+    -webkit-box-shadow:inset 0px 0px 0px 10px #f00;
+    -moz-box-shadow:inset 0px 0px 0px 10px #f00;
+    box-shadow:inset 0px 0px 0px 10px #f00;
+	color: pink;
+	float: left;
+}
+
+.mapApp{
+    -webkit-box-shadow:inset 0px 0px 0px 10px #f00;
+    -moz-box-shadow:inset 0px 0px 0px 10px #f00;
+    box-shadow:inset 0px 0px 0px 10px #f00;
+	color: blue;
+	float: left;
+	text-align: center;
+}
+
+.fabrictools{
+	color: black;
+	text-align: center;
+}
