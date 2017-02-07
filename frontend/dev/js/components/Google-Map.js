@@ -12,7 +12,7 @@ const Container = React.createClass({
     },
 
     onMapMoved: function(props, map) {
-        const center = map.center;
+        //const center = map.center;
     },
 
     onMarkerClick: function(props, marker) {
@@ -23,20 +23,8 @@ const Container = React.createClass({
         });
     },
 
-    onInfoWindowClose: function() {
-        this.setState({
-            showingInfoWindow: false,
-            activeMarker: null
-        })
-    },
-
     onMapClicked: function(props) {
-        if (this.state.showingInfoWindow) {
-            this.setState({
-                showingInfoWindow: false,
-                activeMarker: null
-            })
-        }
+
     },
 
     render: function() {
@@ -46,24 +34,29 @@ const Container = React.createClass({
 
         return (
             <Map google={this.props.google}
-                 style={{width: '50%', height: '50%', position: 'relative'}}
+                 style={{width: '100%', height: '100%', position: 'relative'}}
                  className={'map'}
+                 initialCenter= {{
+                    lat:49.2820,
+                    lng:-123.1171
+                    }}
                  zoom={14}
                  containerStyle={{}}
-                 centerAroundCurrentLocation={true}
+                 draggable={false}
+                 panControl={false}
+                 streetViewControl={true}
+                 centerAroundCurrentLocation={false}
                  onClick={this.onMapClicked}
                  onDragend={this.onMapMoved}
                 >
-                <Marker onClick={this.onMarkerClick} name={'Current location'} />
-                <InfoWindow onClose={this.onInfoWindowClose}>
-                    <div>
-                        <h1>{this.state.selectedPlace.name}</h1>
-                    </div>
-                </InfoWindow>
+                <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1171}} />
+                <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1171}} />
+                <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1171}} />
             </Map>
         )
     }
 });
+//<Marker onClick={this.onMarkerClick} name={'Current location'} />
 
 export default Container;
 /**
