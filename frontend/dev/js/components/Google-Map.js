@@ -94,9 +94,21 @@ const Container = React.createClass({
                      onDragend={this.onMapMoved}
                      styles={styleArray}
                 >
+                    <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1131}} />
+                    <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1131}} />
+                    <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1131}} />
+                    <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1151}} />
+                    <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1151}} />
+                    <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1151}} />
                     <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1171}} />
                     <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1171}} />
                     <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1171}} />
+                    <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1191}} />
+                    <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1191}} />
+                    <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1191}} />
+                    <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1211}} />
+                    <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1211}} />
+                    <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1211}} />
                 </Map>
             </div>
 
