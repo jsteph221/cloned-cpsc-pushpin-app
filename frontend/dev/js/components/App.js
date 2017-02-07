@@ -14,6 +14,117 @@ var wheight = $( window ).height() * 0.50;
 var theight = $( window ).height() * 0.50;
 
 
+function postPng(image, title){
+    $.post(server+'/finalPin',
+        {
+            title: "testtitle",
+            image: image
+        },
+        function(data,status){
+            console.log("Data: "+data + "\nStatus: "+ status);
+        });
+}
+
+function logIn(username, password){
+	$.ajax(
+	{
+		url : server+"/api/authenticate",
+		type : "POST",
+		headers : 
+		{
+			'ContentType' : 'x-www-form-urlencoded'
+		},
+		data :
+		{
+			'name' : username,
+			'password' : password
+		},
+		dataType : "json",
+		success : function(data) { 
+			if (data.success == 'true'){
+				alert("success");
+				alert(data.message);
+			}
+			else{
+				alert("failure");
+				alert(data.message);
+			}
+		}
+	})
+	.done(
+		function() { alert("sign up works");}
+	)
+	.fail(
+		function() { alert("ajax failure");}
+	)
+	.always(
+		function() { alert("ajax call complete");}
+	);
+}
+
+function signUp(username, password){
+	$.ajax(
+	{
+		url : server+"/api/signup",
+		type : "POST",
+		headers : 
+		{
+			'ContentType' : 'x-www-form-urlencoded'
+		},
+		data :
+		{
+			'name' : username,
+			'password' : password
+		},
+		dataType : "json",
+		success : function(data) {  
+			if (data.success == 'true'){
+				alert("success");
+				alert(data.message);
+			}
+			else{
+				alert("failure");
+				alert(data.message);
+			}
+		}
+	})
+	.done(
+		function() { alert("sign up works");}
+	)
+	.fail(
+		function() { alert("ajax failure");}
+	)
+	.always(
+		function() { alert("ajax call complete");}
+	);
+}
+
+const LogInScreen = React.createClass({
+	render: function(){
+		return (
+			<section className = "Log In Screen">
+				<div className = "log-in-app">
+					<h1>Hello, please log in</h1>
+					<table>
+						<tr>
+							<td><b>Username</b></td>
+							<input type='text'></input>
+						</tr>
+						<tr>
+							<td><b>Password</b></td>
+							<input type='text'></input>
+						</tr>
+						<tr>
+							<td />
+							<td><button type="button" onClick={function(){signUp("jack", "password");}}>Sign up</button><button type="button" onClick={function(){logIn("jack", "password");}}>Log in</button></td>
+						</tr>
+					</table>
+				</div>
+			</section>
+		);
+	}
+});
+
 const HelloFabric = React.createClass({
   render: function() {
     return (
@@ -53,11 +164,8 @@ const HelloFabric = React.createClass({
 			    </div>
 
 		    </section>
-
     );
   }
 });
 
-
-
-export default HelloFabric;
+export default LogInScreen;

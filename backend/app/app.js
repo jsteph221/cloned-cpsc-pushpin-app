@@ -1,8 +1,10 @@
-var express = require('express');
+var express = require('express')
+    , app = express();
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+<<<<<<< HEAD
 var routes = require('./routes/api');
 var db = require('./config/db');
 var s3 = require('./config/aws');
@@ -10,6 +12,28 @@ var app = express();
 
 // set environment variables
 app.set('token_secret', 'uCJ4HDcAGNANSUpLnTjz');
+=======
+var mongoose = require('mongoose');
+var AWS = require('aws-sdk');
+
+
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
+
+// connect db
+//mongoose.connect('mongodb://mongo:27017');
+
+// connect aws S3
+var s3Config = { "accessKeyId": "AKIAIV2MK57QBCDG2PIQ", 
+                 "secretAccessKey": "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", 
+                 "region": "us-west-2" };
+AWS.config.update(s3Config);
+var s3 = new AWS.S3();
+var myBucket = 'cs319-tetrad-development-bucket';
+
+>>>>>>> milestone1/jack
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,6 +54,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
+
 // error handlers
 
 // development error handler
@@ -48,10 +73,12 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    console.log("ERROR: "+ err.message);
+    if (!res.headersSent){
+        res.send('error', {
+            message: err.message,
+            error: {}
+        });}
 });
 
 
