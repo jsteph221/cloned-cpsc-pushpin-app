@@ -8,19 +8,20 @@ require('../../scss/style.scss');
 
 var canvasWidth = screen.width/2;
 var canvasHeight = screen.height*0.9;
-var wwidth = $( window ).width() / 2;
-var wheight = $( window ).height() * 0.75;
-var theight = $( window ).height() * 0.22;
+var wwidth = $( window ).width();
+var nheight = $( window ).height();
+var wheight = $( window ).height() * 0.50;
+var theight = $( window ).height() * 0.50;
 
 
 const HelloFabric = React.createClass({
   render: function() {
     return (
-    		<section className = "mainApp">
+    		<section className = "mainApp" style={{"width": wwidth, "height": nheight}}>
 
-    			<div className = "fabricApp" style={{"width": wwidth}}>
+    			<div className = "fabricApp" style={{"width": wwidth / 2, "height": wheight}}>
 			      <Canvas
-			        width={wwidth}
+			        width={wwidth/2}
 			        height= {wheight}>
 			          	<Text
 			            text="Fabric App!!"
@@ -41,12 +42,13 @@ const HelloFabric = React.createClass({
 	           			 <fabric.Triangle
 	           			 fill="pink"/>			
 					</Canvas>
-					<div className = "fabrictools" style={{"height": theight}}>
+					<div className = "fabrictools" style={{"height": theight, "width": wwidth}}>
 						Fabric toolbar here
 					</div>
 			    </div>
 
-			    <div className = "mapApp" style={{"width": wwidth - 50}}>
+			    <div className = "mapApp" style={{"width": (wwidth/2),
+												  "height": wheight}}>
 			    	Insert map here
 			    </div>
 
