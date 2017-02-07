@@ -1,4 +1,5 @@
 var express = require('express')
+    , cors = require('cors')
     , app = express();
 var path = require('path');
 var logger = require('morgan');
@@ -14,13 +15,12 @@ app.set('token_secret', 'uCJ4HDcAGNANSUpLnTjz');
 var mongoose = require('mongoose');
 var AWS = require('aws-sdk');
 
+app.use(cors());
 
-
-//var routes = require('./routes/index');
 // FROM milestone1/josh
 // not sure what to do since it conflicts with line 7
-
-var users = require('./routes/users');
+//var routes = require('./routes/index');
+//var users = require('./routes/users');
 
 
 // connect db

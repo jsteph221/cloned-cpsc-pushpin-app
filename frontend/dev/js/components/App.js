@@ -12,6 +12,7 @@ var wwidth = $( window ).width();
 var nheight = $( window ).height();
 var wheight = $( window ).height() * 0.50;
 var theight = $( window ).height() * 0.50;
+const server = 'http://localhost:3030'
 
 
 function postPng(image, title){
@@ -25,14 +26,18 @@ function postPng(image, title){
         });
 }
 
-function logIn(username, password){
+function logIn(){
+	//var username = document.getElementById('name').value;
+	//var password = document.getElementById('password').value;
+	var username = 'jack';
+	var password = 'password';
 	$.ajax(
 	{
 		url : server+"/api/authenticate",
 		type : "POST",
 		headers : 
 		{
-			'ContentType' : 'x-www-form-urlencoded'
+			'Content-Type' : 'x-www-form-urlencoded'
 		},
 		data :
 		{
@@ -40,19 +45,18 @@ function logIn(username, password){
 			'password' : password
 		},
 		dataType : "json",
-		success : function(data) { 
-			if (data.success == 'true'){
-				alert("success");
-				alert(data.message);
+		success : function(data) {
+			if (data.success === true){
+				alert("You have now logged in");
+				var token = data.token;
 			}
 			else{
-				alert("failure");
-				alert(data.message);
+				alert("No account found for the given username and password");
 			}
 		}
 	})
 	.done(
-		function() { alert("sign up works");}
+		function() { alert("log in works");}
 	)
 	.fail(
 		function() { alert("ajax failure");}
@@ -62,14 +66,18 @@ function logIn(username, password){
 	);
 }
 
-function signUp(username, password){
+function signUp(){
+	//var username = document.getElementById('name').value;
+	//var password = document.getElementById('password').value;
+	var username = 'jack';
+	var password = 'password';
 	$.ajax(
 	{
 		url : server+"/api/signup",
 		type : "POST",
 		headers : 
 		{
-			'ContentType' : 'x-www-form-urlencoded'
+			'Content-Type' : 'x-www-form-urlencoded'
 		},
 		data :
 		{
@@ -78,13 +86,11 @@ function signUp(username, password){
 		},
 		dataType : "json",
 		success : function(data) {  
-			if (data.success == 'true'){
-				alert("success");
-				alert(data.message);
+			if (data.success === true){
+				alert("Successfully created account");
 			}
 			else{
-				alert("failure");
-				alert(data.message);
+				alert("An account with that name already exists");
 			}
 		}
 	})
@@ -106,18 +112,20 @@ const LogInScreen = React.createClass({
 				<div className = "log-in-app">
 					<h1>Hello, please log in</h1>
 					<table>
+						<tbody>
 						<tr>
 							<td><b>Username</b></td>
-							<input type='text'></input>
+							<td><input name='name' type='text'></input></td>
 						</tr>
 						<tr>
 							<td><b>Password</b></td>
-							<input type='text'></input>
+							<td><input name='password' type='text'></input></td>
 						</tr>
 						<tr>
 							<td />
-							<td><button type="button" onClick={function(){signUp("jack", "password");}}>Sign up</button><button type="button" onClick={function(){logIn("jack", "password");}}>Log in</button></td>
+							<td><button type="button" onClick={function(){signUp()}}>Sign up</button><button type="button" onClick={function(){logIn()}}>Log in</button></td>
 						</tr>
+						</tbody>
 					</table>
 				</div>
 			</section>
