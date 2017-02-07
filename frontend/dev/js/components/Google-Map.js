@@ -1,6 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import Map, {InfoWindow,Marker,GoogleApiWrapper} from 'google-maps-react'
+//import ReactDOM from 'react-dom'
+import Map, {Marker,GoogleApiWrapper} from 'google-maps-react'
 
 const Container = React.createClass({
     getInitialState: function() {
@@ -12,7 +12,7 @@ const Container = React.createClass({
     },
 
     onMapMoved: function(props, map) {
-        //const center = map.center;
+        const center = map.center;
     },
 
     onMarkerClick: function(props, marker) {
@@ -24,7 +24,12 @@ const Container = React.createClass({
     },
 
     onMapClicked: function(props) {
-
+        if (this.state.showingInfoWindow) {
+            this.setState({
+                showingInfoWindow: false,
+                activeMarker: null
+            })
+        }
     },
 
     render: function() {
@@ -40,12 +45,9 @@ const Container = React.createClass({
                     lat:49.2820,
                     lng:-123.1171
                     }}
-                 zoom={14}
+                 zoom={15}
                  containerStyle={{}}
-                 draggable={false}
-                 panControl={false}
-                 streetViewControl={true}
-                 centerAroundCurrentLocation={false}
+                 //centerAroundCurrentLocation={true}
                  onClick={this.onMapClicked}
                  onDragend={this.onMapMoved}
                 >
@@ -56,7 +58,6 @@ const Container = React.createClass({
         )
     }
 });
-//<Marker onClick={this.onMarkerClick} name={'Current location'} />
 
 export default Container;
 /**
