@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Map, {InfoWindow,Marker,GoogleApiWrapper} from 'google-maps-react'
 import fabric, {Canvas, Text, IText, Circle, Path} from 'react-fabricjs';
 import $ from "jquery"
 import Map, {Marker,GoogleApiWrapper} from 'google-maps-react'
@@ -12,6 +11,8 @@ var wwidth = $( window ).width();
 var nheight = $( window ).height();
 var wheight = $( window ).height() * 0.50;
 var theight = $( window ).height() * 0.50;
+var styleArray = [{"featureType":"all","elementType":"geometry.fill","stylers":[{"weight":"2.00"}]},{"featureType":"all","elementType":"geometry.stroke","stylers":[{"color":"#9c9c9c"}]},{"featureType":"all","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"landscape","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#eeeeee"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#7b7b7b"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#46bcec"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"color":"#c8d7d4"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#070707"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]}];
+
 
 const Container = React.createClass({
     getInitialState: function() {
@@ -23,7 +24,6 @@ const Container = React.createClass({
     },
 
     onMapMoved: function(props, map) {
-        //const center = map.center;
         const center = map.center;
     },
 
@@ -50,30 +50,6 @@ const Container = React.createClass({
         }
 
         return (
-            <Map google={this.props.google}
-                 style={{width: '100%', height: '100%', position: 'relative'}}
-                 className={'map'}
-                 initialCenter= {{
-                    lat:49.2820,
-                    lng:-123.1171
-                    }}
-                 zoom={14}
-                 containerStyle={{}}
-                 draggable={false}
-                 panControl={false}
-                 streetViewControl={true}
-                 centerAroundCurrentLocation={false}
-                 onClick={this.onMapClicked}
-                 onDragend={this.onMapMoved}
-                >
-                <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1171}} />
-                <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1171}} />
-                <Marker icon={'./icons/toysrus.png'} position={{lat:49.2840, lng:-123.1171}} />
-            </Map>
-        )
-    }
-});
-//<Marker onClick={this.onMarkerClick} name={'Current location'} />
         <section className = "mainApp" style={{"width": wwidth, "height": nheight}}>
 
             <div className = "fabricApp" style={{"width": wwidth / 2, "height": wheight}}>
@@ -105,19 +81,18 @@ const Container = React.createClass({
             </div>
 
             <div className = "mapApp" style={{"width": (wwidth/2),
-												  "height": wheight}}>
+                                                  "height": wheight}}>
                 <Map google={this.props.google}
                      style={{"width": wwidth / 2, "height": wheight}}
                      className={'map'}
-                     initialCenter= {{
-                    lat:49.2820,
-                    lng:-123.1171
-                    }}
+                     initialCenter= {{lat:49.2820,lng:-123.1171}}
                      zoom={15}
                      containerStyle={{}}
+                     disableDefaultUI={true}
                     //centerAroundCurrentLocation={true}
                      onClick={this.onMapClicked}
                      onDragend={this.onMapMoved}
+                     styles={styleArray}
                 >
                     <Marker icon={'./icons/costcowholesalecorp.png'} position={{lat:49.2800, lng:-123.1171}} />
                     <Marker icon={'./icons/thehomedepot.png'} position={{lat:49.2820, lng:-123.1171}} />
@@ -130,6 +105,8 @@ const Container = React.createClass({
         )
     }
 });
+
+
 
 export default Container;
 /**

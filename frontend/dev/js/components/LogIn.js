@@ -24,15 +24,10 @@ class LogInScreen extends React.Component{
 	}
 
 	signUp(){
-		alert("name = "+this.state.name+"\npassword = "+this.state.password);
 		$.ajax(
 		{
 			url : server+"/api/signup",
 			type : "POST",
-			headers : 
-			{
-				'Content-Type' : 'x-www-form-urlencoded'
-			},
 			data :
 			{
 				'name' : this.state.name,
@@ -40,28 +35,19 @@ class LogInScreen extends React.Component{
 			},
 			dataType : "json",
 			success : function(data) {
-				alert("success? "+data.success);
 				alert(data.message);
 			}
 		})
 		.fail(
 			function() { alert("ajax failure");}
-		)
-		.always(
-			function() { alert("ajax call complete");}
 		);
 	}
 
 	logIn(){
-		alert("login called");
 		$.ajax(
 		{
 			url : server+"/api/authenticate",
 			type : "POST",
-			headers : 
-			{
-				'Content-Type' : 'x-www-form-urlencoded'
-			},
 			data :
 			{
 				'name' : this.state.name,
@@ -70,7 +56,6 @@ class LogInScreen extends React.Component{
 			dataType : "json",
 			success : function(data) {
 				if (data.success === true){
-					alert("You have now logged in");
 					browserHistory.push('/#/');
 					location.reload();
 				}
@@ -81,9 +66,6 @@ class LogInScreen extends React.Component{
 		})
 		.fail(
 			function() { alert("ajax failure");}
-		)
-		.always(
-			function() { alert("ajax call complete");}
 		);
 	}
 
