@@ -5,6 +5,8 @@ import $ from "jquery"
 import Map, {Marker,GoogleApiWrapper} from 'google-maps-react'
 require('../../scss/style.scss');
 
+import UploadForm from './UploadForm'
+
 var canvasWidth = screen.width/2;
 var canvasHeight = screen.height*0.9;
 var wwidth = $( window ).width();
@@ -43,6 +45,11 @@ const Container = React.createClass({
             })
         }
     },
+    
+    //iris: upload mmy image
+    handleSubmit: function(){
+        
+    },
 
     render: function() {
         if (!this.props.loaded) {
@@ -77,11 +84,15 @@ const Container = React.createClass({
                 </Canvas>
                 <div className = "fabrictools" style={{"height": theight, "width": wwidth}}>
                     Fabric toolbar here
+                                
+                    <div>
+                    <UploadForm />
+                    </div>
                 </div>
             </div>
 
             <div className = "mapApp" style={{"width": (wwidth/2),
-												  "height": wheight}}>
+                                                  "height": wheight}}>
                 <Map google={this.props.google}
                      style={{"width": wwidth / 2, "height": wheight}}
                      className={'map'}
@@ -117,7 +128,6 @@ const Container = React.createClass({
         )
     }
 });
-
 
 
 export default Container;

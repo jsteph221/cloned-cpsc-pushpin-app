@@ -122,7 +122,7 @@ router.use(function(req, res, next) {
 
 
 router.get('/', function(req, res) {
-  res.send("This is the root url of API router");
+  res.json({ success: true, message: 'The user is logged in, and the token is valid.' }); 
 });
 
 

@@ -9,7 +9,19 @@ var wwidth = $( window ).width();
 var nheight = $( window ).height();
 var wheight = $( window ).height() * 0.50;
 var theight = $( window ).height() * 0.50;
+const server = 'http://localhost:3030'
 
+
+function postPng(image, title){
+    $.post(server+'/finalPin',
+        {
+            title: "testtitle",
+            image: image
+        },
+        function(data,status){
+            console.log("Data: "+data + "\nStatus: "+ status);
+        });
+}
 
 const HelloFabric = React.createClass({
   render: function() {
@@ -50,11 +62,8 @@ const HelloFabric = React.createClass({
 			    </div>
 
 		    </section>
-
     );
   }
 });
-
-
 
 export default HelloFabric;

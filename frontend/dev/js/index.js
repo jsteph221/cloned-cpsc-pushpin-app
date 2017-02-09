@@ -24,6 +24,10 @@ const routeMap = {
   'map': {
     name: 'Google Map',
     component: require('./components/Google-Map').default
+  },
+  'login': {
+    name: 'Log In Screen',
+    component: require('./components/LogIn').default
   }
 }
 
