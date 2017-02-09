@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import createLogger from 'redux-logger';
 import allReducers from './reducers';
-import App from './components/App';
+import MainApp from './components/MainApp';
 
 const logger = createLogger();
 const store = createStore(
@@ -17,7 +17,7 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <MainApp />
     </Provider>,
     document.getElementById('root')
 );
