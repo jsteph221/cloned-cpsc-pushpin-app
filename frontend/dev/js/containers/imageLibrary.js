@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 
 class ImageLibrary extends Component {
     render() {
+
         return (
             <div>
                 <h2>This is ImageLibrary Container</h2>

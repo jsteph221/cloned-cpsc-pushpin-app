@@ -13,7 +13,7 @@ var windowWidth = $(window).width();
 var windowHeight = $(window).height();
 
 const MainApp = () => (
-    <div>
+    <div className = "mainScreen" style = {{height: windowHeight*0.99, width: windowWidth*0.98}}>
     {/*}
         <h2>User List</h2>
         <UserList />
@@ -22,13 +22,30 @@ const MainApp = () => (
         <UserDetails />
     */}
 
+        <div className="title" style = {{height: windowHeight*0.05, width: windowWidth*0.98}}>
+        <hr />
+            Pushpin Creator
+        </div>
+
         <div>
             <Canvas />
         </div>
 
-        <Toolbar />
-        <ImageLibrary />
-        <Map />
+        <div className = "map" style = {{height: windowHeight * 0.45, width: windowWidth * 0.46}}> 
+            <Map />
+        </div>
+
+        <div className = "imgToolBar" style = {{height: windowHeight * 0.37, width: windowWidth * 0.47}}>
+            <Toolbar />
+        </div>
+
+        <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.46}}>
+            <ImageLibrary />
+        </div>
+
+        <div className = "bottomBar" style = {{height: windowHeight*0.02, width: windowWidth*0.96}}>
+        </div>
+
     </div>
 );
 

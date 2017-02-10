@@ -4,6 +4,50 @@ h2 {
 	color: $primary;
 }
 
+.mainScreen{
+	padding-left: 1%;
+}
+
 .canvas{
 	border-style: solid;
+	border-color: #3498db;
+	float: left;
+	margin: 1%;
+}
+
+.title{
+	background-color: #2980b9;
+	color: white;
+	text-align: center;
+}
+
+.map{
+	float: left;
+	margin: 1%;
+	border: solid;
+	border-color: #34495e;
+}
+
+.toolBarTabs{
+	
+}
+
+.imageLibraryTabs{
+	
+}
+
+.imgToolBar{
+	float: left;
+	margin: 1%;
+}
+
+.imageLibrary{
+	float: left;
+	margin: 1%;
+}
+
+.bottomBar{
+	margin: 1%;
+	border-top-style: solid;
+    float: left;
 }
