@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import $ from 'jquery';
+import Map, {GoogleApiWrapper} from 'google-maps-react'
 
 /*
  * We need "if(!this.props.user)" because we set state to null by default
  * */
 
-import Map, {GoogleApiWrapper} from 'google-maps-react'
+var windowWidth = $(window).width();
+var windowHeight = $(window).height();
 
 class PreviewMap extends Component {
     render(){
-
         return(
-           <div>
-               <Map google={this.props.google}/>
+           <div >
+               <Map style = {{height: windowHeight * 0.45, width: windowWidth * 0.46}} google={this.props.google}/>
            </div>
         );
 
@@ -20,5 +22,5 @@ class PreviewMap extends Component {
 };
 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo'
+    apiKey: 'AIzaSyBiYle_P0Auv1_rygO5ZXig6pjnQyRTgyM'
 })(PreviewMap)
