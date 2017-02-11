@@ -4,7 +4,8 @@ import UserDetails from '../containers/user-detail';
 import Canvas from '../containers/canvas';
 import Toolbar from '../containers/toolbar';
 import ImageLibrary from '../containers/imageLibrary';
-import Map from '../containers/map';
+import PreviewMap from '../containers/map';
+
 
 require('../../scss/style.scss');
 
@@ -18,7 +19,7 @@ const MainApp = () => (
         <Canvas />
         <Toolbar />
         <ImageLibrary />
-        <Map />
+        <PreviewMap />
     </div>
 );
 

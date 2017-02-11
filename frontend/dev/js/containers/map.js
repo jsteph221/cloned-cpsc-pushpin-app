@@ -5,14 +5,20 @@ import {connect} from 'react-redux';
  * We need "if(!this.props.user)" because we set state to null by default
  * */
 
-class Map extends Component {
-    render() {
-        return (
-            <div>
-                <h2>This is Map Container</h2>
-            </div>
-        );
-    }
-}
+import Map, {GoogleApiWrapper} from 'google-maps-react'
 
-export default Map;
+class PreviewMap extends Component {
+    render(){
+
+        return(
+           <div>
+               <Map google={this.props.google}/>
+           </div>
+        );
+
+    }
+};
+
+export default GoogleApiWrapper({
+    apiKey: 'AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo'
+})(PreviewMap)
