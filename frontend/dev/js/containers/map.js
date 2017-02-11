@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import $ from 'jquery';
 import Map, {GoogleApiWrapper} from 'google-maps-react'
+import {GoogleMapLoader, GoogleMap, Marker} from "react-google-maps";
 
 /*
  * We need "if(!this.props.user)" because we set state to null by default

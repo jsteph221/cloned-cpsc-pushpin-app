@@ -1,18 +1,32 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import fabric, {Canvas, Text} from 'react-fabricjs';
+import $ from 'jquery'
 
-/*
- * We need "if(!this.props.user)" because we set state to null by default
- * */
 
-class Canvas extends Component {
+var width = $(window).width();
+var height = $(window).height();
+
+class FabricCanvas extends Component {
     render() {
         return (
-            <div>
-                <h2>This is Canvas Container</h2>
+            <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
+              <Canvas
+		        width={width * 0.47}
+		        height={height * 0.45}>
+		          <Text
+		            text="FabricCanvas"
+		            left={300}
+		            top={200}
+		            fill="#000000"
+		            fontFamily="Arial"
+		          />
+
+		          
+		      </Canvas>
             </div>
         );
     }
 }
 
-export default Canvas;
+export default FabricCanvas;
