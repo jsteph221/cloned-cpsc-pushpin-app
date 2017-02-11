@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {hashHistory} from 'react-router';
+import $ from 'jquery';
+
+const server = 'http://localhost:3030';
 
 /*
  * We need "if(!this.props.user)" because we set state to null by default
@@ -12,6 +16,29 @@ class ImageLibrary extends Component {
 		this.getBaseImages = this.getBaseImages.bind(this);
 		this.getInteriorImages = this.getInteriorImages.bind(this);
 	}
+
+	componentWillMount(){
+        $.ajax(
+        {
+            url : server+"/api",
+            type : "GET",
+            dataType: "json",
+            xhrFields: {
+               withCredentials: true
+            },
+            crossDomain: true,
+            success : function(data) {
+                if (data.success != true){
+                    hashHistory.push("/login");
+                }
+            }
+        })
+        .fail(
+            function(data, status) { 
+                hashHistory.push("/login");
+            }
+        ); 
+    }
 
 	handleTabSelect(index, last){
 		console.log("index "+index+" selected");

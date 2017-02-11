@@ -7,7 +7,10 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import createLogger from 'redux-logger';
 import allReducers from './reducers';
+import {Router, Route, hashHistory} from 'react-router';
 import MainApp from './components/MainApp';
+
+const loginComponent = require('./components/Login').default;
 
 const logger = createLogger();
 const store = createStore(
@@ -15,9 +18,16 @@ const store = createStore(
     applyMiddleware(thunk, promise, logger)
 );
 
+const routes = (
+	<Provider store={store}>
+		<Router history={hashHistory}>
+			<Route path='/' component={MainApp} />
+			<Route path='/login' component={loginComponent} />
+		</Router>
+	</Provider>
+)
+
 ReactDOM.render(
-    <Provider store={store}>
-        <MainApp />
-    </Provider>,
+    routes,
     document.getElementById('root')
 );

@@ -15,7 +15,13 @@ app.set('token_secret', 'uCJ4HDcAGNANSUpLnTjz');
 var mongoose = require('mongoose');
 var AWS = require('aws-sdk');
 
-app.use(cors());
+app.use(function(req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
 
 // FROM milestone1/josh
 // not sure what to do since it conflicts with line 7
