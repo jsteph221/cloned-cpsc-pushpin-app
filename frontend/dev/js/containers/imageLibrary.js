@@ -4,6 +4,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
+import NameForm from './uploadForm';
+
 const server = 'http://localhost:3030';
 
 /*
@@ -63,6 +65,7 @@ class ImageLibrary extends Component {
 		const interiorImage = this.getInteriorImages().map((url) => <img src={url} style={{height: 100, width: 100}} />);
 
         return (
+		<div>
             <Tabs>
             	<TabList>
             		<Tab>Base Images</Tab>
@@ -77,6 +80,7 @@ class ImageLibrary extends Component {
             		<p>{interiorImage}</p>
             	</TabPanel>
             </Tabs>
+		</div>
         );
     }
 }

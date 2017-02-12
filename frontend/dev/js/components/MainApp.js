@@ -5,7 +5,10 @@ import Canvas from '../containers/canvas';
 import Toolbar from '../containers/toolbar';
 import ImageLibrary from '../containers/imageLibrary';
 import PreviewMap from '../containers/map';
+import UploadForm from '../containers/uploadForm';
 import $ from 'jquery';
+
+
 
 require('../../scss/style.scss');
 
@@ -34,8 +37,11 @@ const MainApp = () => (
 
             <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.46}}>
                     <ImageLibrary />
-            </div>
 
+            </div>
+            <div className = "uploadForm">
+                    <UploadForm />
+            </div>
             <div className = "bottomBar" style = {{height: windowHeight*0.02, width: windowWidth*0.96}}>
             </div>
 
