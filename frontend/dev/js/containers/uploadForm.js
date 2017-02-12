@@ -1,42 +1,46 @@
 import React, {Component} from 'react';
+import $ from 'jquery';
 
 
 class UploadForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {file: ''};
+        this.state = {value: ''};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
-        const reader = new FileReader();
-        const file = e.target.files[0];
+    handleChange(e) {
+        e.preventDefault();
+        this.setState({value: event.target.value});
 
-        reader.onload = (upload) => {
-            this.setState({
-                data_uri: upload.target.result,
-                filename: file.name,
-                filetype: file.type
-            });
-        };
-
-        reader.readAsDataURL(file);
     }
 
-    handleSubmit(event) {
+    handleSubmit(e) {
         alert('A file was submitted');
-        event.preventDefault();
+        e.preventDefault();
+
+        let fd = new FormData(this.state.value);
+        fd.append("CustomField", "This is some extra data");
+        $.ajax({
+            url: "/api/projects/1/pins",
+            type: "POST",
+            data: fd,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false   // tell jQuery not to set contentType
+        });
     }
 
     render() {
         return (
+        <div>
             <form onSubmit={this.handleSubmit}>
               <h4>My Images:</h4>
-              <input type="file" value={this.state.file} onChange={this.handleChange} />
-              <input type="submit" value="Submit" />
+              <input type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
+              <input type="submit" value="Upload" />
             </form>
+        </div>
         );
     }
 }
