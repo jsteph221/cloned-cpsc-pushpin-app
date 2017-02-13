@@ -33,7 +33,7 @@ router.get('/setup', function(req, res) {
 
   // create a project doc
   var testProject = new Project({
-    canvas: 'test canvas',
+    name: 'test project',
     customImages: [testCustomImage1, testCustomImage2]
   })
 
@@ -76,8 +76,6 @@ router.post('/authenticate', function(req, res) {
       if (user.password != req.body.password) {
         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
       } else {
-
-        // if user is found and password is right
         // create a token
         var token = jwt.sign(user, req.app.get('token_secret'), {
           expiresIn : 60*60*24 // expires in 24 hours
@@ -106,19 +104,27 @@ router.post('/signup', function(req, res) {
 
     if (err) throw err;
 
-    // create an user
     if (!user) {
-      var testUser = new User({ 
-        name: req.body.name, 
-        password: req.body.password
-      });
+      // create a project doc
+      var initialProject = new Project({
+        name: 'initial project'
+      })
+      initialProject.save(function(err) {
+        if (err) throw err;
+      })
 
+      // create an user
+      var testUser = new User({
+        name: req.body.name, 
+        password: req.body.password,
+        projects: [initialProject]
+      });
       testUser.save(function(err) {
         if (err) throw err;
-
         console.log('User saved successfully');
         res.json({ success: true , message: 'User account has been created.'});
       });
+
     } else if (user) {
       res.json({ success: false, message: 'This user name is already being used.' });
     }
