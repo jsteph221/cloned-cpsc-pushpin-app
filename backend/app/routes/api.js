@@ -1,16 +1,19 @@
 var express = require('express');
 var jwt    = require('jsonwebtoken');
+var projectRouter = require('./project');
+var customImageRouter = require('./customImage');
+
+// !!! to be removed once routes are modularized
 var User = require('../models/user');
 var Project = require('../models/project');
 var BaseImage = require('../models/baseImage');
 var CustomImage = require('../models/customImage');
-var RenderedImage = require('../models/renderedImage');
-var InteriorImage = require('../models/interiorImage');
 
 
 var router = express.Router();
 
 
+// DEVELOPMENT TESTING PURPOSE
 // setup initial model environment
 router.get('/setup', function(req, res) {
 
@@ -57,6 +60,16 @@ router.get('/setup', function(req, res) {
     res.json({ success: true , user: testUser, project: testProject});
   });
 });
+
+// Get all users
+router.get('/users', function(req, res) {
+  User.find({}, function(err, users) {
+    res.json(users);
+  });
+}); 
+
+
+
 
 
 // User Authentication
@@ -165,13 +178,9 @@ router.get('/', function(req, res) {
   res.json({ success: true, message: 'The user is logged in, and the token is valid.' }); 
 });
 
+router.use('/projects', projectRouter);
+router.use('/projects/:project_id/customImages', customImageRouter);
 
-// Get all users
-router.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-}); 
 
 
 module.exports = router;

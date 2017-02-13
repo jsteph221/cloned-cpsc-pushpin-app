@@ -14,6 +14,7 @@ app.set('token_secret', 'uCJ4HDcAGNANSUpLnTjz');
 var mongoose = require('mongoose');
 var AWS = require('aws-sdk');
 
+// set CORS
 app.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
   res.header("Access-Control-Allow-Credentials", true);
