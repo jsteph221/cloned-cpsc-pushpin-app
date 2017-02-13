@@ -1,6 +1,5 @@
-var express = require('express')
-    , cors = require('cors')
-    , app = express();
+var express = require('express');
+var cors = require('cors');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -23,24 +22,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-// FROM milestone1/josh
-// not sure what to do since it conflicts with line 7
-//var routes = require('./routes/index');
-//var users = require('./routes/users');
-
-
-// connect db
-//mongoose.connect('mongodb://mongo:27017');
-
-// connect aws S3
-var s3Config = { "accessKeyId": "AKIAIV2MK57QBCDG2PIQ", 
-                 "secretAccessKey": "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", 
-                 "region": "us-west-2" };
-AWS.config.update(s3Config);
-var s3 = new AWS.S3();
-var myBucket = 'cs319-tetrad-development-bucket';
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -62,7 +43,6 @@ app.use(function(req, res, next) {
 
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
