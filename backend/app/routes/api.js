@@ -1,26 +1,60 @@
 var express = require('express');
 var jwt    = require('jsonwebtoken');
 var User = require('../models/user');
+var Project = require('../models/project');
+var BaseImage = require('../models/baseImage');
+var CustomImage = require('../models/customImage');
+var RenderedImage = require('../models/renderedImage');
+var InteriorImage = require('../models/interiorImage');
 
 
 var router = express.Router();
 
 
-// Create a sample user
+// setup initial model environment
 router.get('/setup', function(req, res) {
+
+  // create a custom image doc 
+  var testCustomImage1 = new CustomImage({
+    originalName: 'testImage.png'
+  })
+
+  testCustomImage1.save(function(err) {
+    if (err) throw err;
+  })
+
+  var testCustomImage2 = new CustomImage({
+    originalName: 'testImage.png'
+  })
+
+  testCustomImage2.save(function(err) {
+    if (err) throw err;
+  })
+
+  // create a project doc
+  var testProject = new Project({
+    canvas: 'test canvas',
+    customImages: [testCustomImage1, testCustomImage2]
+  })
+
+  testProject.save(function(err) {
+    if (err) throw err;
+  })
+
+  // create a user doc
   var name = 'Test';
   var password = 'password';
-
   var testUser = new User({ 
     name: name, 
-    password: password
+    password: password,
+    projects: [testProject]
   });
 
   testUser.save(function(err) {
     if (err) throw err;
 
     console.log('User saved successfully');
-    res.json({ success: true , name: name, password: password});
+    res.json({ success: true , user: testUser, project: testProject});
   });
 });
 
