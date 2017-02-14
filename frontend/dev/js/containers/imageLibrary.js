@@ -50,7 +50,7 @@ class ImageLibrary extends Component {
 		{/*
 			TODO: Add ajax request to backend
 		*/}
-		return ['http://www.clker.com/cliparts/n/x/o/K/u/Y/pushpin-google-yelow.svg', 'http://www.clipartkid.com/images/549/blue-push-pin-clip-art-at-clker-com-vector-clip-art-online-royalty-Lvbj1h-clipart.png'];
+		return ['./icons/costcowholesalecorp.png', './icons/shoppingbag_grey_26.png', './icons/shoppingbag_orange28.png', './icons/shoppingbag_red28.png', './icons/thehomedepot.png', './icons/staplescanada.png', './icons/toysrus.png', './icons/zoeskitchen.png'];
 	};
 
 	getInteriorImages(){
@@ -61,8 +61,8 @@ class ImageLibrary extends Component {
 	};
 
     render() {
-		const baseImages = this.getBaseImages().map((url) => <img src={url} style={{height: 100, width: 100}} />);
-		const interiorImage = this.getInteriorImages().map((url) => <img src={url} style={{height: 100, width: 100}} />);
+		const baseImages = this.getBaseImages().map((url) => <img src={url} style={{height: 50, width: 50, padding: 10}} />);
+		const interiorImage = this.getInteriorImages().map((url) => <img src={url} style={{height: 50, width: 50, padding: 10}} />);
 
         return (
 		<div>

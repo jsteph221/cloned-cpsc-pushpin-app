@@ -89,7 +89,7 @@ class LogInScreen extends React.Component{
 						</tr>
 						<tr>
 							<td><b>Password</b></td>
-							<td><input name='password' value={this.state.password} onChange={this.handlePWChange} type='text'></input></td>
+							<td><input name='password' value={this.state.password} onChange={this.handlePWChange} type='password'></input></td>
 						</tr>
 						<tr>
 							<td />
