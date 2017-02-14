@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 
+const server = 'http://localhost:3030'
 
 class UploadForm extends React.Component {
     constructor(props, context) {
