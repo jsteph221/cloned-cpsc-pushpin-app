@@ -38,7 +38,9 @@ class UploadForm extends React.Component {
 
                     /* create a new custom image document */
                     var customImageEndPoint = server+"/api/projects/"+project+"/customImages";
-                    /*let fd = new FormData(this.state.value); */
+                    var file = document.getElementById('imageForm').files[0]
+                    let fd = new FormData();
+                    fd.append('file', file);
                     $.ajax(
                     {
                         url : customImageEndPoint,
@@ -48,9 +50,11 @@ class UploadForm extends React.Component {
                         },
                         data :
                         {
-                             /*'file' : fd */
+                             'file' : fd 
                         },
                         crossDomain: true,
+                        processData: false,
+                        contentType: false,
                         success : function(data) {
                             if (data.success === true){
                                 console.log(data);
@@ -72,17 +76,6 @@ class UploadForm extends React.Component {
         .fail(
             function() { alert("ajax failure");}
         );
-
-        /*
-        fd.append("CustomField", "This is some extra data");
-        $.ajax({
-            url: "/api/projects/1/pins",
-            type: "POST",
-            data: fd,
-            processData: false,  // tell jQuery not to process the data
-            contentType: false   // tell jQuery not to set contentType
-        });
-        */
     }
 
     render() {
@@ -90,7 +83,7 @@ class UploadForm extends React.Component {
         <div>
             <form onSubmit={this.handleSubmit}>
               <h4>My Images:</h4>
-              <input type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
+              <input id="imageForm" type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
               <input type="submit" value="Upload" />
             </form>
         </div>
