@@ -3,8 +3,8 @@ import $ from 'jquery';
 
 
 class UploadForm extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.state = {value: ''};
 
         this.handleChange = this.handleChange.bind(this);
@@ -13,7 +13,7 @@ class UploadForm extends React.Component {
 
     handleChange(e) {
         e.preventDefault();
-        this.setState({value: event.target.value});
+        this.setState({value: e.target.value});
 
     }
 
@@ -22,7 +22,7 @@ class UploadForm extends React.Component {
 
         var server = 'http://localhost:3030';
 
-        // get 1st project
+        /*get 1st project*/
         $.ajax(
         {
             url : server+"/api/projects",
@@ -36,8 +36,9 @@ class UploadForm extends React.Component {
                     console.log(data);
                     var project = data.projects[0];
 
-                    // create a new custom image document
+                    /* create a new custom image document */
                     var customImageEndPoint = server+"/api/projects/"+project+"/customImages";
+                    /*let fd = new FormData(this.state.value); */
                     $.ajax(
                     {
                         url : customImageEndPoint,
@@ -47,9 +48,8 @@ class UploadForm extends React.Component {
                         },
                         data :
                         {
-                            'newName' : 'Test Custom Image'
+                             /*'file' : fd */
                         },
-                        dataType : "json",
                         crossDomain: true,
                         success : function(data) {
                             if (data.success === true){
@@ -73,15 +73,16 @@ class UploadForm extends React.Component {
             function() { alert("ajax failure");}
         );
 
-        // let fd = new FormData(this.state.value);
-        // fd.append("CustomField", "This is some extra data");
-        // $.ajax({
-        //     url: "/api/projects/1/pins",
-        //     type: "POST",
-        //     data: fd,
-        //     processData: false,  // tell jQuery not to process the data
-        //     contentType: false   // tell jQuery not to set contentType
-        // });
+        /*
+        fd.append("CustomField", "This is some extra data");
+        $.ajax({
+            url: "/api/projects/1/pins",
+            type: "POST",
+            data: fd,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false   // tell jQuery not to set contentType
+        });
+        */
     }
 
     render() {
