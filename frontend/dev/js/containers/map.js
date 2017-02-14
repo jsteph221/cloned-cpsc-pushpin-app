@@ -28,15 +28,12 @@ class PreviewMap extends Component {
                     initialCenter = {{lat:49.2820,lng:-123.1171}}
                     onClick={this.mapClicked}
                     onDragend={this.centerMoved}
-                    zoom={18}
+                    disableDefaultUI={true}
+                    zoom={15}
                     styles={styleArray}
 
-               ><Marker>
-                    map = Map
-                    name={'Preview Pushpin'}
-                    position={{lat:49.2820, lng:-123.1191}}
-                    icon = "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-128.png"
-                </Marker>
+               ><Marker icon={'./icons/thehomedepot.png'}
+                        position={{lat:49.2820, lng:-123.1171}} />
                </Map>
            </div>
         );

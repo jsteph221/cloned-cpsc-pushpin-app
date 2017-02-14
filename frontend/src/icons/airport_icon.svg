@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="26.71875"
+   height="31"
+   id="svg3048"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="airport_icon.svg"
+   inkscape:export-filename="P:\Resources\Logos\topperspizza.png"
+   inkscape:export-xdpi="83.739998"
+   inkscape:export-ydpi="83.739998">
+  <defs
+     id="defs3050">
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect9716"
+       is_visible="true"
+       pattern="M 0,5 10,10 10,0 z"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       fuse_tolerance="0" />
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect9708"
+       is_visible="true"
+       pattern="M 0,5 10,10 10,0 z"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       fuse_tolerance="0" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7043">
+      <rect
+         style="fill:#fcb200;fill-opacity:1"
+         id="rect7045"
+         width="166.00436"
+         height="125.40097"
+         x="117.09647"
+         y="48.565186" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7039">
+      <rect
+         style="fill:#fcb200;fill-opacity:1"
+         id="rect7041"
+         width="166.00436"
+         height="125.40097"
+         x="117.09647"
+         y="48.565186" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7035">
+      <rect
+         style="fill:#fcb200;fill-opacity:1"
+         id="rect7037"
+         width="166.00436"
+         height="125.40097"
+         x="117.09647"
+         y="48.565186" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7100">
+      <rect
+         style="fill:#f8b315;fill-opacity:1"
+         id="rect7102"
+         width="28.894239"
+         height="93.842354"
+         x="127.99091"
+         y="60.636829" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7120">
+      <rect
+         style="fill:#f8b315;fill-opacity:1"
+         id="rect7122"
+         width="33.752563"
+         height="83.102898"
+         x="181.68817"
+         y="77.513107" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7127">
+      <rect
+         style="fill:#f8b315;fill-opacity:1"
+         id="rect7129"
+         width="31.45125"
+         height="91.541039"
+         x="238.96524"
+         y="61.148232" />
+    </clipPath>
+    <pattern
+       y="0"
+       x="0"
+       height="6"
+       width="6"
+       patternUnits="userSpaceOnUse"
+       id="EMFhbasepattern" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.313709"
+     inkscape:cx="12.279025"
+     inkscape:cy="20.636641"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1137"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     fit-margin-top="1"
+     fit-margin-left="1"
+     fit-margin-right="1"
+     fit-margin-bottom="1" />
+  <metadata
+     id="metadata3053">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-11.96875,-20.1875)">
+    <path
+       inkscape:export-ydpi="83.742592"
+       inkscape:export-xdpi="83.742592"
+       inkscape:export-filename="P:\Resources\Logos\generic\airport_icon.png"
+       inkscape:connector-curvature="0"
+       id="path9860"
+       d="m 16.065511,21.692114 c -1.445976,0 -2.616346,1.121976 -2.616346,2.499956 l 0,17.870953 c 0,1.377802 1.17037,2.475202 2.616346,2.475202 l 4.333324,0 3.951773,4.752387 c 0.170353,0.205943 0.409128,0.420786 0.981128,0.420786 0.572002,0 0.810764,-0.214843 0.98113,-0.420786 l 3.951773,-4.752387 4.306069,0 c 1.445978,0 2.616346,-1.0974 2.616346,-2.475202 l 0,-17.870953 c 0,-1.37798 -1.170368,-2.499956 -2.616346,-2.499956 z"
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.98071665;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       sodipodi:nodetypes="ssssccsccsssss" />
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#bd2a2a;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.981;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 16.934401,22.788948 c -1.310186,0 -2.370648,1.016616 -2.370648,2.265189 l 0,16.192735 c 0,1.248414 1.060462,2.24276 2.370648,2.24276 l 3.926391,0 3.58067,4.3061 c 0.154357,0.186602 0.37071,0.38127 0.888993,0.38127 0.518288,0 0.734629,-0.194668 0.888995,-0.38127 l 3.580669,-4.3061 3.901697,0 c 1.31019,0 2.370651,-0.994346 2.370651,-2.24276 l 0,-16.192735 c 0,-1.248573 -1.06046,-2.265189 -2.370651,-2.265189 z"
+       id="path9855"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="P:\Resources\Logos\generic\airport_icon.png"
+       inkscape:export-xdpi="83.742592"
+       inkscape:export-ydpi="83.742592"
+       sodipodi:nodetypes="ssssccsccsssss" />
+    <path
+       style="fill:#ffffff"
+       d="m 23.834475,41.166123 c -0.03947,-0.02751 -0.09,-0.09078 -0.112298,-0.140614 -0.02799,-0.06257 0.02921,-1.042577 0.184913,-3.167897 0.123998,-1.692512 0.218778,-3.085277 0.210618,-3.095034 -0.0081,-0.0098 -0.402857,0.125645 -0.877112,0.300895 -1.391917,0.51435 -4.325677,1.429588 -5.154236,1.607953 -0.820299,0.176586 -1.386127,-0.1397 -1.386127,-0.77482 0,-0.21708 0.177771,-0.681404 0.294176,-0.768357 0.04261,-0.03184 0.07748,-0.0739 0.07748,-0.09347 0,-0.01958 -0.39024,-0.604655 -0.867198,-1.300178 -0.476959,-0.695524 -0.866913,-1.302096 -0.866565,-1.34794 3.36e-4,-0.04584 0.01548,-0.111323 0.03362,-0.14551 0.04946,-0.09318 0.936202,-0.50589 1.08696,-0.50589 0.104171,0 2.009589,1.002638 2.680634,1.410559 0.09905,0.06021 0.145976,0.0369 0.722664,-0.359094 0.933,-0.640661 2.590595,-1.638863 4.292001,-2.584644 0.840356,-0.467139 1.973909,-1.099814 2.519005,-1.405943 0.545097,-0.30613 1.483527,-0.83322 2.085404,-1.171308 2.268473,-1.274255 2.548678,-1.383432 3.572031,-1.391757 0.696369,-0.0056 1.300796,0.10366 1.300796,0.235279 0,0.140712 -0.453674,0.54641 -0.939464,0.840116 -0.16677,0.100832 -0.216799,0.157249 -0.216799,0.24449 0,0.165517 0.209159,0.382079 0.39833,0.412431 0.239408,0.03841 0.926217,-0.392104 1.290412,-0.808873 0.177467,-0.203085 0.294909,-0.301795 0.339105,-0.285016 0.214766,0.08154 0.656336,0.761416 0.656336,1.010556 0,0.604831 -0.806519,1.264516 -3.076488,2.516378 -0.454245,0.250512 -1.436743,0.792705 -2.183327,1.204872 l -1.357424,0.749395 -0.46271,1.234881 c -0.254491,0.679183 -0.933184,2.49075 -1.508209,4.025705 -0.758435,2.024549 -1.080716,2.833117 -1.173763,2.944843 -0.09709,0.11658 -0.277054,0.215626 -0.740423,0.407509 -0.642193,0.265937 -0.706076,0.28151 -0.822342,0.200483 z m -2.699924,-12.15255 c -0.746807,-0.624821 -1.39035,-1.181855 -1.430097,-1.237852 -0.150269,-0.211705 -0.101101,-0.326255 0.371658,-0.865833 0.279514,-0.319025 0.508232,-0.53677 0.617567,-0.587943 0.160787,-0.07526 0.19569,-0.07532 0.471338,-9.23e-4 0.163731,0.04423 1.442136,0.381067 2.8409,0.748532 1.398764,0.367468 4.873067,1.302724 4.911887,1.322141 0.04915,0.02458 -1.23939,0.682187 -2.621607,1.456054 -1.091793,0.611265 -2.610847,1.314827 -2.673477,1.347412 -0.109443,0.05693 -1.183226,-1.089854 -2.488169,-2.181651 z"
+       id="path4146"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="sssssssssscssssssssssssssssscssssscsssssssscc"
+       inkscape:export-filename="P:\Resources\Logos\generic\airport_icon.png"
+       inkscape:export-xdpi="83.742592"
+       inkscape:export-ydpi="83.742592" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1 copy"
+     id="g7110"
+     transform="translate(-11.96875,-20.1875)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="P"
+     id="g7090"
+     transform="translate(-11.96875,-20.1875)" />
+</svg>
