@@ -19,6 +19,27 @@ router.get('/', function(req, res) {
   });
 });
 
+// get all custom images for the user
+router.post('/', function(req, res) {
+  Project.findOne({
+    _id: req.params.project_id
+  }, function(err, project) {
+    if (!project){
+      res.json({ success: false, message: 'no project was found with the given id.'});
+    } else{
+      // create a custom image doc 
+      var testCustomImage = new CustomImage({
+        originalName: req.body.newName
+      })
+
+      testCustomImage.save(function(err) {
+        if (err) throw err;
+      })
+      res.json({ success: true, message: 'custom images created', customImages: testCustomImage});
+    }
+  });
+});
+
 // get project(id)
 router.get('/:custom_id', function(req, res) {
   CustomImage.findOne({
