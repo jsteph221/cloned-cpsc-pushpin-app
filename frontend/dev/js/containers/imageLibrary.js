@@ -74,12 +74,10 @@ class ImageLibrary extends Component {
             	</TabList>
 
             	<TabPanel>
-            		<p>Base images</p>
             		<p>{baseImages}</p>
             	</TabPanel>
 
             	<TabPanel>
-            		<p>Interior images</p>
             		<p>{interiorImage}</p>
             	</TabPanel>
 
