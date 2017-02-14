@@ -11,8 +11,8 @@ import Map, {Marker, GoogleApiWrapper} from 'google-maps-react'
  * MARKER RENDER TO BE CONTINUED 
  * */
 
-var windowWidth = $(window).width();
-var windowHeight = $(window).height();
+const windowWidth = $(window).width();
+const windowHeight = $(window).height();
 
 
 
