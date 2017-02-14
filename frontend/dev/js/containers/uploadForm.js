@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 
+const server = 'http://localhost:3030'
 
 class UploadForm extends React.Component {
     constructor(props) {
@@ -24,7 +25,7 @@ class UploadForm extends React.Component {
         let fd = new FormData(this.state.value);
         fd.append("CustomField", "This is some extra data");
         $.ajax({
-            url: "/api/projects/1/pins",
+            url: server + "/api/projects/1/pins",
             type: "POST",
             data: fd,
             processData: false,  // tell jQuery not to process the data
