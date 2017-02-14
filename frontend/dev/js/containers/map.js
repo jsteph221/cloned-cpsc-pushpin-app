@@ -14,6 +14,8 @@ import Map, {Marker, GoogleApiWrapper} from 'google-maps-react'
 var windowWidth = $(window).width();
 var windowHeight = $(window).height();
 
+
+
 class PreviewMap extends Component {
     
     render(){
@@ -27,8 +29,10 @@ class PreviewMap extends Component {
                     zoom={18}
 
                ><Marker>
+                    map = Map
                     name={'Preview Pushpin'}
                     position={{lat:49.2820, lng:-123.1191}}
+                    icon = "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-128.png"
                 </Marker>
                </Map>
            </div>

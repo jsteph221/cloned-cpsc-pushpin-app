@@ -70,15 +70,27 @@ class ImageLibrary extends Component {
             	<TabList>
             		<Tab>Base Images</Tab>
             		<Tab>Interior Images</Tab>
+                    <Tab>Image Upload </Tab>
             	</TabList>
+
             	<TabPanel>
             		<p>Base images</p>
             		<p>{baseImages}</p>
             	</TabPanel>
+
             	<TabPanel>
             		<p>Interior images</p>
             		<p>{interiorImage}</p>
             	</TabPanel>
+
+                <TabPanel>
+                    <div className = "uploadForm">
+                        <NameForm />
+                    </div>
+                </TabPanel>
+
+
+
             </Tabs>
 		</div>
         );

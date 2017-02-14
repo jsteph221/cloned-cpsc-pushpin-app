@@ -31,17 +31,11 @@ const MainApp = () => (
                     <PreviewMap />
             </div>
 
-            <div className = "imgToolBar" style = {{height: windowHeight * 0.37, width: windowWidth * 0.47}}>
-                    <Toolbar />
-            </div>
-
-            <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.46}}>
+            <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.93}}>
                     <ImageLibrary />
 
             </div>
-            <div className = "uploadForm">
-                    <UploadForm />
-            </div>
+
             <div className = "bottomBar" style = {{height: windowHeight*0.02, width: windowWidth*0.96}}>
             </div>
 
