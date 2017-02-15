@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 
 var User = require('../models/user');
 var Project = require('../models/project');
@@ -27,6 +28,12 @@ router.post('/', function(req, res) {
     if (!project){
       res.json({ success: false, message: 'no project was found with the given id.'});
     } else{
+      console.log(req.body);
+      fs.writeFile('/tmp/test.png', req.body.file, 'binary', function(err){
+            if (err) throw err
+            console.log('File saved.')
+      })
+
       // create a custom image doc 
       var testCustomImage = new CustomImage({
         originalName: req.body.newName

@@ -51,7 +51,8 @@ class UploadForm extends React.Component {
                         },
                         data :
                         {
-                             'file' : fd 
+                             /*'file' : fd,*/
+                             'newName' : 'this is the name'
                         },
                         crossDomain: true,
                         processData: false,
