@@ -1,8 +1,8 @@
 var express = require('express');
-var fs = require('fs');
 var multiparty = require('multiparty');
-var s3 = require('../config/aws').s3;
+var AWS = require('aws-sdk');
 
+var s3 = require('../config/aws').s3;
 var User = require('../models/user');
 var Project = require('../models/project');
 var CustomImage = require('../models/customImage');
@@ -51,7 +51,7 @@ router.post('/', function(req, res) {
           Key: newCustomImage.id,
           ACL: 'public-read-write',
           Body: part,
-          ContentLength: part.byteCount,
+          ContentLength: part.byteCount
         }, function(err, data) {
           if (err) throw err;
           // console.log("done", data); // eTag
@@ -72,7 +72,7 @@ router.post('/', function(req, res) {
 });
 
 
-// get project(id)
+// get custome image(id)
 router.get('/:custom_id', function(req, res) {
   CustomImage.findOne({
     _id: req.params.custom_id
@@ -80,7 +80,17 @@ router.get('/:custom_id', function(req, res) {
     if (!customImage){
       res.json({ success: false, message: 'no custom image was found with the given id.'});
     } else{
-      res.json({ success: true, message: 'custom image found', customImage: customImage});
+      // get object and pipe it to the client
+      s3.getObject({
+        Bucket: s3['bucketName']+'/customImages',
+        Key: customImage.id
+      }, function(err, data){
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+          var stream = AWS.util.buffer.toStream(data.Body);
+          stream.pipe(res);
+        }
+      });
     }
   });
 }); 
