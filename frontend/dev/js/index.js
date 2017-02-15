@@ -8,9 +8,9 @@ import promise from 'redux-promise';
 import createLogger from 'redux-logger';
 import allReducers from './reducers';
 import {Router, Route, hashHistory} from 'react-router';
-import MainApp from './components/MainApp';
 
-const loginComponent = require('./components/Login').default;
+import MainApp from './components/MainApp';
+import loginComponent from './components/Login';
 
 const logger = createLogger();
 const store = createStore(
@@ -18,11 +18,13 @@ const store = createStore(
     applyMiddleware(thunk, promise, logger)
 );
 
+/*set default routing to login*/
+hashHistory.push('/login');
 const routes = (
 	<Provider store={store}>
 		<Router history={hashHistory}>
-			<Route path='/' component={MainApp} />
 			<Route path='/login' component={loginComponent} />
+			<Route path='/' component={MainApp} />
 		</Router>
 	</Provider>
 )

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 
-const server = 'http://localhost:3030'
+import server from '../config/server';
+
 
 class UploadForm extends React.Component {
     constructor(props, context) {
@@ -53,7 +54,8 @@ class UploadForm extends React.Component {
                         contentType: false,
                         success : function(data) {
                             if (data.success === true){
-                                console.log(data);
+                                var id = data.customImages._id;
+                                alert("A custom image has been submitted and created with id: " + id);
                             }
                             else{
                                 alert(data.message);

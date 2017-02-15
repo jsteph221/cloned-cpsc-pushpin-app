@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
 });
 
 // get project(id)
+// !!! TODO: need to restrict the access of this project for other users
 router.get('/:project_id', function(req, res) {
   Project.findOne({
     _id: req.params.project_id

@@ -4,7 +4,8 @@ import { hashHistory } from 'react-router';
 import $ from "jquery"
 import cookie from 'react-cookie';
 
-const server = 'http://localhost:3030'
+import server from '../config/server';
+
 
 class LogInScreen extends React.Component{
 	constructor(props, context){
@@ -15,6 +16,29 @@ class LogInScreen extends React.Component{
 		this.handlePWChange = this.handlePWChange.bind(this);
 		this.state = {name: '', password: ''};
 	}
+
+	componentWillMount(){
+        $.ajax(
+        {
+            url : server+"/api",
+            type : "GET",
+            dataType: "json",
+            xhrFields: {
+               withCredentials: true
+            },
+            crossDomain: true,
+            success : function(data) {
+                if (data.success == true){
+                    hashHistory.push("/");
+                }
+            }
+        })
+        .fail(
+            function(data, status) { 
+                hashHistory.push("/login");
+            }
+        ); 
+    }
 
 	componentWillReceiveProps(nextProps) {
     this.setState({

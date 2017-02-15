@@ -11,6 +11,7 @@ var router = express.Router({mergeParams: true});
 
 
 // get all custom images for the user
+// !!! TODO: need to restrict the access of this project for other users
 router.get('/', function(req, res) {
   Project.findOne({
     _id: req.params.project_id
@@ -25,6 +26,7 @@ router.get('/', function(req, res) {
 
 
 // upload an user submitted image to S3
+// !!! TODO: need to restrict the access of this project for other users
 router.post('/', function(req, res) {
   Project.findOne({
     _id: req.params.project_id
@@ -73,6 +75,7 @@ router.post('/', function(req, res) {
 
 
 // get custome image(id)
+// !!! TODO: need to restrict the access of this project for other users
 router.get('/:custom_id', function(req, res) {
   CustomImage.findOne({
     _id: req.params.custom_id

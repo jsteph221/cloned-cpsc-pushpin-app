@@ -5,8 +5,7 @@ import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
 import NameForm from './uploadForm';
-
-const server = 'http://localhost:3030';
+import server from '../config/server';
 
 /*
  * We need "if(!this.props.user)" because we set state to null by default
