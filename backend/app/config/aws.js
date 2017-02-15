@@ -6,6 +6,6 @@ var s3Config = { "accessKeyId": "AKIAIV2MK57QBCDG2PIQ",
 
 AWS.config.update(s3Config);
 var s3 = new AWS.S3();
-var myBucket = 'cs319-tetrad-development-bucket';
+s3['bucketName'] = 'cs319-tetrad-development-bucket';
 
 exports.s3 = s3;

@@ -34,13 +34,11 @@ class UploadForm extends React.Component {
             crossDomain: true,
             success : function(data) {
                 if (data.success === true){
-                    console.log(data);
                     var project = data.projects[0];
-
                     /* create a new custom image document */
                     var customImageEndPoint = server+"/api/projects/"+project+"/customImages";
                     var file = document.getElementById('imageForm').files[0]
-                    let fd = new FormData();
+                    var fd = new FormData();
                     fd.append('file', file);
                     $.ajax(
                     {
@@ -49,11 +47,7 @@ class UploadForm extends React.Component {
                         xhrFields: {
                            withCredentials: true
                         },
-                        data :
-                        {
-                             /*'file' : fd,*/
-                             'newName' : 'this is the name'
-                        },
+                        data : fd,
                         crossDomain: true,
                         processData: false,
                         contentType: false,
@@ -85,7 +79,7 @@ class UploadForm extends React.Component {
         <div>
             <form onSubmit={this.handleSubmit}>
               <h4>My Images:</h4>
-              <input id="imageForm" type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
+              <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
               <input type="submit" value="Upload" />
             </form>
         </div>
