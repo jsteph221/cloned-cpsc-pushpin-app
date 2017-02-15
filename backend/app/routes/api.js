@@ -3,73 +3,11 @@ var jwt    = require('jsonwebtoken');
 var projectRouter = require('./project');
 var customImageRouter = require('./customImage');
 
-// !!! to be removed once routes are modularized
 var User = require('../models/user');
 var Project = require('../models/project');
-var BaseImage = require('../models/baseImage');
-var CustomImage = require('../models/customImage');
 
 
 var router = express.Router();
-
-
-// DEVELOPMENT TESTING PURPOSE
-// setup initial model environment
-router.get('/setup', function(req, res) {
-
-  // create a custom image doc 
-  var testCustomImage1 = new CustomImage({
-    originalName: 'testImage.png'
-  })
-
-  testCustomImage1.save(function(err) {
-    if (err) throw err;
-  })
-
-  var testCustomImage2 = new CustomImage({
-    originalName: 'testImage.png'
-  })
-
-  testCustomImage2.save(function(err) {
-    if (err) throw err;
-  })
-
-  // create a project doc
-  var testProject = new Project({
-    name: 'test project',
-    customImages: [testCustomImage1, testCustomImage2]
-  })
-
-  testProject.save(function(err) {
-    if (err) throw err;
-  })
-
-  // create a user doc
-  var name = 'Test';
-  var password = 'password';
-  var testUser = new User({ 
-    name: name, 
-    password: password,
-    projects: [testProject]
-  });
-
-  testUser.save(function(err) {
-    if (err) throw err;
-
-    console.log('User saved successfully');
-    res.json({ success: true , user: testUser, project: testProject});
-  });
-});
-
-// Get all users
-router.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-}); 
-
-
-
 
 
 // User Authentication
