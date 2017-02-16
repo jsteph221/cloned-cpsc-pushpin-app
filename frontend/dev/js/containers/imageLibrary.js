@@ -58,6 +58,8 @@ class ImageLibrary extends Component {
         
         return resp.images;
 	};
+    
+    
 
 	getInteriorImages(){
         var imgs = [];
@@ -76,6 +78,26 @@ class ImageLibrary extends Component {
         
         return resp.images;
 	};
+    
+    getPushPins(){
+        var proj = this.getProjects()[0]; 
+        var imgs = [];
+        
+        var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        request.open("GET", server+"/api/projects/"+proj+"/renderedImages", false);
+        request.send(null);
+        
+
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+            return [];
+        }
+
+		var resp = JSON.parse(request.response);
+        console.log(resp);
+        return resp.imgs;
+    }
 
     getCustomImages(){
 
@@ -143,6 +165,7 @@ class ImageLibrary extends Component {
         const customImages = this.mapToImage(this.getCustomImages());
         const baseImages = this.mapToImage(this.getBaseImages());
         const interiorImages = this.mapToImage(this.getInteriorImages());
+        const pushPins = this.mapToImage(this.getPushPins()); 
 
         return (
 		<div>
@@ -151,6 +174,7 @@ class ImageLibrary extends Component {
             		<Tab>Base Images</Tab>
             		<Tab>Interior Images</Tab>
                     <Tab>Custom Images </Tab>
+                    <Tab>Push Pins</Tab>
             	</TabList>
 
             	<TabPanel>
@@ -167,9 +191,10 @@ class ImageLibrary extends Component {
                         <NameForm />
                     </div>
                 </TabPanel>
-
-
-
+                
+                <TabPanel>
+                    <p>{pushPins}</p>
+                </TabPanel>
             </Tabs>
 		</div>
         );
