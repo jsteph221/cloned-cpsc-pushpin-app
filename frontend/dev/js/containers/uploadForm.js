@@ -80,7 +80,6 @@ class UploadForm extends React.Component {
         return (
         <div>
             <form onSubmit={this.handleSubmit}>
-              <h4>My Images:</h4>
               <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
               <input type="submit" value="Upload" />
             </form>
