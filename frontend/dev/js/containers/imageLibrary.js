@@ -42,17 +42,39 @@ class ImageLibrary extends Component {
     }
 
 	getBaseImages(){
-		{/*
-			TODO: Add request to backend
-		*/}
-		return ['./icons/costcowholesalecorp.png', './icons/shoppingbag_grey_26.png', './icons/shoppingbag_orange28.png', './icons/shoppingbag_red28.png', './icons/thehomedepot.png', './icons/staplescanada.png', './icons/toysrus.png', './icons/zoeskitchen.png'];
+		var imgs = [];
+		var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        
+        request.open('GET',server+'/api/standard/base', false);
+		request.send(null); 
+    
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+            return [];
+        }
+
+		var resp = JSON.parse(request.response);
+        
+        return resp.images;
 	};
 
 	getInteriorImages(){
-		{/*
-			TODO: Add request to backend
-		*/}
-		return ['http://images.clipartpanda.com/airplane-clipart-no-background-blue-plane-md.png', 'https://img.clipartfest.com/580b33ee35104002fb7ac1d9728b8e3b_chicken-burger-clipart-free-burger-clipart-no-background_1024-875.jpeg'];
+        var imgs = [];
+		var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        
+        request.open('GET',server+'/api/standard/interior', false);
+		request.send(null); 
+    
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+            return [];
+        }
+
+		var resp = JSON.parse(request.response);
+        
+        return resp.images;
 	};
 
     getCustomImages(){
