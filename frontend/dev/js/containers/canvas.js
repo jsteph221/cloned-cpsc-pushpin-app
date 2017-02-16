@@ -15,10 +15,11 @@ class FabricCanvas extends Component {
 		        width={width * 0.47}
 		        height={height * 0.45}>
 
-		          <Image
-	                src='./icons/thehomedepot.png'
-	                width={50}
-	                height={50}
+	           	 <Image
+	                src='http://localhost:3030/api/projects/58a5f5daa327cc0023089a2f/customImages/58a5fd9c3ac07400220380df'
+	                crossOrigin='use-credentials'
+	                width={189}
+	                height={47}
 	                left={300}
 	                top={150}
 	           	 />
