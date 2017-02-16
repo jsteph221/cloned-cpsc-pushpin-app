@@ -36,9 +36,6 @@ router.post('/', function(req, res) {
     } else{
       // create a custom image doc 
       var newCustomImage = new CustomImage();
-      newCustomImage.save(function(err) {
-        if (err) throw err;
-      });
 
       // parse multi-part/form-data
       var form = new multiparty.Form();
@@ -48,6 +45,11 @@ router.post('/', function(req, res) {
         }
       });
       form.on('part', function(part) {
+        // set attributes of the custom image
+        newCustomImage.fileType = part.headers['content-type'];
+        newCustomImage.originalName = part.headers['content-disposition'].split('; ')[2].split('"')[1];
+
+        // send image file
         s3.putObject({
           Bucket: s3['bucketName']+'/customImages',
           Key: newCustomImage.id,
@@ -56,19 +58,26 @@ router.post('/', function(req, res) {
           ContentLength: part.byteCount
         }, function(err, data) {
           if (err) throw err;
-          // console.log("done", data); // eTag
-          res.end("OK");
+
+          // set attribute of the custom image and save
+          newCustomImage.eTag = data.ETag;
+          newCustomImage.save(function(err) {
+            if (err) throw err;
+          });
+
+          // add new customImage to the project and save
+          project.customImages.push(newCustomImage);
+          project.save(function(err) {
+            if (err) throw err;
+          });
+
+          res.json({ success: true, message: 'custom images created', customImages: newCustomImage});
+          res.end("OK"); // to end multi-part form POST request
         });
       });
       form.parse(req);
 
-      // add new customImage to the project
-      project.customImages.push(newCustomImage);
-      project.save(function(err) {
-        if (err) throw err;
-      });
 
-      res.json({ success: true, message: 'custom images created', customImages: newCustomImage});
     }
   });
 });
