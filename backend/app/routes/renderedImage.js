@@ -10,7 +10,7 @@ var RenderedImage = require('../models/renderedImage');
 var router = express.Router({mergeParams: true});
 
 
-// get all custom images for the user
+// get all rendered images for the user
 // !!! TODO: need to restrict the access of this project for other users
 router.get('/', function(req, res) {
     var urls = [];
@@ -20,17 +20,22 @@ router.get('/', function(req, res) {
         if (err){
             res.json({ success: false, imgs:urls});
         }else{
-            for(var i = 0; i< imgs.renderedImages.length;i++){
-                var params = {Bucket:s3['bucketName'],Key:'renderedImages/'+imgs.renderedImages[i].toString(),Expires:7200};
-                s3.getSignedUrl('getObject', params,function(err,url){
-                    if (!err){
-                        urls.push(url);  
-                    }                         
-                });
+            try{
+                for(var i = 0; i< imgs.renderedImages.length;i++){
+                try{
+                   var params = {Bucket:s3['bucketName'],Key:'renderedImages/'+imgs.renderedImages[i].toString(),Expires:7200};
+                    s3.getSignedUrl('getObject', params,function(err,url){
+                        if (!err){
+                            urls.push(url);  
+                        }                         
+                    }); 
+                }catch(err){}               
                
             }  
             console.log(urls);
             res.json({ success: true, imgs:urls});  
+            }catch(err){}
+            
         }
         
     });

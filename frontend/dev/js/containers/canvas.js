@@ -54,9 +54,43 @@ function saveRenderedCanvas(dataURI){
         })
         .fail(
             function() { alert("ajax failure");}
-        );
+        );           
+}
+
+function canvasToImage(ctx,canvas){
+    var w = canvas.width,
+    h = canvas.height,
+    pix = {x:[], y:[]},
+    imageData = ctx.getImageData(0,0,canvas.width,canvas.height),
+    x, y, index;
+
+    for (y = 0; y < h; y++) {
+        for (x = 0; x < w; x++) {
+            index = (y * w + x) * 4;
+            if (imageData.data[index+3] > 0) {
+
+                pix.x.push(x);
+                pix.y.push(y);
+
+            }   
+        }
+    }
+    pix.x.sort(function(a,b){return a-b});
+    pix.y.sort(function(a,b){return a-b});
+    var n = pix.x.length-1;
+
+    w = pix.x[n] - pix.x[0];
+    h = pix.y[n] - pix.y[0];
+    var cut = ctx.getImageData(pix.x[0], pix.y[0], w, h);
     
-        
+    var canvas1= document.createElement('canvas');
+    var ctx1=canvas1.getContext('2d');    
+    canvas1.width = w;
+    canvas1.height = h;
+    ctx1.putImageData(cut, 0, 0);
+
+    var image = canvas1.toDataURL();
+    return image;
 }
                 
 
@@ -70,7 +104,7 @@ class FabricCanvas extends Component {
 		        height={height * 0.45}>
 
 		          <Image
-	                src='./icons/thehomedepot.png'
+	                src='./icons/logo_tetrad.png'
 	                width={50}
 	                height={50}
 	                left={300}
@@ -82,8 +116,10 @@ class FabricCanvas extends Component {
             <button onClick = {
                 function(){
                     console.log("Clicked saved canvas");
-                    var ctx = document.getElementById("canvas_form").toDataURL("image/png");
-                    saveRenderedCanvas(ctx);
+                    var canvas = document.getElementById("canvas_form");
+                    var ctx = canvas.getContext('2d');
+                    var data = canvasToImage(ctx,canvas);
+                    saveRenderedCanvas(data);
                 }
             }>Save Image</button>
             </div>           
