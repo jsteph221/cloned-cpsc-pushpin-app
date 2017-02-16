@@ -100,7 +100,10 @@ class ImageLibrary extends Component {
         */}
 
         var result = [];
-        result = response.customImages.map((imageID) => server+"/api/projects/"+proj+"/customImages/"+imageID);
+        //error when no project of given id ->Cannot read property 'map' of undefined
+	   if (response.success == true){
+		  result = response.customImages.map((imageID) => server+"/api/projects/"+proj+"/customImages/"+imageID);
+	   }
 
         return result;
     }
