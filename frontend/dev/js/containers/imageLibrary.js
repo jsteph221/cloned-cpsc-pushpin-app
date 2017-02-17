@@ -16,6 +16,7 @@ class ImageLibrary extends Component {
 		super(props);
 		this.getBaseImages = this.getBaseImages.bind(this);
 		this.getInteriorImages = this.getInteriorImages.bind(this);
+		this.getPushPins = this.getPushPins.bind(this);
         this.getCustomImages = this.getCustomImages.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.mapToImage = this.mapToImage.bind(this);
