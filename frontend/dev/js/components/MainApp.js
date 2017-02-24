@@ -6,6 +6,7 @@ import Toolbar from '../containers/toolbar';
 import ImageLibrary from '../containers/imageLibrary';
 import PreviewMap from '../containers/map';
 import UploadForm from '../containers/uploadForm';
+import InteriorColorPicker from '../containers/interiorColorPicker';
 import $ from 'jquery';
 
 
@@ -31,6 +32,10 @@ const MainApp = () => (
                     <PreviewMap />
             </div>
 
+            <div>
+                    <InteriorColorPicker/>
+            </div>
+
             <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.93}}>
                     <ImageLibrary />
 
@@ -38,6 +43,8 @@ const MainApp = () => (
 
             <div className = "bottomBar" style = {{height: windowHeight*0.02, width: windowWidth*0.96}}>
             </div>
+
+
 
     </div>
 );
