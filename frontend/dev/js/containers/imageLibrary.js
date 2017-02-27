@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {hashHistory} from 'react-router';
@@ -6,24 +6,32 @@ import $ from 'jquery';
 
 import NameForm from './uploadForm';
 import server from '../config/server';
+import {selectImage} from '../actions';
 
 /*
  * We need "if(!this.props.user)" because we set state to null by default
  * */
 
 class ImageLibrary extends Component {
+
 	constructor(props){
-		super(props);
+        super(props);
 		this.getBaseImages = this.getBaseImages.bind(this);
 		this.getInteriorImages = this.getInteriorImages.bind(this);
         this.getCustomImages = this.getCustomImages.bind(this);
         this.getProjects = this.getProjects.bind(this);
+        this.imageClick = this.imageClick.bind(this);
         this.mapToImage = this.mapToImage.bind(this);
         this.state = {
             projects: [], 
             customImages: []
         };
-	}
+	};
+
+    imageClick(url){ 
+        this.props.imageClicked(url);
+    }
+
 
 	componentWillMount(){
 
@@ -134,15 +142,17 @@ class ImageLibrary extends Component {
 
     mapToImage(imageURLs){
 
-        return imageURLs.map((url) => <img src={url} style={{height: 50, width: 50, padding: 10}} />);
+        return imageURLs.map((url) => <img src={url} onClick={() => this.imageClick(url)} style={{height: 50, width: 50, padding: 10}} />);
 
     }
 
     render() {
-        
+
         const customImages = this.mapToImage(this.getCustomImages());
         const baseImages = this.mapToImage(this.getBaseImages());
         const interiorImages = this.mapToImage(this.getInteriorImages());
+        
+        const imagesFn = ((im) => this.mapToImage(im)).bind(this);
 
         return (
 		<div>
@@ -176,4 +186,20 @@ class ImageLibrary extends Component {
     }
 }
 
-export default ImageLibrary;
+ImageLibrary.propTypes = {
+    imageClicked: PropTypes.func.isRequired
+}
+
+ImageLibrary.defaultProps = {
+    imageClicked: (image) => console.log(image+" was clicked\n")
+}
+
+function mapDispatchToProps(dispatch) {
+    return ({
+        imageClicked: (url) => {dispatch(selectImage(url))}
+    })
+}
+
+const LibraryContainer = connect(null, mapDispatchToProps)(ImageLibrary);
+
+export default LibraryContainer;

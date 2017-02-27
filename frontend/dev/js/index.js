@@ -11,6 +11,7 @@ import {Router, Route, hashHistory} from 'react-router';
 
 import MainApp from './components/MainApp';
 import loginComponent from './components/Login';
+import {selectImage} from './actions';
 
 const logger = createLogger();
 const store = createStore(
@@ -18,13 +19,15 @@ const store = createStore(
     applyMiddleware(thunk, promise, logger)
 );
 
+/*store.dispatch(selectImage('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/2000px-SNice.svg.png'));*/
+
 /*set default routing to login*/
 hashHistory.push('/login');
 const routes = (
 	<Provider store={store}>
 		<Router history={hashHistory}>
-			<Route path='/login' component={loginComponent} />
-			<Route path='/' component={MainApp} />
+			<Route path='/login' component={loginComponent} / >
+			<Route path='/' component={MainApp} / >
 		</Router>
 	</Provider>
 )
