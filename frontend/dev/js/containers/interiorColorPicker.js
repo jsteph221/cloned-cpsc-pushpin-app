@@ -5,6 +5,7 @@
 
 import React from 'react'
 import { SwatchesPicker } from 'react-color'
+import $ from 'jquery'
 
 class InteriorColorPicker extends React.Component {
     constructor(props, context) {
@@ -29,10 +30,12 @@ class InteriorColorPicker extends React.Component {
 
     handleChange (color, event) {
         this.setState({ background: color.hex });
+        
     };
 
     handleClick () {
         this.setState({ displayColorPicker: !this.state.displayColorPicker })
+        
     };
 
     handleClose () {
@@ -53,6 +56,9 @@ class InteriorColorPicker extends React.Component {
         }
         return (
             <div>
+                <svg width="100" height="100">
+  <circle  className="h" cx="50" cy="50" r="40" stroke="black" stroke-width="4" fill={this.state.background} />   
+</svg>
                 <h4>Picked Color: {this.state.background}</h4>
                 <button onClick={ this.handleClick }>Pick Color</button>
                 { this.state.displayColorPicker ? <div style={ popover }>
