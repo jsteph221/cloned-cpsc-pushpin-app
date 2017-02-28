@@ -6,9 +6,9 @@ import Toolbar from '../containers/toolbar';
 import ImageLibrary from '../containers/imageLibrary';
 import PreviewMap from '../containers/map';
 import UploadForm from '../containers/uploadForm';
+import SizeSlider from '../containers/slider'
+
 import $ from 'jquery';
-
-
 
 require('../../scss/style.scss');
 
@@ -31,9 +31,12 @@ const MainApp = () => (
                     <PreviewMap />
             </div>
 
-            <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.93}}>
-                    <ImageLibrary />
+            <div className="map" style = {{height: windowHeight * 0.18, width: windowWidth * 0.46}}>
+                <SizeSlider/>
+            </div>
 
+            <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.93}}>
+                <ImageLibrary />
             </div>
 
             <div className = "bottomBar" style = {{height: windowHeight*0.02, width: windowWidth*0.96}}>
