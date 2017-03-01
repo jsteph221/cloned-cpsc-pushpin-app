@@ -8,6 +8,15 @@ export const selectImage = (image) => {
 };
 
 
+export const sliderChange = (size) => {
+    return{
+        type: 'SLIDER_CHANGE',
+        value: size
+    }
+};
+
+
+
 export const selectUser = (user) => {
     console.log("You clicked on user: ", user.first);
     return {

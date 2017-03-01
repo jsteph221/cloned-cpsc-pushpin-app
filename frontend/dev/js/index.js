@@ -11,14 +11,15 @@ import {Router, Route, hashHistory} from 'react-router';
 
 import MainApp from './components/MainApp';
 import loginComponent from './components/Login';
-import {selectImage} from './actions';
+import {selectImage, sliderChange} from './actions';
+
 
 const logger = createLogger();
 const store = createStore(
     allReducers,
     applyMiddleware(thunk, promise, logger)
 );
-
+//store.dispatch(sliderChange(90));
 /*store.dispatch(selectImage('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/2000px-SNice.svg.png'));*/
 
 /*set default routing to login*/
