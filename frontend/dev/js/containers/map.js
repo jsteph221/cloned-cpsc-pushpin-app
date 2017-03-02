@@ -63,6 +63,7 @@ PreviewMap.propTypes = {
 }
 
 const MapApi = GoogleApiWrapper({
+    version: '3.26',
     apiKey: 'AIzaSyBiYle_P0Auv1_rygO5ZXig6pjnQyRTgyM'
 })(PreviewMap)
 
