@@ -27,11 +27,11 @@ hashHistory.push('/login');
 const routes = (
 	<Provider store={store}>
 		<Router history={hashHistory}>
-			<Route path='/login' component={loginComponent} / >
-			<Route path='/' component={MainApp} / >
+			<Route path='/login' component={loginComponent} />
+			<Route path='/' component={MainApp} />
 		</Router>
 	</Provider>
-)
+);
 
 ReactDOM.render(
     routes,
