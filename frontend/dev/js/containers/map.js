@@ -3,7 +3,8 @@ import {connect} from 'react-redux';
 import $ from 'jquery';
 import Map, {GoogleApiWrapper} from 'google-maps-react'
 import Marker from './Marker'
-import {sliderChange} from '../actions'
+//import {Marker} from 'google-maps-react'
+//import {sliderChange} from '../actions'
 
 
 /*
@@ -41,11 +42,11 @@ class PreviewMap extends Component {
                     onDragend={this.centerMoved}
                     disableDefaultUI={true}
                     zoom={15}
-                    styles={styleArray}
-
-               ><Marker
-                   icon = {'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/2000px-SNice.svg.png'}
+                    styles={styleArray}>
+               <Marker
+                   url = {'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/2000px-SNice.svg.png'}
                    position={{lat:49.2820, lng:-123.1171}}
+                   size={this.props.value}
                />
                </Map>
            </div>

@@ -131,7 +131,8 @@
                 var google = _props.google;
                 var position = _props.position;
                 var mapCenter = _props.mapCenter;
-                var icon = _props.icon;
+                var url = _props.url;
+                var sizeValue= _props.size;
 
                 if (!google) {
                     return null;
@@ -141,11 +142,15 @@
                 if (!(pos instanceof google.maps.LatLng)) {
                     position = new google.maps.LatLng(pos.lat, pos.lng);
                 }
+                var size = new google.maps.Size(sizeValue,sizeValue);
 
                 var pref = {
                     map: map,
                     position: position,
-                    icon: icon
+                    icon:{
+                        url: url,
+                        scaledSize : size
+                    }
                 };
                 this.marker = new google.maps.Marker(pref);
 
@@ -185,7 +190,8 @@
     Marker.propTypes = {
         position: _react.PropTypes.object,
         map: _react.PropTypes.object,
-        icon: _react.PropTypes.string
+        url: _react.PropTypes.string,
+        size: _react.PropTypes.number
     };
 
     evtNames.forEach(function (e) {
