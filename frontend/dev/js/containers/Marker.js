@@ -142,6 +142,7 @@
                 if (!(pos instanceof google.maps.LatLng)) {
                     position = new google.maps.LatLng(pos.lat, pos.lng);
                 }
+                //var temp = 28*sizeValue/100;
                 var size = new google.maps.Size(sizeValue,sizeValue);
 
                 var pref = {

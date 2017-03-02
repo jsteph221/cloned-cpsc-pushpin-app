@@ -9,7 +9,7 @@ class SizeSlider extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            value: 100,
+            value: 28,
         };
         this.onSliderChange = this.onSliderChange.bind(this);
         this.onAfterChange= this.onAfterChange.bind(this);
@@ -29,10 +29,10 @@ class SizeSlider extends React.Component {
     render() {
         return (
             <div>
-                <h2>{this.state.value}%</h2>
+                <h2>{this.state.value}px</h2>
                 <Slider
-                    min={50}
-                    max={150}
+                    min={5}
+                    max={45}
                     value={this.state.value}
                     onChange={this.onSliderChange}
                     onAfterChange={this.onAfterChange}

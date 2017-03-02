@@ -1,5 +1,5 @@
 const initialState = {
-    value: 100,
+    value: 28,
 }
 
 export default function slider(state = initialState, action) {

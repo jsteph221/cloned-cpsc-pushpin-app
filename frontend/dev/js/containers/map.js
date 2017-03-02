@@ -34,7 +34,7 @@ class PreviewMap extends Component {
     render(){
         return(
            <div >
-               <h2>{this.props.value}</h2>
+               {/*<h2>{this.props.value}</h2>*/}
                <Map containerStyle = {{height: windowHeight * 0.45, width: windowWidth * 0.46 }}
                     google={this.props.google}
                     initialCenter = {{lat:49.2820,lng:-123.1171}}
