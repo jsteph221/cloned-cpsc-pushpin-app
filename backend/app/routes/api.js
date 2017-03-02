@@ -3,6 +3,7 @@ var jwt    = require('jsonwebtoken');
 var projectRouter = require('./project');
 var customImageRouter = require('./customImage');
 var standardImageRouter = require('./standardImage');
+var renderedImageRouter = require('./renderedImage');
 
 var User = require('../models/user');
 var Project = require('../models/project');
@@ -119,8 +120,7 @@ router.get('/', function(req, res) {
 
 router.use('/projects', projectRouter);
 router.use('/projects/:project_id/customImages', customImageRouter);
+router.use('/projects/:project_id/renderedImages',renderedImageRouter);
 router.use('/standard', standardImageRouter);
-
-
 
 module.exports = router;

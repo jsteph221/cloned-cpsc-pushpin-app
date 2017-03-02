@@ -4,6 +4,7 @@ import $ from 'jquery';
 import Map, {GoogleApiWrapper} from 'google-maps-react'
 import Marker from './Marker'
 import {sliderChange} from '../actions'
+import {previewImage} from '../actions'
 
 
 /*
@@ -23,18 +24,28 @@ var url = './icons/car2.png';
 class PreviewMap extends Component {
     constructor(props) {
         super(props);
+        this.state = {};
+        this.mapToImage = this.mapToImage.bind(this);
     }
 
-    mapToImage(url){
+    mapToImage(nextProps,nextState){        
 
-        return imageObj => <img src={url} style={{height: 10, width: 10}} />;
+        return imageObj => <img src={this.props.url} style={{height: 10, width: 10}} />;
 
     }
+        
+
     render(){
+        if (!this.props.url){
+            //small image to display incase no preview src
+            var markersrc = './icons/FFFFFF-.0001.png'
+        }else{
+            var markersrc = this.props.url
+        }
         return(
            <div >
                <h2>{this.props.value}</h2>
-               <Map containerStyle = {{height: windowHeight * 0.45, width: windowWidth * 0.46 }}
+               <Map id = "map" containerStyle = {{height: windowHeight * 0.45, width: windowWidth * 0.46 }}
                     google={this.props.google}
                     initialCenter = {{lat:49.2820,lng:-123.1171}}
                     onClick={this.mapClicked}
@@ -44,8 +55,8 @@ class PreviewMap extends Component {
                     styles={styleArray}
 
                ><Marker
-                   icon = {'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/2000px-SNice.svg.png'}
-                   position={{lat:49.2820, lng:-123.1171}}
+                   icon = {markersrc}
+                   position={{lat:49.2820, lng:-123.1171}}                   
                />
                </Map>
            </div>
@@ -60,6 +71,7 @@ class PreviewMap extends Component {
 
 PreviewMap.propTypes = {
     value: PropTypes.number,
+    src: PropTypes.string,    
 }
 
 const MapApi = GoogleApiWrapper({
@@ -68,7 +80,8 @@ const MapApi = GoogleApiWrapper({
 
 const mapStateToProps = (state) => {
     return {
-        value: state.slider.value
+        value: state.slider.value,
+        url: state.preview.src,
     }
 }
 
