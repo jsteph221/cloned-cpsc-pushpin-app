@@ -4,9 +4,11 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
-import NameForm from './uploadForm';
 import server from '../config/server';
 import {selectImage} from '../actions';
+
+//image upload
+import Dropzone from 'react-dropzone';
 
 /*
  * We need "if(!this.props.user)" because we set state to null by default
@@ -22,12 +24,107 @@ class ImageLibrary extends Component {
         this.getProjects = this.getProjects.bind(this);
         this.imageClick = this.imageClick.bind(this);
         this.mapToImage = this.mapToImage.bind(this);
+        
+        
+        //image upload
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onDrop = this.onDrop.bind(this);
+        this.postImage = this.postImage.bind(this);
+        
         this.state = {
             projects: [], 
-            customImages: []
+            customImagesLibrary: this.mapToImage(this.getCustomImages())
         };
 	};
 
+    
+    
+    //implement if needed
+    componentDidMount(){     
+    }
+    
+       
+    //AJAX to post image
+    postImage(files) {
+        var server = 'http://localhost:3030';
+        const self = this;
+
+        /*get 1st project*/
+        $.ajax(
+        {
+            url : server+"/api/projects",
+            type : "GET",
+            xhrFields: {
+               withCredentials: true
+            },
+            crossDomain: true,
+            success : function(data) {
+                if (data.success === true){
+                    var project = data.projects[0];
+                    /* create a new custom image document */
+                    var customImageEndPoint = server+"/api/projects/"+project+"/customImages";
+                    var file = files[0]
+                    var fd = new FormData();
+                    fd.append('file', file);
+                    $.ajax(
+                    {
+                        url : customImageEndPoint,
+                        type : "POST",
+                        xhrFields: {
+                           withCredentials: true
+                        },
+                        data : fd,
+                        crossDomain: true,
+                        processData: false,
+                        contentType: false,
+                        success : function(data) {
+                            if (data.success === true){
+                                var id = data.customImages._id;
+                                alert("A custom image has been submitted and created with id: " + id);
+                                
+                                //update custom images in state
+                                self.setState({
+                                    customImagesLibrary: self.mapToImage(self.getCustomImages())
+                                });
+        
+                            }
+                            else{
+                                alert(data.message);
+                            }
+                        }
+                    })
+                    .fail(
+                        function() { alert("ajax failure");}
+                    );
+                }
+                else{
+                    alert(data.message);
+                }
+            }
+        })
+        .fail(
+            function() { alert("ajax failure");}
+        );
+        
+       
+    }
+    
+    //handle dropped file  
+    onDrop(acceptedFiles, rejectedFiles) {
+      console.log('Accepted files: ', acceptedFiles);
+      console.log('Rejected files: ', rejectedFiles);
+      alert("dropped");        
+      this.postImage(acceptedFiles);            
+    }
+    
+    //upload file with button
+    handleSubmit(e) {
+        e.preventDefault();       
+        this.postImage(document.getElementById('imageForm').files); 
+    }
+    
+    
+    
     imageClick(url){ 
         this.props.imageClicked(url);
     }
@@ -109,10 +206,11 @@ class ImageLibrary extends Component {
 
         var result = [];
         //error when no project of given id ->Cannot read property 'map' of undefined
-	   if (response.success == true){
-		  result = response.customImages.map((imageID) => server+"/api/projects/"+proj+"/customImages/"+imageID);
-	   }
-
+	    if (response.success == true){
+		    result = response.customImages.map((imageID) => server+"/api/projects/"+proj+"/customImages/"+imageID);
+	    }
+        
+        
         return result;
     }
 
@@ -148,7 +246,7 @@ class ImageLibrary extends Component {
 
     render() {
 
-        const customImages = this.mapToImage(this.getCustomImages());
+        
         const baseImages = this.mapToImage(this.getBaseImages());
         const interiorImages = this.mapToImage(this.getInteriorImages());
         
@@ -172,9 +270,13 @@ class ImageLibrary extends Component {
             	</TabPanel>
 
                 <TabPanel>
-                    <p>{customImages}</p>
-                    <div className = "uploadForm">
-                        <NameForm />
+                    {this.state.customImagesLibrary}
+                    <div className = "uploadForm">                
+                        <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
+                        <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+                        <Dropzone onDrop={this.onDrop}>
+                            <div>Try dropping some files here, or click to select files to upload.</div>
+                        </Dropzone>
                     </div>
                 </TabPanel>
 

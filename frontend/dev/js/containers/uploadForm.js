@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
-
+import Dropzone from 'react-dropzone';
 import server from '../config/server';
 
 
@@ -8,20 +8,13 @@ class UploadForm extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {value: ''};
-
-        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onDrop = this.onDrop.bind(this);
+        this.postImage = this.postImage.bind(this);
     }
-
-    handleChange(e) {
-        e.preventDefault();
-        this.setState({value: e.target.value});
-
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-
+    
+    //AJAX to post image
+    postImage(files) {
         var server = 'http://localhost:3030';
 
         /*get 1st project*/
@@ -38,7 +31,7 @@ class UploadForm extends React.Component {
                     var project = data.projects[0];
                     /* create a new custom image document */
                     var customImageEndPoint = server+"/api/projects/"+project+"/customImages";
-                    var file = document.getElementById('imageForm').files[0]
+                    var file = files[0]
                     var fd = new FormData();
                     fd.append('file', file);
                     $.ajax(
@@ -74,15 +67,30 @@ class UploadForm extends React.Component {
         .fail(
             function() { alert("ajax failure");}
         );
+      
+    }
+    
+  
+    onDrop(acceptedFiles, rejectedFiles) {
+      console.log('Accepted files: ', acceptedFiles);
+      console.log('Rejected files: ', rejectedFiles);
+      alert("dropped");        
+      this.postImage(acceptedFiles);            
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();       
+        this.postImage(document.getElementById('imageForm').files); 
     }
 
     render() {
         return (
-        <div>
-            <form onSubmit={this.handleSubmit}>
-              <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png" value={this.state.value} onChange={this.handleChange} />
-              <input type="submit" value="Upload" />
-            </form>
+        <div>           
+              <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
+              <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+              <Dropzone onDrop={this.onDrop}>
+                <div>Try dropping some files here, or click to select files to upload.</div>
+              </Dropzone>
         </div>
         );
     }
