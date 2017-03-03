@@ -2,6 +2,7 @@ import React from 'react';
 import UserList from '../containers/user-list';
 import UserDetails from '../containers/user-detail';
 import Canvas from '../containers/canvas';
+import FabricCanvasReduxed from '../containers/canvas2';
 import Toolbar from '../containers/toolbar';
 import ImageLibrary from '../containers/imageLibrary';
 import PreviewMap from '../containers/map';
@@ -25,7 +26,7 @@ const MainApp = () => (
             </div>
 
             <div>
-                    <Canvas />
+                    <FabricCanvasReduxed />
             </div>
 
             <div className = "map" style = {{height: windowHeight * 0.45, width: windowWidth * 0.46}}>

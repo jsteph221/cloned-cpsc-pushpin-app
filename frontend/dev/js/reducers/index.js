@@ -3,7 +3,8 @@ import UserReducer from './reducer-users';
 import ActiveUserReducer from './reducer-active-user';
 import LibReducer from './library-reducer';
 import SliderReducer from './slider-reducer';
-import CanvasReducer from './canvas-reducer'
+import CanvasReducer from './canvas-reducer';
+import CanvasObjectReducer from './canvas2-reducer';
 
 /*
  * We combine all reducers into a single object before updated data is dispatched (sent) to store
@@ -15,7 +16,8 @@ const allReducers = combineReducers({
     users: UserReducer,
     activeUser: ActiveUserReducer,
     library: LibReducer,
-    preview: CanvasReducer
+    preview: CanvasReducer,
+    canvasObjectState: CanvasObjectReducer
 });
 
 export default allReducers
