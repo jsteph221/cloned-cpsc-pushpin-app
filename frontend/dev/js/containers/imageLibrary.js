@@ -4,7 +4,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
-import NameForm from './uploadForm';
+import UploadForm from './uploadForm';
 import server from '../config/server';
 import {selectImage} from '../actions';
 
@@ -174,7 +174,7 @@ class ImageLibrary extends Component {
                 <TabPanel>
                     <p>{customImages}</p>
                     <div className = "uploadForm">
-                        <NameForm />
+                        <UploadForm />
                     </div>
                 </TabPanel>
 

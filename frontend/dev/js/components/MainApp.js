@@ -11,9 +11,6 @@ import InteriorColorPicker from '../containers/interiorColorPicker';
 import $ from 'jquery';
 
 
-
-import $ from 'jquery';
-
 require('../../scss/style.scss');
 
 var windowWidth = $(window).width();
@@ -43,10 +40,6 @@ const MainApp = () => (
             <div>
                     <InteriorColorPicker/>
             </div>
-
-            <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.93}}>
-                    <ImageLibrary />
-
 
             <div className = "imageLibrary" style = {{height: windowHeight * 0.37, width: windowWidth * 0.93}}>
                 <ImageLibrary />
