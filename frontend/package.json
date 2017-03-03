@@ -25,6 +25,7 @@
     "rc-slider": "^6.1.2",
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.1.0",
+<<<<<<< HEAD
     "react-bootstrap-slider": "^1.1.4",
     "react-cookie": "^1.0.4",
     "react-dom": "^15.1.0",
@@ -33,6 +34,14 @@
     "react-redux": "^4.4.5",
     "react-router": "^3.0.2",
     "react-simple-slider": "^0.2.2",
+=======
+    "react-color": "^2.11.1",
+    "react-cookie": "^1.0.4",
+    "react-dom": "^15.1.0",
+    "react-fabricjs": "^0.1.6",
+    "react-redux": "^4.4.5",
+    "react-router": "^3.0.2",
+>>>>>>> 6a1a3d071569adf82bc1e35013e286de1d9cef1d
     "react-tabs": "^0.8.2",
     "redux": "^3.5.2",
     "redux-logger": "^2.6.1",
