@@ -1,9 +1,45 @@
-const IMAGE_SELECTED = 'IMAGE_SELECTED'
+import {fabric} from 'fabric-webpack';
 
-export const selectImage = (image) => {
+
+const IMAGE_SELECTED = 'IMAGE ADD'
+
+export const selectImage = (url) => {
 	return{
 		type: IMAGE_SELECTED,
-		url: image
+		object: {
+         "type": "image",
+         "crossOrigin": "use-credentials",
+         "src": url,
+         "originX": "center",
+         "originY": "center",
+         "left": 50,
+         "top": 50,
+         "width": 100,
+         "height": 100,
+         "fill": "#FF00FF",
+         "stroke": null,
+         "strokeWidth": 1,
+         "strokeDashArray": null,
+         "strokeLineCap": "butt",
+         "strokeLineJoin": "miter",
+         "strokeMiterLimit": 10,
+         "scaleX": 1,
+         "scaleY": 1,
+         "angle": 0,
+         "flipX": false,
+         "flipY": false,
+         "opacity": 1,
+         "shadow": null,
+         "visible": true,
+         "clipTo": null,
+         "backgroundColor": "",
+         "fillRule": "nonzero",
+         "globalCompositeOperation": "source-over",
+         "transformMatrix": null,
+         "radius": 50,
+         "startAngle": 0,
+         "endAngle": 6.283185307179586
+      }
 	}
 };
 

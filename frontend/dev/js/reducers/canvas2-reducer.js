@@ -1,4 +1,4 @@
-// don't be scared, just some initial objects to play with (fabric's serialized JSON)
+import {fabric} from 'fabric-webpack';
 
 const initialState = {
    canvasObject: {
@@ -100,6 +100,7 @@ const initialState = {
    }
 }
 
+
 export default function canvasObjectReducer(state = initialState, action) {
    switch (action.type) {
       case "OBJECTS_CANVAS_CHANGE":
@@ -107,6 +108,16 @@ export default function canvasObjectReducer(state = initialState, action) {
             canvasObject: action.payload.canvasObject,
             selectedObject: action.payload.selectedObject
          });
+      case "IMAGE ADD":
+         return Object.assign({}, state, {
+            canvasObject: {
+               objects: [
+                  ...state.canvasObject.objects,
+                  action.object
+               ]
+            }
+         })
+
       default:
          return state
    }

@@ -1,5 +1,9 @@
 import {selectUser} from '../actions';
 
+function mapToFabricImages(){
+	
+}
+
 const initialState = {
 
 	fabricImages: []

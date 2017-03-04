@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {createStore, combineReducers} from 'redux';
-import {Canvas, Text, Image} from 'react-fabricjs';
-import {fabric} from 'fabric-webpack'
+import {Image} from 'react-fabricjs';
+import {fabric} from 'fabric-webpack';
 import $ from 'jquery'
 import {previewImage} from '../actions'
 
@@ -31,7 +31,7 @@ class FabricCanvas extends Component{
 			// initial call to load objects in store and render canvas
          this.refs.canvasContainer.loadAndRender();
 			
-         fabricCanvas.on('mouse:up', () => {
+         fabricCanvas.on('object:modified', () => {
             this.canvasUpdate();
             this.refs.canvasContainer.loadAndRender();
          });
