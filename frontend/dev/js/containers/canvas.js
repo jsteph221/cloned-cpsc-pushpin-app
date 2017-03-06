@@ -21,7 +21,6 @@ function saveRenderedCanvas(dataURI){
             crossDomain: true,
             success : function(data) {
                 if (data.success === true){
-                    console.log("here");
                     var project = data.projects[0];
                     var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages";                      
                     $.ajax(
@@ -58,7 +57,7 @@ function saveRenderedCanvas(dataURI){
         );           
 }
 
-function canvasToImage(ctx,canvas){
+function canvasToImage(ctx,canvas,size){
     var w = canvas.width,
     h = canvas.height,
     pix = {x:[], y:[]},
@@ -84,15 +83,27 @@ function canvasToImage(ctx,canvas){
     h = pix.y[n] - pix.y[0];
     var cut = ctx.getImageData(pix.x[0], pix.y[0], w, h);
     
+    //Posts cropped image to new canvas and creates htmlimagesrc
     var canvas1= document.createElement('canvas');
     var ctx1=canvas1.getContext('2d');    
     canvas1.width = w;
     canvas1.height = h;
-    ctx1.putImageData(cut, 0, 0);
-
-    var image = canvas1.toDataURL();
-    console.log(image);
-    return image;
+    ctx1.putImageData(cut, 0, 0);   
+    var imgURL = canvas1.toDataURL();
+    var tmpImage = document.createElement("IMG");    
+    tmpImage.src = imgURL;
+    //Creates new canvas and draw cropped image of specific size
+    var canvas2 = document.createElement('canvas');
+    var ctx2 = canvas2.getContext('2d');
+    canvas2.width = size;
+    canvas2.height = size;
+    ctx2.drawImage(tmpImage,0,0,size,size);
+    var final = canvas2.toDataURL();
+    
+    console.log(final)
+   
+    return final;
+    
 }
      
 
@@ -102,6 +113,7 @@ class FabricCanvas extends Component {
         this.state = {};
 		this.propsToImages = this.propsToImages.bind(this);
         this.buttonClick = this.buttonClick.bind(this);
+        this.saveButton = this.saveButton.bind(this);
 	}
 
 
@@ -127,9 +139,17 @@ class FabricCanvas extends Component {
         console.log(this);
         var canvas = document.getElementById("canvas_form");
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas);
+        var data = canvasToImage(ctx,canvas,this.props.value);
         this.props.previewClicked(data);
     }
+    
+    saveButton(){        
+        var canvas = document.getElementById("canvas_form");
+        var ctx = canvas.getContext('2d');
+        var data = canvasToImage(ctx,canvas,this.props.value);
+        saveRenderedCanvas(data);
+    }    
+    
 
 
     render() {        
@@ -149,17 +169,12 @@ class FabricCanvas extends Component {
 	           	 />
 		        {this.propsToImages()}          
 		      </Canvas>
-              <button onClick = {
-                function(){
-                    console.log("Clicked saved canvas");
-                    var canvas = document.getElementById("canvas_form");
-                    var ctx = canvas.getContext('2d');
-                    var data = canvasToImage(ctx,canvas);
-                    saveRenderedCanvas(data);
-                }
+              <button onClick = {this.saveButton
+                
             }>Save Image</button>
             <button onClick = {this.buttonClick}>Preview</button>
-            </div>
+            
+            </div>            
         );
     }
 }
@@ -173,8 +188,8 @@ FabricCanvas.propTypes = {
 		left: PropTypes.number,
 		top: PropTypes.number,
 	})),
-    previewClicked: PropTypes.func.isRequired
-
+    previewClicked: PropTypes.func.isRequired,
+    value: PropTypes.number
 }
 
 FabricCanvas.defaultProps = {
@@ -190,6 +205,7 @@ function mapDispatchToProps(dispatch) {
     })
 }
 
+
 const mapStateToProps = (state) => {
 	return {
 		images:
@@ -201,7 +217,8 @@ const mapStateToProps = (state) => {
 					left: image['left'],
 					top: image['top']
 				})
-			)
+			),
+        value: state.slider.value
 		
 	}
 }
