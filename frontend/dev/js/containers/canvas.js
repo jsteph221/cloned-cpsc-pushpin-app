@@ -3,17 +3,20 @@ import {connect} from 'react-redux';
 import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import $ from 'jquery'
 import {previewImage} from '../actions'
+import server from '../config/server';
+import cookie from 'react-cookie'
 
 
+
+var token = cookie.load('token',true);
 var width = $(window).width();
 var height = $(window).height();
 
 function saveRenderedCanvas(dataURI){
-    var server = 'http://localhost:3030';
-    
+    //var server = 'http://localhost:3030';
     $.ajax(
         {
-            url : server+"/api/projects",
+            url : server+"/api/projects?token="+token,
             type : "GET",
             xhrFields: {
                    withCredentials: true

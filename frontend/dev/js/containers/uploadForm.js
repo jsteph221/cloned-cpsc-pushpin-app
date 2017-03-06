@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import $ from 'jquery';
 import Dropzone from 'react-dropzone';
 import server from '../config/server';
+import cookie from 'react-cookie';
 
+
+var token = cookie.load('token',true);
 
 class UploadForm extends React.Component {
     constructor(props, context) {
@@ -15,12 +18,12 @@ class UploadForm extends React.Component {
     
     //AJAX to post image
     postImage(files) {
-        var server = 'http://localhost:3030';
+        //var server = 'http://localhost:3030';
 
         /*get 1st project*/
         $.ajax(
         {
-            url : server+"/api/projects",
+            url : server+"/api/projects?token="+token,
             type : "GET",
             xhrFields: {
                withCredentials: true

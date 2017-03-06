@@ -88,6 +88,7 @@ class LogInScreen extends React.Component{
 			success : function(data) {
 				if (data.success === true){
 					cookie.save("token", data.token);
+					//console.log(cookie.load('token',true));
 					hashHistory.push('/');
 				}
 				else{
@@ -101,6 +102,7 @@ class LogInScreen extends React.Component{
 	}
 
 	render() {
+
 		return (
 			<section className = "Log In Screen">
 				<div className = "log-in-app">
