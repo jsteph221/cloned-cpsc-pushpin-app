@@ -109,11 +109,11 @@ class ImageLibrary extends Component {
        
     }
     
-    //handle dropped file  
+    //upload file with drop zone  
     onDrop(acceptedFiles, rejectedFiles) {
       console.log('Accepted files: ', acceptedFiles);
       console.log('Rejected files: ', rejectedFiles);
-      alert("dropped");        
+      //alert("dropped");        
       this.postImage(acceptedFiles);            
     }
     
@@ -270,18 +270,16 @@ class ImageLibrary extends Component {
             	</TabPanel>
 
                 <TabPanel>
-                    {this.state.customImagesLibrary}
                     <div className = "uploadForm">                
-                        <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
-                        <button value="Upload" onClick={this.handleSubmit}>Upload</button>
-                        <Dropzone onDrop={this.onDrop}>
-                            <div>Try dropping some files here, or click to select files to upload.</div>
+                        <Dropzone onDrop={this.onDrop} style={{height: 250, width: 1035, backgroundColor: "#f2f2f2"}}>
+                            {this.state.customImagesLibrary}
+                            <div style={{marginLeft : 5}}>
+                                <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
+                                <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+                            </div>
                         </Dropzone>
                     </div>
                 </TabPanel>
-
-
-
             </Tabs>
 		</div>
         );
