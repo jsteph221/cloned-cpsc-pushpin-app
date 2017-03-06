@@ -147,39 +147,57 @@ class ImageLibrary extends Component {
     }
 
 	getBaseImages(){
-		var imgs = [];
-		var request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
+
         request.withCredentials = true;
-        
+
         request.open('GET',server+'/api/standard/base', false);
 		request.send(null); 
-    
+
+        var response = JSON.parse(request.response);
+
         if (request.status !== 200){
             alert("synchronous request failed\n Error: "+request.status);
             return [];
         }
 
-		var resp = JSON.parse(request.response);
-        
-        return resp.images;
+        {/*
+        this.setState({customImages: response.customImages});  
+        */}
+
+        var result = [];
+        //error when no project of given id ->Cannot read property 'map' of undefined
+	    if (response.success == true){
+		    result = response.keys.map((key) => server+"/api/standard/base/?key="+key);
+	    }
+        return result;
 	};
 
 	getInteriorImages(){
-        var imgs = [];
-		var request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
+
         request.withCredentials = true;
-        
+
         request.open('GET',server+'/api/standard/interior', false);
 		request.send(null); 
-    
+
+        var response = JSON.parse(request.response);
+
         if (request.status !== 200){
             alert("synchronous request failed\n Error: "+request.status);
             return [];
         }
 
-		var resp = JSON.parse(request.response);
-        
-        return resp.images;
+        {/*
+        this.setState({customImages: response.customImages});  
+        */}
+
+        var result = [];
+        //error when no project of given id ->Cannot read property 'map' of undefined
+	    if (response.success == true){
+		    result = response.keys.map((key) => server+"/api/standard/interior/?key="+key);
+	    }
+        return result;
 	};
 
     getCustomImages(){
@@ -240,7 +258,7 @@ class ImageLibrary extends Component {
 
     mapToImage(imageURLs){
 
-        return imageURLs.map((url) => <img src={url} onClick={() => this.imageClick(url)} style={{height: 50, width: 50, padding: 10}} />);
+        return imageURLs.map((url) => <img src={url}  onClick={() => this.imageClick(url)} style={{height: 50, width: 50, padding: 10}} />);
 
     }
 

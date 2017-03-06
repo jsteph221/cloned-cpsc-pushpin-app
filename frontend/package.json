@@ -18,6 +18,8 @@
     "cross-env": "^1.0.8",
     "css-loader": "^0.23.1",
     "expect": "^1.20.1",
+    "fabric-browserify": "^1.4.13",
+    "fabric-webpack": "^1.6.0-rc.1",
     "google-maps-react": "^1.0.19",
     "jquery": "^3.1.1",
     "node-libs-browser": "^1.0.0",

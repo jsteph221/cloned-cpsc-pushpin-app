@@ -1,8 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import fabric, {Canvas, Text, Image} from 'react-fabricjs';
+//import fabric, {Canvas, Text, Image} from 'react-fabricjs';
+import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
 import {previewImage} from '../actions'
+
 
 
 var width = $(window).width();
@@ -110,13 +112,38 @@ function canvasToImage(ctx,canvas,size){
 class FabricCanvas extends Component {
 	constructor(props){
 		super(props);
-        this.state = {};
+        this.state = {
+            canvas : null
+        };
+        this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
         this.buttonClick = this.buttonClick.bind(this);
         this.saveButton = this.saveButton.bind(this);
+        this.drawImage = this.drawImage.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.moveObjectForward = this.moveObjectForward.bind(this);
+        this.moveObjectBackward = this.moveObjectBackward.bind(this);
+        this.deleteActiveObject = this.deleteActiveObject.bind(this);
 	}
-
-
+    //Global Canvas variable
+    
+    
+    //Added so canvas would not rerender on props change
+    
+    shouldComponentUpdate(nextProps, nextState){
+        console.log();
+        if (nextProps.images != null && this.state.canvas !=null){
+            if (this.props.value == nextProps.value){
+                this.drawImage(nextProps.images); 
+            }
+        }
+        return false;
+    }   
+    
+    componentDidMount(){
+        var canvas = new fabric.Canvas('c');
+        this.setState({canvas});               
+    }       
 	propsToImages(){
 		if (this.props.images == []){
 			console.log("images was empty\n");
@@ -137,43 +164,78 @@ class FabricCanvas extends Component {
     
     buttonClick(){ 
         console.log(this);
-        var canvas = document.getElementById("canvas_form");
+        var canvas = document.getElementById("c");        
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         this.props.previewClicked(data);
     }
     
     saveButton(){        
-        var canvas = document.getElementById("canvas_form");
+        var canvas = document.getElementById("c");        
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         saveRenderedCanvas(data);
-    }    
+    }
     
+    drawImage(image){
+        var canvas = this.state.canvas;
+
+        fabric.Image.fromURL(image, function(oImg){
+           canvas.add(oImg);
+        });        
+    } 
+    
+    moveObjectForward(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        if (object!= null){
+            canvas.bringForward(object);
+        }
+    }
+    
+    moveObjectBackward(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        if (object != null){
+            canvas.sendBackwards(object);
+        }
+    }
+    deleteActiveObject(){
+        console.log("Delete Key Pressed");
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        if (object!=null){
+            object.remove();
+        }
+    }
 
 
-    render() {        
+    render() {
+        
+        const popover = {
+            position: 'absolute',
+            zIndex: '2',
+        }
+        const cover = {
+            position: 'fixed',
+            top: '0px',
+            right: '0px',
+            bottom: '0px',
+            left: '0px',
+        }
+        
         return (
-            <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
-              <Canvas
-                id = "canvas_form"
+             <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
+              <canvas
+                id = "c"
 		        width={width * 0.47}
-		        height={height * 0.45}>
-                
-                 <Image
-	                src='./icons/zoeskitchen.png'
-	                width={50}
-	                height={50}
-	                left={300}
-	                top={150}
-	           	 />
-		        {this.propsToImages()}          
-		      </Canvas>
-              <button onClick = {this.saveButton
-                
-            }>Save Image</button>
-            <button onClick = {this.buttonClick}>Preview</button>
-            
+		        height={height * 0.45}>               
+		      </canvas>
+              <button onClick = {this.saveButton}>Save Image</button>
+            <button onClick = {this.buttonClick}>Preview</button> 
+            <button onClick = {this.moveObjectForward}>+</button>
+            <button onClick = {this.moveObjectBackward}>-</button>
+            <button onClick = {this.deleteActiveObject}>Delete Object</button>
             </div>            
         );
     }
@@ -181,13 +243,7 @@ class FabricCanvas extends Component {
 
 FabricCanvas.propTypes = {
 
-	images: PropTypes.arrayOf(PropTypes.shape({
-		url: PropTypes.string,
-		width: PropTypes.number,
-		height: PropTypes.number,
-		left: PropTypes.number,
-		top: PropTypes.number,
-	})),
+	images: PropTypes.string,
     previewClicked: PropTypes.func.isRequired,
     value: PropTypes.number
 }
@@ -208,16 +264,7 @@ function mapDispatchToProps(dispatch) {
 
 const mapStateToProps = (state) => {
 	return {
-		images:
-			state.library.fabricImages.map((image) => 
-				({
-					url: image['url'],
-					width: image['width'],
-					height: image['height'],
-					left: image['left'],
-					top: image['top']
-				})
-			),
+		images:state.library.src,
         value: state.slider.value
 		
 	}

@@ -1,6 +1,4 @@
 import {combineReducers} from 'redux';
-import UserReducer from './reducer-users';
-import ActiveUserReducer from './reducer-active-user';
 import LibReducer from './library-reducer';
 import SliderReducer from './slider-reducer';
 import CanvasReducer from './canvas-reducer'
@@ -12,8 +10,6 @@ import CanvasReducer from './canvas-reducer'
 
 const allReducers = combineReducers({
     slider: SliderReducer,
-    users: UserReducer,
-    activeUser: ActiveUserReducer,
     library: LibReducer,
     preview: CanvasReducer
 });
