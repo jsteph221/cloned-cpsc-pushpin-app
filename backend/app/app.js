@@ -16,8 +16,9 @@ var AWS = require('aws-sdk');
 
 // set CORS
 app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
-  res.header("Access-Control-Allow-Credentials", true);
+  //res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
+    res.setHeader("Access-Control-Allow-Origin",'http://cs319-frontend.s3-website-us-east-1.amazonaws.com');
+    res.header("Access-Control-Allow-Credentials", true);
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
