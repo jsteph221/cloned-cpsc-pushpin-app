@@ -6,8 +6,6 @@ import {previewImage} from '../actions'
 import server from '../config/server';
 import cookie from 'react-cookie'
 
-
-
 var token = cookie.load('token',true);
 var width = $(window).width();
 var height = $(window).height();

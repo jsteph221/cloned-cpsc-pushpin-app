@@ -6,8 +6,6 @@ import $ from 'jquery';
 
 import server from '../config/server';
 import {selectImage} from '../actions';
-
-//image upload
 import Dropzone from 'react-dropzone';
 import cookie from 'react-cookie'
 
