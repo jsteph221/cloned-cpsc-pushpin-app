@@ -215,10 +215,12 @@ class FabricCanvas extends Component {
 
     addText(){
         var canvas = this.state.canvas;
-        var text = canvas.add(new fabric.Text('Adding Text', { 
-            left: 20, //Take the block's position
-            top: 20, 
-            fill: 'black'
+
+        canvas.add(new fabric.IText('Tap and type text here', { 
+          fontFamily: 'arial black',
+          fontSize: 20,
+          left: 100, 
+          top: 100 ,
         }));
     }
 
@@ -236,7 +238,7 @@ class FabricCanvas extends Component {
           distance: 140
         });
 
-        if(object != null && object.get('type') == 'text'){
+        if(object != null && object.get('type') == 'i-text'){
             object.setFill('red');
             canvas.renderAll();
         }
