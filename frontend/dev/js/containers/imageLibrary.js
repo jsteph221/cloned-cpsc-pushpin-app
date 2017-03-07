@@ -170,7 +170,7 @@ class ImageLibrary extends Component {
         var result = [];
         //error when no project of given id ->Cannot read property 'map' of undefined
 	    if (response.success == true){
-		    result = response.keys.map((key) => server+"/api/standard/base/?key="+key);
+		    result = response.keys.map((key) => server+"/api/standard/base/?key="+key+"&token="+token);
 	    }
         return result;
 	};
@@ -197,7 +197,7 @@ class ImageLibrary extends Component {
         var result = [];
         //error when no project of given id ->Cannot read property 'map' of undefined
 	    if (response.success == true){
-		    result = response.keys.map((key) => server+"/api/standard/interior/?key="+key);
+		    result = response.keys.map((key) => server+"/api/standard/interior/?key="+key+"&token="+token);
 	    }
         return result;
 	};
