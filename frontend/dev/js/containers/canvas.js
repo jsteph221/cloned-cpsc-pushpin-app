@@ -124,6 +124,9 @@ class FabricCanvas extends Component {
         this.moveObjectForward = this.moveObjectForward.bind(this);
         this.moveObjectBackward = this.moveObjectBackward.bind(this);
         this.deleteActiveObject = this.deleteActiveObject.bind(this);
+        this.addText = this.addText.bind(this);
+        this.selectColor = this.selectColor.bind(this);
+        this.setHalo = this.setHalo.bind(this);
 	}
     //Global Canvas variable
     
@@ -200,12 +203,59 @@ class FabricCanvas extends Component {
             canvas.sendBackwards(object);
         }
     }
+
     deleteActiveObject(){
         console.log("Delete Key Pressed");
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object!=null){
             object.remove();
+        }
+    }
+
+    addText(){
+        var canvas = this.state.canvas;
+        var text = canvas.add(new fabric.Text('Adding Text', { 
+            left: 20, //Take the block's position
+            top: 20, 
+            fill: 'black'
+        }));
+    }
+
+    selectColor(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+
+        var filter = new fabric.Image.filters.Tint({
+        color: 'red',
+        opacity: 10.0
+        });
+
+        var whiteFilter = new fabric.Image.filters.RemoveWhite({
+          threshold: 40,
+          distance: 140
+        });
+
+        if(object != null && object.get('type') == 'text'){
+            object.setFill('red');
+            canvas.renderAll();
+        }
+        else if (object!= null){
+            console.log(object.get('type'));
+            object.setFill('red');
+            object.filters.push(whiteFilter);
+            object.filters.push(filter);
+            object.applyFilters(canvas.renderAll.bind(canvas));
+            canvas.renderAll();
+        }
+    }
+
+    setHalo(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        if (object != null){
+            object.setShadow({color: 'red', blur: 100 });
+            canvas.renderAll();
         }
     }
 
@@ -231,11 +281,14 @@ class FabricCanvas extends Component {
 		        width={width * 0.47}
 		        height={height * 0.45}>               
 		      </canvas>
-              <button onClick = {this.saveButton}>Save Image</button>
+            <button onClick = {this.saveButton}>Save Image</button>
             <button onClick = {this.buttonClick}>Preview</button> 
             <button onClick = {this.moveObjectForward}>+</button>
             <button onClick = {this.moveObjectBackward}>-</button>
             <button onClick = {this.deleteActiveObject}>Delete Object</button>
+            <button onClick = {this.addText}>Add Text</button>
+            <button onClick = {this.selectColor}>Change Color</button>
+            <button onClick = {this.setHalo}>Set Halo</button>
             </div>            
         );
     }
