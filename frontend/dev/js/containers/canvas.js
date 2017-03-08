@@ -320,8 +320,8 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = (state) => {
 	return {
 		images:state.library.src,
-        value: state.slider.value
-		
+        value: state.slider.value,
+		color: state.color.color
 	}
 }
 
