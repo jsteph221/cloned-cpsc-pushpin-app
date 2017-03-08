@@ -229,8 +229,8 @@ class FabricCanvas extends Component {
         var object = canvas.getActiveObject();
 
         var filter = new fabric.Image.filters.Tint({
-        color: 'red',
-        opacity: 10.0
+        color: this.props.color,
+        opacity: 1.0
         });
 
         var whiteFilter = new fabric.Image.filters.RemoveWhite({
@@ -256,7 +256,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
-            object.setShadow({color: 'red', blur: 100 });
+            object.setShadow({color: this.props.color, blur: 100 });
             canvas.renderAll();
         }
     }
