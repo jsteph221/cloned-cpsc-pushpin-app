@@ -9,7 +9,11 @@ import {selectImage} from '../actions';
 
 //image upload
 import Dropzone from 'react-dropzone';
+import cookie from 'react-cookie'
 
+
+
+var token = cookie.load('token',true);
 /*
  * We need "if(!this.props.user)" because we set state to null by default
  * */
@@ -46,13 +50,13 @@ class ImageLibrary extends Component {
        
     //AJAX to post image
     postImage(files) {
-        var server = 'http://localhost:3030';
+        //var server = 'http://localhost:3030';
         const self = this;
 
         /*get 1st project*/
         $.ajax(
         {
-            url : server+"/api/projects",
+            url : server+"/api/projects?token="+token,
             type : "GET",
             xhrFields: {
                withCredentials: true
@@ -62,7 +66,7 @@ class ImageLibrary extends Component {
                 if (data.success === true){
                     var project = data.projects[0];
                     /* create a new custom image document */
-                    var customImageEndPoint = server+"/api/projects/"+project+"/customImages";
+                    var customImageEndPoint = server+"/api/projects/"+project+"/customImages?token="+token;
                     var file = files[0]
                     var fd = new FormData();
                     fd.append('file', file);
@@ -109,11 +113,11 @@ class ImageLibrary extends Component {
        
     }
     
-    //handle dropped file  
+    //upload file with drop zone  
     onDrop(acceptedFiles, rejectedFiles) {
       console.log('Accepted files: ', acceptedFiles);
       console.log('Rejected files: ', rejectedFiles);
-      alert("dropped");        
+      //alert("dropped");        
       this.postImage(acceptedFiles);            
     }
     
@@ -136,7 +140,7 @@ class ImageLibrary extends Component {
 
         request.withCredentials = true;
 
-        request.open("GET", server+"/api", false);
+        request.open("GET", server+"/api?token="+token, false);
         request.send(null);
 
         var response = JSON.parse(request.response);
@@ -150,8 +154,9 @@ class ImageLibrary extends Component {
         var request = new XMLHttpRequest();
 
         request.withCredentials = true;
+        
+        request.open('GET',server+'/api/standard/base?token='+token, false);
 
-        request.open('GET',server+'/api/standard/base', false);
 		request.send(null); 
 
         var response = JSON.parse(request.response);
@@ -178,7 +183,8 @@ class ImageLibrary extends Component {
 
         request.withCredentials = true;
 
-        request.open('GET',server+'/api/standard/interior', false);
+        request.open('GET',server+'/api/standard/interior?token='+token, false);
+
 		request.send(null); 
 
         var response = JSON.parse(request.response);
@@ -208,7 +214,7 @@ class ImageLibrary extends Component {
 
         request.withCredentials = true;
 
-        request.open("GET", server+"/api/projects/"+proj+"/customImages", false);
+        request.open("GET", server+"/api/projects/"+proj+"/customImages?token="+token, false);
         request.send(null);
 
         var response = JSON.parse(request.response);
@@ -225,7 +231,7 @@ class ImageLibrary extends Component {
         var result = [];
         //error when no project of given id ->Cannot read property 'map' of undefined
 	    if (response.success == true){
-		    result = response.customImages.map((imageID) => server+"/api/projects/"+proj+"/customImages/"+imageID);
+		    result = response.customImages.map((imageID) => server+"/api/projects/"+proj+"/customImages/"+imageID+"?token="+token);
 	    }
         
         
@@ -238,7 +244,7 @@ class ImageLibrary extends Component {
 
         request.withCredentials = true;
 
-        request.open("GET", server+"/api/projects", false);
+        request.open("GET", server+"/api/projects?token="+token, false);
         request.send(null);
 
         var response = JSON.parse(request.response);
@@ -288,18 +294,16 @@ class ImageLibrary extends Component {
             	</TabPanel>
 
                 <TabPanel>
-                    {this.state.customImagesLibrary}
                     <div className = "uploadForm">                
-                        <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
-                        <button value="Upload" onClick={this.handleSubmit}>Upload</button>
-                        <Dropzone onDrop={this.onDrop}>
-                            <div>Try dropping some files here, or click to select files to upload.</div>
+                        <Dropzone onDrop={this.onDrop} style={{height: 250, width: 1035, backgroundColor: "#f2f2f2"}}>
+                            {this.state.customImagesLibrary}
+                            <div style={{marginLeft : 5}}>
+                                <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
+                                <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+                            </div>
                         </Dropzone>
                     </div>
                 </TabPanel>
-
-
-
             </Tabs>
 		</div>
         );

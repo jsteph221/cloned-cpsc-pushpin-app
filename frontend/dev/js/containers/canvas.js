@@ -4,18 +4,22 @@ import {connect} from 'react-redux';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
 import {previewImage} from '../actions'
+import server from '../config/server';
+import cookie from 'react-cookie'
 
 
+
+
+var token = cookie.load('token',true);
 
 var width = $(window).width();
 var height = $(window).height();
 
 function saveRenderedCanvas(dataURI){
-    var server = 'http://localhost:3030';
-    
+    //var server = 'http://localhost:3030';
     $.ajax(
         {
-            url : server+"/api/projects",
+            url : server+"/api/projects?token="+token,
             type : "GET",
             xhrFields: {
                    withCredentials: true
@@ -24,7 +28,7 @@ function saveRenderedCanvas(dataURI){
             success : function(data) {
                 if (data.success === true){
                     var project = data.projects[0];
-                    var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages";                      
+                    var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages?token="+token;
                     $.ajax(
                            {
                             
