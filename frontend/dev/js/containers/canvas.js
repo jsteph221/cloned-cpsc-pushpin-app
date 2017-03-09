@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
 import {previewImage} from '../actions'
+import { SketchPicker } from 'react-color';
 
 
 
@@ -224,12 +225,13 @@ class FabricCanvas extends Component {
         }));
     }
 
-    selectColor(){
+    selectColor(c){
+        console.log(c.hex);
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
 
         var filter = new fabric.Image.filters.Tint({
-        color: this.props.color,
+        color: c.hex,
         opacity: 1.0
         });
 
@@ -277,6 +279,11 @@ class FabricCanvas extends Component {
         }
         
         return (
+            <div>
+            <SketchPicker
+                color={ this.state.background }
+                onChangeComplete={ this.selectColor }
+              />
              <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
               <canvas
                 id = "c"
@@ -291,7 +298,8 @@ class FabricCanvas extends Component {
             <button onClick = {this.addText}>Add Text</button>
             <button onClick = {this.selectColor}>Change Color</button>
             <button onClick = {this.setHalo}>Set Halo</button>
-            </div>            
+            </div>  
+            </div>          
         );
     }
 }
