@@ -10,6 +10,7 @@ import { SketchPicker } from 'react-color';
 
 var width = $(window).width();
 var height = $(window).height();
+var cHex;
 
 function saveRenderedCanvas(dataURI){
     var server = 'http://localhost:3030';
@@ -225,13 +226,13 @@ class FabricCanvas extends Component {
         }));
     }
 
-    selectColor(c){
-        console.log(c.hex);
+    selectColor(){
+        console.log(cHex);
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
 
         var filter = new fabric.Image.filters.Tint({
-        color: c.hex,
+        color: cHex,
         opacity: 1.0
         });
 
@@ -241,12 +242,12 @@ class FabricCanvas extends Component {
         });
 
         if(object != null && object.get('type') == 'i-text'){
-            object.setFill('red');
+            object.setFill(cHex);
             canvas.renderAll();
         }
         else if (object!= null){
             console.log(object.get('type'));
-            object.setFill('red');
+            object.setFill(cHex);
             object.filters.push(whiteFilter);
             object.filters.push(filter);
             object.applyFilters(canvas.renderAll.bind(canvas));
@@ -258,9 +259,13 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
-            object.setShadow({color: this.props.color, blur: 100 });
+            object.setShadow({color: cHex, blur: 100 });
             canvas.renderAll();
         }
+    }
+
+    chooseColor(c){
+        cHex = c.hex;
     }
 
 
@@ -282,7 +287,7 @@ class FabricCanvas extends Component {
             <div>
             <SketchPicker
                 color={ this.state.background }
-                onChangeComplete={ this.selectColor }
+                onChangeComplete={ this.chooseColor }
               />
              <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
               <canvas
