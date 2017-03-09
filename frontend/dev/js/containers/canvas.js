@@ -117,7 +117,7 @@ class FabricCanvas extends Component {
 		super(props);
         this.state = {
             canvas : null,
-            text: "freehand off"
+            text: "freehand on"
         };
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
@@ -173,14 +173,18 @@ class FabricCanvas extends Component {
     
     buttonClick(){ 
         console.log(this);
-        var canvas = document.getElementById("c");        
+        var canvas = document.getElementById("c"); 
+        var activeCanvas = this.state.canvas; 
+        activeCanvas.discardActiveObject();
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         this.props.previewClicked(data);
     }
     
     saveButton(){        
-        var canvas = document.getElementById("c");        
+        var canvas = document.getElementById("c"); 
+        var activeCanvas = this.state.canvas; 
+        activeCanvas.discardActiveObject();       
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         saveRenderedCanvas(data);
@@ -231,7 +235,6 @@ class FabricCanvas extends Component {
     }
 
     selectColor(){
-        console.log(cHex);
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
 
@@ -250,7 +253,6 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
         else if (object!= null){
-            console.log(object.get('type'));
             object.setFill(cHex);
             object.filters.push(whiteFilter);
             object.filters.push(filter);
@@ -273,17 +275,14 @@ class FabricCanvas extends Component {
     }
 
     enterDrawingMode(){
-        console.log("Button pressed");
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
         
         if(this.state.text == "freehand off"){
             this.setState({text : "freehand on"});
-            console.log(this.state.text);
         }
         else{
             this.setState({text : "freehand off"});
-            console.log(this.state.text);
         }
         this.forceUpdate();
         canvas.renderAll();
@@ -307,7 +306,7 @@ class FabricCanvas extends Component {
         return (
             <div>
             <SketchPicker
-                color={ this.state.background }
+                color={ 'black' }
                 onChangeComplete={ this.chooseColor }
               />
              <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
@@ -357,7 +356,6 @@ const mapStateToProps = (state) => {
 		images:state.library.src,
         value: state.slider.value,
 		color: state.color.color,
-        buttonText: "testing"
 	}
 }
 
