@@ -11,6 +11,7 @@ import { SketchPicker } from 'react-color';
 var width = $(window).width();
 var height = $(window).height();
 var cHex;
+var freeText = "Enter Freehand Draw";
 
 function saveRenderedCanvas(dataURI){
     var server = 'http://localhost:3030';
@@ -115,7 +116,8 @@ class FabricCanvas extends Component {
 	constructor(props){
 		super(props);
         this.state = {
-            canvas : null
+            canvas : null,
+            text: "freehand off"
         };
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
@@ -129,6 +131,7 @@ class FabricCanvas extends Component {
         this.addText = this.addText.bind(this);
         this.selectColor = this.selectColor.bind(this);
         this.setHalo = this.setHalo.bind(this);
+        this.enterDrawingMode = this.enterDrawingMode.bind(this);
 	}
     //Global Canvas variable
     
@@ -136,7 +139,6 @@ class FabricCanvas extends Component {
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
-        console.log();
         if (nextProps.images != null && this.state.canvas !=null){
             if (this.props.value == nextProps.value){
                 this.drawImage(nextProps.images); 
@@ -146,8 +148,10 @@ class FabricCanvas extends Component {
     }   
     
     componentDidMount(){
-        var canvas = new fabric.Canvas('c');
-        this.setState({canvas});               
+        var canvas = new fabric.Canvas('c', {
+        isDrawingMode: false
+        });
+        this.setState({canvas});           
     }       
 	propsToImages(){
 		if (this.props.images == []){
@@ -217,7 +221,7 @@ class FabricCanvas extends Component {
 
     addText(){
         var canvas = this.state.canvas;
-
+        canvas.isDrawingMode = !canvas.isDrawingMode;
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
@@ -268,6 +272,23 @@ class FabricCanvas extends Component {
         cHex = c.hex;
     }
 
+    enterDrawingMode(){
+        console.log("Button pressed");
+        var canvas = this.state.canvas;
+        canvas.isDrawingMode = !canvas.isDrawingMode;
+        
+        if(this.state.text == "freehand off"){
+            this.setState({text : "freehand on"});
+            console.log(this.state.text);
+        }
+        else{
+            this.setState({text : "freehand off"});
+            console.log(this.state.text);
+        }
+        this.forceUpdate();
+        canvas.renderAll();
+    }
+
 
     render() {
         
@@ -303,6 +324,7 @@ class FabricCanvas extends Component {
             <button onClick = {this.addText}>Add Text</button>
             <button onClick = {this.selectColor}>Change Color</button>
             <button onClick = {this.setHalo}>Set Halo</button>
+            <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
             </div>  
             </div>          
         );
@@ -319,7 +341,7 @@ FabricCanvas.propTypes = {
 FabricCanvas.defaultProps = {
 
 	images: [],
-    previewClicked: (dataURL) => console.log("Clicked on preview")
+    previewClicked: (dataURL) => console.log("Clicked on preview"),
 
 }
 
@@ -334,7 +356,8 @@ const mapStateToProps = (state) => {
 	return {
 		images:state.library.src,
         value: state.slider.value,
-		color: state.color.color
+		color: state.color.color,
+        buttonText: "testing"
 	}
 }
 
