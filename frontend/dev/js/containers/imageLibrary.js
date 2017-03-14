@@ -9,9 +9,9 @@ import {selectImage} from '../actions';
 import Dropzone from 'react-dropzone';
 import cookie from 'react-cookie'
 
-
-
+import SizeSlider from '../containers/slider'
 var token = cookie.load('token',true);
+
 /*
  * We need "if(!this.props.user)" because we set state to null by default
  * */
@@ -260,7 +260,7 @@ class ImageLibrary extends Component {
 
     mapToImage(imageURLs){
 
-        return imageURLs.map((url) => <img src={url}  onClick={() => this.imageClick(url)} style={{height: 50, width: 50, padding: 10}} />);
+        return imageURLs.map((url) => <img src={url}  onClick={() => this.imageClick(url)} style={{height: 28, width: 28, padding: 10}} />);
 
     }
 
@@ -276,9 +276,10 @@ class ImageLibrary extends Component {
 		<div>
             <Tabs>
             	<TabList>
-            		<Tab>Base Images</Tab>
-            		<Tab>Interior Images</Tab>
-                    <Tab>Custom Images </Tab>
+            		<Tab style={{color:'dimgrey', fontSize: 14}}>Base Images</Tab>
+            		<Tab style={{color:'dimgrey', fontSize: 14}}>Interior Images</Tab>
+                    <Tab style={{color:'dimgrey', fontSize: 14}}>Custom Images </Tab>
+                    <Tab style={{color:'dimgrey', fontSize: 14}}>Choose Pushpin Size</Tab>
             	</TabList>
 
             	<TabPanel>
@@ -291,15 +292,21 @@ class ImageLibrary extends Component {
 
                 <TabPanel>
                     <div className = "uploadForm">                
-                        <Dropzone onDrop={this.onDrop} style={{height: 250, width: 1035, backgroundColor: "#f2f2f2"}}>
-                            {this.state.customImagesLibrary}
-                            <div style={{marginLeft : 5}}>
-                                <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
-                                <button value="Upload" onClick={this.handleSubmit}>Upload</button>
-                            </div>
-                        </Dropzone>
+
+                        <Dropzone onDrop={this.onDrop} style={{height: 150, width: 976, backgroundColor: "#f2f2f2", marginTop: 0}}>
+                             {this.state.customImagesLibrary}
+                             <div style={{marginLeft : 5}}>
+                                 <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
+                                 <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+                             </div>
+                             
+                          </Dropzone>
                     </div>
                 </TabPanel>
+                
+                <TabPanel>
+            		 <SizeSlider/>
+            	</TabPanel>
             </Tabs>
 		</div>
         );

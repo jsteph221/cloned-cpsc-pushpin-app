@@ -28,8 +28,8 @@ class SizeSlider extends React.Component {
 
     render() {
         return (
-            <div>
-                <h2>{this.state.value}px</h2>
+            <div style = {{height: 100, width: 600, marginLeft: 10}}>
+                <p>{this.state.value}px</p>
                 <Slider
                     min={5}
                     max={45}
