@@ -1,7 +1,8 @@
 import {combineReducers} from 'redux';
 import LibReducer from './library-reducer';
 import SliderReducer from './slider-reducer';
-import CanvasReducer from './canvas-reducer'
+import CanvasReducer from './canvas-reducer';
+import ColorReducer from './color-reducer';
 
 /*
  * We combine all reducers into a single object before updated data is dispatched (sent) to store
@@ -11,7 +12,8 @@ import CanvasReducer from './canvas-reducer'
 const allReducers = combineReducers({
     slider: SliderReducer,
     library: LibReducer,
-    preview: CanvasReducer
+    preview: CanvasReducer,
+    color: ColorReducer
 });
 
 export default allReducers

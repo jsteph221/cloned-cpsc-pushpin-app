@@ -3,9 +3,12 @@
  */
 'use strict'
 
-import React from 'react'
+import React, {PropTypes} from 'react'
+import {connect} from 'react-redux'
 import { SwatchesPicker } from 'react-color'
 import $ from 'jquery'
+
+import {pickColor} from '../actions';
 
 class InteriorColorPicker extends React.Component {
     constructor(props, context) {
@@ -18,6 +21,11 @@ class InteriorColorPicker extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.colorPick = this.colorPick.bind(this);
+    }
+
+    colorPick(){
+        this.props.colorPicked(this.state.background);
     }
 
 
@@ -30,16 +38,15 @@ class InteriorColorPicker extends React.Component {
 
     handleChange (color, event) {
         this.setState({ background: color.hex });
-        
     };
 
     handleClick () {
         this.setState({ displayColorPicker: !this.state.displayColorPicker })
-        
     };
 
     handleClose () {
         this.setState({ displayColorPicker: false })
+        this.colorPick();
     };
 
     render() {
@@ -70,5 +77,20 @@ class InteriorColorPicker extends React.Component {
     }
 }
 
+InteriorColorPicker.propTypes = {
+    colorPicked: PropTypes.func.isRequired
+}
 
-export default InteriorColorPicker;
+InteriorColorPicker.defaultProps = {
+    colorPicked: (color) => console.log(color+" was picked\n")
+}
+
+function mapDispatchToProps(dispatch){
+    return({
+        colorPicked: (color) => {dispatch(pickColor(color))}
+    })
+}
+
+const ColorContainer = connect(null, mapDispatchToProps)(InteriorColorPicker);
+
+export default ColorContainer;

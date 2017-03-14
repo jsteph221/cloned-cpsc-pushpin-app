@@ -6,11 +6,14 @@ import $ from 'jquery'
 import {previewImage} from '../actions'
 import server from '../config/server';
 import cookie from 'react-cookie'
+import { SketchPicker } from 'react-color';
 
 var token = cookie.load('token',true);
 
 var width = $(window).width();
 var height = $(window).height();
+var cHex;
+var freeText = "Enter Freehand Draw";
 
 function saveRenderedCanvas(dataURI){
     //var server = 'http://localhost:3030';
@@ -114,7 +117,8 @@ class FabricCanvas extends Component {
 	constructor(props){
 		super(props);
         this.state = {
-            canvas : null
+            canvas : null,
+            text: "freehand on"
         };
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
@@ -128,6 +132,7 @@ class FabricCanvas extends Component {
         this.addText = this.addText.bind(this);
         this.selectColor = this.selectColor.bind(this);
         this.setHalo = this.setHalo.bind(this);
+        this.enterDrawingMode = this.enterDrawingMode.bind(this);
 	}
     //Global Canvas variable
     
@@ -135,7 +140,6 @@ class FabricCanvas extends Component {
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
-        console.log();
         if (nextProps.images != null && this.state.canvas !=null){
             if (this.props.value == nextProps.value){
                 this.drawImage(nextProps.images); 
@@ -145,8 +149,10 @@ class FabricCanvas extends Component {
     }   
     
     componentDidMount(){
-        var canvas = new fabric.Canvas('c');
-        this.setState({canvas});               
+        var canvas = new fabric.Canvas('c', {
+        isDrawingMode: false
+        });
+        this.setState({canvas});           
     }       
 	propsToImages(){
 		if (this.props.images == []){
@@ -168,14 +174,18 @@ class FabricCanvas extends Component {
     
     buttonClick(){ 
         console.log(this);
-        var canvas = document.getElementById("c");        
+        var canvas = document.getElementById("c"); 
+        var activeCanvas = this.state.canvas; 
+        activeCanvas.discardActiveObject();
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         this.props.previewClicked(data);
     }
     
     saveButton(){        
-        var canvas = document.getElementById("c");        
+        var canvas = document.getElementById("c"); 
+        var activeCanvas = this.state.canvas; 
+        activeCanvas.discardActiveObject();       
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         saveRenderedCanvas(data);
@@ -216,7 +226,7 @@ class FabricCanvas extends Component {
 
     addText(){
         var canvas = this.state.canvas;
-
+        canvas.isDrawingMode = !canvas.isDrawingMode;
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
@@ -230,8 +240,8 @@ class FabricCanvas extends Component {
         var object = canvas.getActiveObject();
 
         var filter = new fabric.Image.filters.Tint({
-        color: 'red',
-        opacity: 10.0
+        color: cHex,
+        opacity: 1.0
         });
 
         var whiteFilter = new fabric.Image.filters.RemoveWhite({
@@ -240,12 +250,11 @@ class FabricCanvas extends Component {
         });
 
         if(object != null && object.get('type') == 'i-text'){
-            object.setFill('red');
+            object.setFill(cHex);
             canvas.renderAll();
         }
         else if (object!= null){
-            console.log(object.get('type'));
-            object.setFill('red');
+            object.setFill(cHex);
             object.filters.push(whiteFilter);
             object.filters.push(filter);
             object.applyFilters(canvas.renderAll.bind(canvas));
@@ -257,9 +266,27 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
-            object.setShadow({color: 'red', blur: 100 });
+            object.setShadow({color: cHex, blur: 100 });
             canvas.renderAll();
         }
+    }
+
+    chooseColor(c){
+        cHex = c.hex;
+    }
+
+    enterDrawingMode(){
+        var canvas = this.state.canvas;
+        canvas.isDrawingMode = !canvas.isDrawingMode;
+        
+        if(this.state.text == "freehand off"){
+            this.setState({text : "freehand on"});
+        }
+        else{
+            this.setState({text : "freehand off"});
+        }
+        this.forceUpdate();
+        canvas.renderAll();
     }
 
 
@@ -278,6 +305,11 @@ class FabricCanvas extends Component {
         }
         
         return (
+            <div>
+            <SketchPicker
+                color={ 'black' }
+                onChangeComplete={ this.chooseColor }
+              />
              <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
               <canvas
                 id = "c"
@@ -292,7 +324,9 @@ class FabricCanvas extends Component {
             <button onClick = {this.addText}>Add Text</button>
             <button onClick = {this.selectColor}>Change Color</button>
             <button onClick = {this.setHalo}>Set Halo</button>
-            </div>            
+            <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
+            </div>  
+            </div>          
         );
     }
 }
@@ -307,7 +341,7 @@ FabricCanvas.propTypes = {
 FabricCanvas.defaultProps = {
 
 	images: [],
-    previewClicked: (dataURL) => console.log("Clicked on preview")
+    previewClicked: (dataURL) => console.log("Clicked on preview"),
 
 }
 
@@ -321,8 +355,8 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = (state) => {
 	return {
 		images:state.library.src,
-        value: state.slider.value
-		
+        value: state.slider.value,
+		color: state.color.color,
 	}
 }
 

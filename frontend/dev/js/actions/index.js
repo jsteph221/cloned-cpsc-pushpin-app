@@ -1,5 +1,12 @@
 const IMAGE_SELECTED = 'IMAGE_SELECTED'
 
+export const pickColor = (color) => {
+	return{
+		type: "COLOR_PICKED",
+		color: color
+	}
+}
+
 export const selectImage = (image) => {
 	return{
 		type: IMAGE_SELECTED,
