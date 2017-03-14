@@ -17,6 +17,8 @@ var height = $(window).height();
 var cHex;
 var showPicker = false;
 var freeText = "Enter Freehand Draw";
+var stateTest;
+var colorMode;
 
 function saveRenderedCanvas(dataURI){
     var server = 'http://localhost:3030';
@@ -138,8 +140,8 @@ class FabricCanvas extends Component {
         this.setHalo = this.setHalo.bind(this);
         this.enterDrawingMode = this.enterDrawingMode.bind(this);
         this.choose = this.choose.bind(this);
-    
-        
+        this.chooseColor = this.chooseColor.bind(this);
+        this.testState = this.testState.bind(this);
 	}
     //Global Canvas variable
     
@@ -149,6 +151,7 @@ class FabricCanvas extends Component {
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
+        console.log("Something Changed");
         if (nextProps.images != null && this.state.canvas !=null){
             if (this.props.value == nextProps.value){
                 this.drawImage(nextProps.images); 
@@ -159,7 +162,7 @@ class FabricCanvas extends Component {
     
     componentDidMount(){
         var canvas = new fabric.Canvas('c', {
-        isDrawingMode: false
+        isDrawingMode: false,
         });
         this.setState({canvas});           
     }       
@@ -186,6 +189,7 @@ class FabricCanvas extends Component {
         var canvas = document.getElementById("c"); 
         var activeCanvas = this.state.canvas; 
         activeCanvas.discardActiveObject();
+        activeCanvas.deactivateAll().renderAll();
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.value);
         this.props.previewClicked(data);
@@ -235,7 +239,6 @@ class FabricCanvas extends Component {
 
     addText(){
         var canvas = this.state.canvas;
-        canvas.isDrawingMode = !canvas.isDrawingMode;
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
@@ -245,43 +248,43 @@ class FabricCanvas extends Component {
     }
 
     selectColor(){
-        var canvas = this.state.canvas;
-        var object = canvas.getActiveObject();
-
-        var filter = new fabric.Image.filters.Tint({
-        color: cHex,
-        opacity: 1.0
-        });
-
-        var whiteFilter = new fabric.Image.filters.RemoveWhite({
-          threshold: 40,
-          distance: 140
-        });
-
-        if(object != null && object.get('type') == 'i-text'){
-            object.setFill(cHex);
-            canvas.renderAll();
-        }
-        else if (object!= null){
-            object.setFill(cHex);
-            object.filters.push(whiteFilter);
-            object.filters.push(filter);
-            object.applyFilters(canvas.renderAll.bind(canvas));
-            canvas.renderAll();
-        }
+        colorMode = "interior";
     }
 
     setHalo(){
-        var canvas = this.state.canvas;
-        var object = canvas.getActiveObject();
-        if (object != null){
-            object.setShadow({color: cHex, blur: 100 });
-            canvas.renderAll();
-        }
+        colorMode = "halo";
     }
 
     chooseColor(c){
-        cHex = c.hex;
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        var filter = new fabric.Image.filters.Tint({
+            color: c.hex,
+            opacity: 1.0
+        });
+        var whiteFilter = new fabric.Image.filters.RemoveWhite({
+              threshold: 40,
+              distance: 140
+        });
+        if(colorMode == "interior"){
+            if(object != null && object.get('type') == 'i-text'){
+                object.setFill(c.hex);
+                canvas.renderAll();
+            }
+            else if (object!= null){
+                object.setFill(c.hex);
+                object.filters.push(whiteFilter);
+                object.filters.push(filter);
+                object.applyFilters(canvas.renderAll.bind(canvas));
+                canvas.renderAll();
+            }
+
+        }else if(colorMode == "halo"){
+            if (object != null){
+            object.setShadow({color: c.hex, blur: 100 });
+            canvas.renderAll();
+            }
+        }
     }
 
     enterDrawingMode(){
@@ -297,6 +300,14 @@ class FabricCanvas extends Component {
         this.forceUpdate();
         canvas.renderAll();
     }
+
+    testState(){
+        console.log(this.props);
+        var canvas = this.state.canvas;
+        canvas.clear();
+        this.setState(stateTest);
+        canvas.renderAll();
+    }
     
     
     choose () {
@@ -304,7 +315,6 @@ class FabricCanvas extends Component {
     }
 
     render() {
-        
         
         return (
             <div>
@@ -316,17 +326,16 @@ class FabricCanvas extends Component {
                     <canvas id = "c" width={300} height={300}></canvas>   
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
-                <div className = "buttons" style = {{height: 30, width: 650, float:'none'}}>
+                <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
                     <button onClick = {this.saveButton}>Save Image</button>
                     <button onClick = {this.buttonClick}>Preview</button> 
-                    <button onClick = {this.moveObjectForward}>+</button>
-                    <button onClick = {this.moveObjectBackward}>-</button>
+                    <button onClick = {this.moveObjectForward}>Bring Forward</button>
+                    <button onClick = {this.moveObjectBackward}>Bring Backward</button>
                     <button onClick = {this.deleteActiveObject}>Delete Object</button>
                     <button onClick = {this.addText}>Add Text</button>
                     <button onClick = {this.selectColor}>Color Fill</button>
                     <button onClick = {this.setHalo}>Set Halo</button>
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
-                    
                 </div>  
             </div>          
         );
