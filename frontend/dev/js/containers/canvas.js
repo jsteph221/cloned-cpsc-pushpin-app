@@ -8,6 +8,7 @@ import server from '../config/server';
 import cookie from 'react-cookie'
 
 var token = cookie.load('token',true);
+
 var width = $(window).width();
 var height = $(window).height();
 
@@ -24,7 +25,7 @@ function saveRenderedCanvas(dataURI){
             success : function(data) {
                 if (data.success === true){
                     var project = data.projects[0];
-                    var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages";                      
+                    var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages?token="+token;
                     $.ajax(
                            {
                             
