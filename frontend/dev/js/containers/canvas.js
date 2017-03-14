@@ -1,3 +1,5 @@
+'use strict'
+
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 //import fabric, {Canvas, Text, Image} from 'react-fabricjs';
@@ -7,10 +9,13 @@ import {previewImage} from '../actions'
 import { SketchPicker } from 'react-color';
 
 
+import { SwatchesPicker } from 'react-color'
+import SizeSlider from '../containers/slider'
 
 var width = $(window).width();
 var height = $(window).height();
 var cHex;
+var showPicker = false;
 var freeText = "Enter Freehand Draw";
 
 function saveRenderedCanvas(dataURI){
@@ -117,7 +122,7 @@ class FabricCanvas extends Component {
 		super(props);
         this.state = {
             canvas : null,
-            text: "freehand on"
+            text: "Freehand On",
         };
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
@@ -132,10 +137,15 @@ class FabricCanvas extends Component {
         this.selectColor = this.selectColor.bind(this);
         this.setHalo = this.setHalo.bind(this);
         this.enterDrawingMode = this.enterDrawingMode.bind(this);
+        this.choose = this.choose.bind(this);
+    
+        
 	}
     //Global Canvas variable
     
     
+    
+
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
@@ -278,53 +288,46 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
         
-        if(this.state.text == "freehand off"){
-            this.setState({text : "freehand on"});
+        if(this.state.text == "Freehand Off"){
+            this.setState({text : "Freehand On"});
         }
         else{
-            this.setState({text : "freehand off"});
+            this.setState({text : "Freehand Off"});
         }
         this.forceUpdate();
         canvas.renderAll();
     }
-
+    
+    
+    choose () {
+         showPicker = true;
+    }
 
     render() {
         
-        const popover = {
-            position: 'absolute',
-            zIndex: '2',
-        }
-        const cover = {
-            position: 'fixed',
-            top: '0px',
-            right: '0px',
-            bottom: '0px',
-            left: '0px',
-        }
         
         return (
             <div>
-            <SketchPicker
-                color={ 'black' }
-                onChangeComplete={ this.chooseColor }
-              />
-             <div className = "canvas" style = {{height: height * 0.45, width: width * 0.47}}>
-              <canvas
-                id = "c"
-		        width={width * 0.47}
-		        height={height * 0.45}>               
-		      </canvas>
-            <button onClick = {this.saveButton}>Save Image</button>
-            <button onClick = {this.buttonClick}>Preview</button> 
-            <button onClick = {this.moveObjectForward}>+</button>
-            <button onClick = {this.moveObjectBackward}>-</button>
-            <button onClick = {this.deleteActiveObject}>Delete Object</button>
-            <button onClick = {this.addText}>Add Text</button>
-            <button onClick = {this.selectColor}>Change Color</button>
-            <button onClick = {this.setHalo}>Set Halo</button>
-            <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
-            </div>  
+                
+                <div className = "image-list" style = {{height: 300, width: 150, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
+                    Todo: Image Layer List
+                </div>
+                <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
+                    <canvas id = "c" width={300} height={300}></canvas>   
+                </div>
+                <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
+                <div className = "buttons" style = {{height: 30, width: 650, float:'none'}}>
+                    <button onClick = {this.saveButton}>Save Image</button>
+                    <button onClick = {this.buttonClick}>Preview</button> 
+                    <button onClick = {this.moveObjectForward}>+</button>
+                    <button onClick = {this.moveObjectBackward}>-</button>
+                    <button onClick = {this.deleteActiveObject}>Delete Object</button>
+                    <button onClick = {this.addText}>Add Text</button>
+                    <button onClick = {this.selectColor}>Color Fill</button>
+                    <button onClick = {this.setHalo}>Set Halo</button>
+                    <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
+                    
+                </div>  
             </div>          
         );
     }
