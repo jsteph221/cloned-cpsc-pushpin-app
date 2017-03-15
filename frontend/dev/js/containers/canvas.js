@@ -19,6 +19,8 @@ var showPicker = false;
 var freeText = "Enter Freehand Draw";
 var stateTest;
 var colorMode;
+var alpha;
+var rgb;
 
 function saveRenderedCanvas(dataURI){
     var server = 'http://localhost:3030';
@@ -248,14 +250,46 @@ class FabricCanvas extends Component {
     }
 
     selectColor(){
-        colorMode = "interior";
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+
+        var filter = new fabric.Image.filters.Tint({
+            color: cHex,
+            opacity: alpha
+        });
+        var whiteFilter = new fabric.Image.filters.RemoveWhite({
+              threshold: 40,
+              distance: 140
+        });
+
+        if(object != null && object.get('type') == 'i-text'){
+            object.setFill(cHex);
+            canvas.renderAll();
+        }
+        else if (object!= null){
+            object.setFill(cHex);
+            object.filters.push(whiteFilter);
+            object.filters.push(filter);
+            object.applyFilters(canvas.renderAll.bind(canvas));
+            canvas.renderAll();
+        }
     }
 
     setHalo(){
-        colorMode = "halo";
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+
+        if (object != null){
+            object.setShadow({color: cHex, blur: 100 });
+            canvas.renderAll();
+        }
+
     }
 
     chooseColor(c){
+        cHex = c.hex;
+        rgb = c.rgb;
+        alpha = c.rgb.a;
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         var filter = new fabric.Image.filters.Tint({
