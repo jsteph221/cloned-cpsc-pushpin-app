@@ -32,7 +32,7 @@ class SizeSlider extends React.Component {
                 <p>{this.state.value}px</p>
                 <Slider
                     min={5}
-                    max={45}
+                    max={100}
                     value={this.state.value}
                     onChange={this.onSliderChange}
                     onAfterChange={this.onAfterChange}

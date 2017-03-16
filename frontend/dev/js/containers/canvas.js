@@ -153,7 +153,7 @@ class FabricCanvas extends Component {
     shouldComponentUpdate(nextProps, nextState){
         console.log("Something Changed");
         if (nextProps.images != null && this.state.canvas !=null){
-            if (this.props.value == nextProps.value){
+            if (this.props.size == nextProps.size){
                 this.drawImage(nextProps.images); 
             }
         }
@@ -191,7 +191,7 @@ class FabricCanvas extends Component {
         activeCanvas.discardActiveObject();
         activeCanvas.deactivateAll().renderAll();
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas,this.props.value);
+        var data = canvasToImage(ctx,canvas,this.props.maxSize);
         this.props.previewClicked(data);
     }
     
@@ -200,7 +200,7 @@ class FabricCanvas extends Component {
         var activeCanvas = this.state.canvas; 
         activeCanvas.discardActiveObject();       
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas,this.props.value);
+        var data = canvasToImage(ctx,canvas,this.props.maxSize);
         saveRenderedCanvas(data);
     }
     
@@ -346,13 +346,15 @@ FabricCanvas.propTypes = {
 
 	images: PropTypes.string,
     previewClicked: PropTypes.func.isRequired,
-    value: PropTypes.number
+    size: PropTypes.number,
+    maxSize: PropTypes.number
 }
 
 FabricCanvas.defaultProps = {
 
 	images: [],
     previewClicked: (dataURL) => console.log("Clicked on preview"),
+    maxSize: 100
 
 }
 
@@ -366,7 +368,7 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = (state) => {
 	return {
 		images:state.library.src,
-        value: state.slider.value,
+        size: state.slider.value,
 		color: state.color.color,
 	}
 }
