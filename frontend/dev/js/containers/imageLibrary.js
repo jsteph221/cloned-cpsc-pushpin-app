@@ -23,6 +23,7 @@ class ImageLibrary extends Component {
 		this.getBaseImages = this.getBaseImages.bind(this);
 		this.getInteriorImages = this.getInteriorImages.bind(this);
         this.getCustomImages = this.getCustomImages.bind(this);
+        this.getRenderedImages = this.getRenderedImages.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.imageClick = this.imageClick.bind(this);
         this.mapToImage = this.mapToImage.bind(this);
@@ -35,7 +36,8 @@ class ImageLibrary extends Component {
         
         this.state = {
             projects: [], 
-            customImagesLibrary: this.mapToImage(this.getCustomImages())
+            customImagesLibrary: this.mapToImage(this.getCustomImages()),
+            renderedImagesLibrary: this.mapToImage(this.getRenderedImages()),
         };
 	};
 
@@ -233,6 +235,31 @@ class ImageLibrary extends Component {
         
         return result;
     }
+    getRenderedImages(){
+        var proj = this.getProjects()[0];
+
+        var request = new XMLHttpRequest();
+
+        request.withCredentials = true;
+
+        request.open("GET", server+"/api/projects/"+proj+"/renderedImages", false);
+        request.send(null);
+
+        var response = JSON.parse(request.response);
+
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+            return [];
+        }
+
+        var result = [];
+        //error when no project of given id ->Cannot read property 'map' of undefined
+	    if (response.success == true){
+		    result = response.renderedImages.map((imageID) => server+"/api/projects/"+proj+"/renderedImages/"+imageID);
+	    }        
+        
+        return result;
+    }
 
     getProjects(){
 
@@ -260,7 +287,8 @@ class ImageLibrary extends Component {
 
     mapToImage(imageURLs){
 
-        return imageURLs.map((url) => <img src={url}  onClick={() => this.imageClick(url)} style={{height: 28, width: 28, padding: 10}} />);
+        return imageURLs.map((url) =>                              
+                             <img src={url}  onClick={() => this.imageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
 
     }
 
@@ -279,6 +307,7 @@ class ImageLibrary extends Component {
             		<Tab style={{color:'dimgrey', fontSize: 14}}>Base Images</Tab>
             		<Tab style={{color:'dimgrey', fontSize: 14}}>Interior Images</Tab>
                     <Tab style={{color:'dimgrey', fontSize: 14}}>Custom Images </Tab>
+                    <Tab style={{color:'dimgrey', fontSize: 14}}>Push Pins </Tab>
                     <Tab style={{color:'dimgrey', fontSize: 14}}>Choose Pushpin Size</Tab>
             	</TabList>
 
@@ -302,7 +331,10 @@ class ImageLibrary extends Component {
                           </Dropzone>
                     </div>
                 </TabPanel>
-                
+            
+                <TabPanel>
+                    <p>{this.state.renderedImagesLibrary}</p>
+                </TabPanel>
                 <TabPanel>
             		 <SizeSlider/>
             	</TabPanel>
@@ -328,6 +360,7 @@ function mapDispatchToProps(dispatch) {
         imageClicked: (url) => {dispatch(selectImage(url))}
     })
 }
+
 
 const LibraryContainer = connect(null, mapDispatchToProps)(ImageLibrary);
 

@@ -1,4 +1,4 @@
-import {previewImage} from '../actions';
+import {previewImage,imageSaved} from '../actions';
 
 const initialState = {
 
@@ -12,6 +12,10 @@ export default function preview(state = initialState, action) {
 		case 'PREVIEW_IMAGE':
 			return Object.assign({}, state, {
                 src:  action.url
+            })
+        case 'IMAGE_SAVED':
+            return Object.assign({},state,{
+              url: action.url  
             })
 		default:
 			return state

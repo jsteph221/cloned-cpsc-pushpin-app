@@ -7,6 +7,8 @@ import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
 import {previewImage} from '../actions'
 import { SketchPicker } from 'react-color';
+import Slider, { Range } from 'rc-slider'
+import Modal from 'react-modal';
 
 
 import { SwatchesPicker } from 'react-color'
@@ -52,14 +54,14 @@ function saveRenderedCanvas(dataURI){
                                 
                                 success: function(data){
                                     if (data.success == true){
-                                        alert("Your Image has been Saved");
+                                        console.log('saved');
                                     }else{
-                                        alert(data.message);
+                                        alert(data.message);                    
                                     }
                                 }
                         })
                         .fail(
-                            function() { alert("ajax failure");}
+                            function() { alert("ajax failure"); return false;}
                         );
                         
                     
@@ -67,8 +69,9 @@ function saveRenderedCanvas(dataURI){
             }
         })
         .fail(
-            function() { alert("ajax failure");}
-        );           
+            function() { alert("ajax failure");return false;}        
+        ); 
+    return true;
 }
 
 function canvasToImage(ctx,canvas,size){
@@ -112,22 +115,42 @@ function canvasToImage(ctx,canvas,size){
     canvas2.width = size;
     canvas2.height = size;
     ctx2.drawImage(tmpImage,0,0,size,size);
-    var final = canvas2.toDataURL();
-    
-    console.log(final)
+    var final = canvas2.toDataURL();    
    
     return final;
     
 }
-     
+    const customStyles = {      
+          overlay : {
+            backgroundColor   : 'rgba(0, 0, 0, 0.5)'
+          },
+          content : {
+            margin: '15% auto',
+            left:'300',
+            right:'490',
+            width: '30%',
+            height:'30%',
+            background: '#fefefe',
+            overflow : 'hiddden',
+            padding:'0px',
+          }
+      
+    };
+
 
 class FabricCanvas extends Component {
 	constructor(props){
 		super(props);
         this.state = {
+            modalIsOpen:false,
+            range:[25,75],
             canvas : null,
             text: "Freehand On",
         };
+        
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.onRangeChange = this.onRangeChange.bind(this);        
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
         this.buttonClick = this.buttonClick.bind(this);
@@ -144,21 +167,37 @@ class FabricCanvas extends Component {
         this.choose = this.choose.bind(this);
         this.chooseColor = this.chooseColor.bind(this);
         this.testState = this.testState.bind(this);
+        this.saveGroup = this.saveGroup.bind(this);
 	}
     //Global Canvas variable
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+
+    closeModal() {
+        this.setState({modalIsOpen: false});
+    }
     
-    
-    
+    onRangeChange(value){
+        this.setState({range:value})
+    }
+        
 
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
         console.log("Something Changed");
+         if (nextState.modalIsOpen != this.state.modalIsOpen){
+            return true;
+        }
+        if (nextState.range != this.state.range){
+            return true;
+        }
         if (nextProps.images != null && this.state.canvas !=null){
             if (this.props.size == nextProps.size){
                 this.drawImage(nextProps.images); 
             }
-        }
+        }       
         return false;
     }   
     
@@ -203,7 +242,11 @@ class FabricCanvas extends Component {
         activeCanvas.discardActiveObject();       
         var ctx = canvas.getContext('2d');
         var data = canvasToImage(ctx,canvas,this.props.maxSize);
-        saveRenderedCanvas(data);
+        var saved = saveRenderedCanvas(data);
+        console.log(saved);
+        if (saved== true){
+            alert("Your image has been saved");
+        }
     }
     
     drawImage(image){
@@ -343,11 +386,35 @@ class FabricCanvas extends Component {
         canvas.renderAll();
     }
     
+    saveGroup(){
+        var canvas = document.getElementById("c"); 
+        var activeCanvas = this.state.canvas; 
+        activeCanvas.discardActiveObject();       
+        var ctx = canvas.getContext('2d');        
+        var num = document.getElementById("group_num").value;
+        if (num < 2 || num > 20){
+            alert("Please choose a number between 2 and 20");
+        }else{
+            var range = this.state.range;
+            var sizes = [range[0]]
+            var inc = Math.round((range[1]-range[0])/(num-1));
+            for (var i=1; i < num-1; i++){
+                sizes.push(range[0]+i*inc)
+            }
+            sizes.push(range[1])
+            for(i=0; i< num; i++){
+                var data = canvasToImage(ctx,canvas,sizes[i]);
+                saveRenderedCanvas(data);
+            }
+            alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
+            this.closeModal();   
+        }       
+    }
+    
     
     choose () {
          showPicker = true;
     }
-
     render() {
         
         return (
@@ -363,6 +430,29 @@ class FabricCanvas extends Component {
                 <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
                     <button onClick = {this.saveButton}>Save Image</button>
                     <button onClick = {this.buttonClick}>Preview</button> 
+                    <button onClick = {this.openModal}>Create Group</button>
+                    <Modal
+                        isOpen = {this.state.modalIsOpen}
+                        onAfterOpen = {this.afterOpenModal}
+                        onRequestClose = {this.closeModal}
+                        style = {customStyles}
+                        contentLabel = "Example Modal"
+                    >
+                    <div style = {{padding:'2px 16px', 'backgroundColor':'#13496e',color: 'white'}}>
+                        <p>Create Group Based on Size</p>            
+                    </div>      
+                                 
+                    <div style = {{padding:'2px 16px','fontSize':'12px'}}>               
+                        <p>Min = {this.state.range[0]}px</p>
+                       <Range id= "group_range" allowCross={false} min={5} max={100} defaultValue={[25,75]} onChange={this.onRangeChange}/>
+                        <p>Max = {this.state.range[1]}px</p>
+                        Number of Pins: <input id = "group_num" type="number" min="2" max = "100"></input>
+                    </div>
+                    <div style = {{padding:'2px 16px'}}>
+                        <button onClick={this.closeModal}>Cancel</button>
+                        <button onClick={this.saveGroup}>Save</button>
+                    </div>
+                    </Modal>
                     <button onClick = {this.moveObjectForward}>Bring Forward</button>
                     <button onClick = {this.moveObjectBackward}>Bring Backward</button>
                     <button onClick = {this.deleteActiveObject}>Delete Object</button>
