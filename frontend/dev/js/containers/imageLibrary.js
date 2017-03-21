@@ -242,7 +242,7 @@ class ImageLibrary extends Component {
 
         request.withCredentials = true;
 
-        request.open("GET", server+"/api/projects/"+proj+"/renderedImages", false);
+        request.open("GET", server+"/api/projects/"+proj+"/renderedImages?token="+token, false);
         request.send(null);
 
         var response = JSON.parse(request.response);
@@ -255,7 +255,7 @@ class ImageLibrary extends Component {
         var result = [];
         //error when no project of given id ->Cannot read property 'map' of undefined
 	    if (response.success == true){
-		    result = response.renderedImages.map((imageID) => server+"/api/projects/"+proj+"/renderedImages/"+imageID);
+		    result = response.renderedImages.map((imageID) => server+"/api/projects/"+proj+"/renderedImages/"+imageID+"?token="+token);
 	    }        
         
         return result;
