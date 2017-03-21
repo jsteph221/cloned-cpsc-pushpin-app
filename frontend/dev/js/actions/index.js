@@ -13,7 +13,12 @@ export const selectImage = (image) => {
 		url: image
 	}
 };
-
+export const imageSaved = (image) => {
+	return{
+		type: "IMAGE_SAVED",
+		url: image
+	}
+};
 
 export const sliderChange = (size) => {
     return{

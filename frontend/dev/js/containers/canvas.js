@@ -9,6 +9,8 @@ import {previewImage} from '../actions'
 import server from '../config/server';
 import cookie from 'react-cookie'
 import { SketchPicker } from 'react-color';
+import Slider, { Range } from 'rc-slider'
+import Modal from 'react-modal';
 
 var token = cookie.load('token',true);
 import { SwatchesPicker } from 'react-color'
@@ -19,6 +21,10 @@ var height = $(window).height();
 var cHex;
 var showPicker = false;
 var freeText = "Enter Freehand Draw";
+var stateTest;
+var colorMode;
+var alpha;
+var rgb;
 
 function saveRenderedCanvas(dataURI){
     //var server = 'http://localhost:3030';
@@ -49,14 +55,14 @@ function saveRenderedCanvas(dataURI){
                                 
                                 success: function(data){
                                     if (data.success == true){
-                                        alert("Your Image has been Saved");
+                                        console.log('saved');
                                     }else{
-                                        alert(data.message);
+                                        alert(data.message);                    
                                     }
                                 }
                         })
                         .fail(
-                            function() { alert("ajax failure");}
+                            function() { alert("ajax failure"); return false;}
                         );
                         
                     
@@ -64,8 +70,9 @@ function saveRenderedCanvas(dataURI){
             }
         })
         .fail(
-            function() { alert("ajax failure");}
-        );           
+            function() { alert("ajax failure");return false;}        
+        ); 
+    return true;
 }
 
 function canvasToImage(ctx,canvas,size){
@@ -109,22 +116,42 @@ function canvasToImage(ctx,canvas,size){
     canvas2.width = size;
     canvas2.height = size;
     ctx2.drawImage(tmpImage,0,0,size,size);
-    var final = canvas2.toDataURL();
-    
-    console.log(final)
+    var final = canvas2.toDataURL();    
    
     return final;
     
 }
-     
+    const customStyles = {      
+          overlay : {
+            backgroundColor   : 'rgba(0, 0, 0, 0.5)'
+          },
+          content : {
+            margin: '15% auto',
+            left:'300',
+            right:'490',
+            width: '30%',
+            height:'30%',
+            background: '#fefefe',
+            overflow : 'hiddden',
+            padding:'0px',
+          }
+      
+    };
+
 
 class FabricCanvas extends Component {
 	constructor(props){
 		super(props);
         this.state = {
+            modalIsOpen:false,
+            range:[25,75],
             canvas : null,
             text: "Freehand On",
         };
+        
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.onRangeChange = this.onRangeChange.bind(this);        
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
 		this.propsToImages = this.propsToImages.bind(this);
         this.buttonClick = this.buttonClick.bind(this);
@@ -139,28 +166,45 @@ class FabricCanvas extends Component {
         this.setHalo = this.setHalo.bind(this);
         this.enterDrawingMode = this.enterDrawingMode.bind(this);
         this.choose = this.choose.bind(this);
-    
-        
+        this.chooseColor = this.chooseColor.bind(this);
+        this.testState = this.testState.bind(this);
+        this.saveGroup = this.saveGroup.bind(this);
 	}
     //Global Canvas variable
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+
+    closeModal() {
+        this.setState({modalIsOpen: false});
+    }
     
-    
-    
+    onRangeChange(value){
+        this.setState({range:value})
+    }
+        
 
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
+        console.log("Something Changed");
+         if (nextState.modalIsOpen != this.state.modalIsOpen){
+            return true;
+        }
+        if (nextState.range != this.state.range){
+            return true;
+        }
         if (nextProps.images != null && this.state.canvas !=null){
-            if (this.props.value == nextProps.value){
+            if (this.props.size == nextProps.size){
                 this.drawImage(nextProps.images); 
             }
-        }
+        }       
         return false;
     }   
     
     componentDidMount(){
         var canvas = new fabric.Canvas('c', {
-        isDrawingMode: false
+        isDrawingMode: false,
         });
         this.setState({canvas});           
     }       
@@ -187,8 +231,9 @@ class FabricCanvas extends Component {
         var canvas = document.getElementById("c"); 
         var activeCanvas = this.state.canvas; 
         activeCanvas.discardActiveObject();
+        activeCanvas.deactivateAll().renderAll();
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas,this.props.value);
+        var data = canvasToImage(ctx,canvas,this.props.maxSize);
         this.props.previewClicked(data);
     }
     
@@ -197,8 +242,12 @@ class FabricCanvas extends Component {
         var activeCanvas = this.state.canvas; 
         activeCanvas.discardActiveObject();       
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas,this.props.value);
-        saveRenderedCanvas(data);
+        var data = canvasToImage(ctx,canvas,this.props.maxSize);
+        var saved = saveRenderedCanvas(data);
+        console.log(saved);
+        if (saved== true){
+            alert("Your image has been saved");
+        }
     }
     
     drawImage(image){
@@ -236,7 +285,6 @@ class FabricCanvas extends Component {
 
     addText(){
         var canvas = this.state.canvas;
-        canvas.isDrawingMode = !canvas.isDrawingMode;
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
@@ -250,13 +298,12 @@ class FabricCanvas extends Component {
         var object = canvas.getActiveObject();
 
         var filter = new fabric.Image.filters.Tint({
-        color: cHex,
-        opacity: 1.0
+            color: cHex,
+            opacity: alpha
         });
-
         var whiteFilter = new fabric.Image.filters.RemoveWhite({
-          threshold: 40,
-          distance: 140
+              threshold: 40,
+              distance: 140
         });
 
         if(object != null && object.get('type') == 'i-text'){
@@ -275,14 +322,47 @@ class FabricCanvas extends Component {
     setHalo(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
+
         if (object != null){
             object.setShadow({color: cHex, blur: 100 });
             canvas.renderAll();
         }
+
     }
 
     chooseColor(c){
         cHex = c.hex;
+        rgb = c.rgb;
+        alpha = c.rgb.a;
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        var filter = new fabric.Image.filters.Tint({
+            color: c.hex,
+            opacity: 1.0
+        });
+        var whiteFilter = new fabric.Image.filters.RemoveWhite({
+              threshold: 40,
+              distance: 140
+        });
+        if(colorMode == "interior"){
+            if(object != null && object.get('type') == 'i-text'){
+                object.setFill(c.hex);
+                canvas.renderAll();
+            }
+            else if (object!= null){
+                object.setFill(c.hex);
+                object.filters.push(whiteFilter);
+                object.filters.push(filter);
+                object.applyFilters(canvas.renderAll.bind(canvas));
+                canvas.renderAll();
+            }
+
+        }else if(colorMode == "halo"){
+            if (object != null){
+            object.setShadow({color: c.hex, blur: 100 });
+            canvas.renderAll();
+            }
+        }
     }
 
     enterDrawingMode(){
@@ -298,14 +378,45 @@ class FabricCanvas extends Component {
         this.forceUpdate();
         canvas.renderAll();
     }
+
+    testState(){
+        console.log(this.props);
+        var canvas = this.state.canvas;
+        canvas.clear();
+        this.setState(stateTest);
+        canvas.renderAll();
+    }
+    
+    saveGroup(){
+        var canvas = document.getElementById("c"); 
+        var activeCanvas = this.state.canvas; 
+        activeCanvas.discardActiveObject();       
+        var ctx = canvas.getContext('2d');        
+        var num = document.getElementById("group_num").value;
+        if (num < 2 || num > 20){
+            alert("Please choose a number between 2 and 20");
+        }else{
+            var range = this.state.range;
+            var sizes = [range[0]]
+            var inc = Math.round((range[1]-range[0])/(num-1));
+            for (var i=1; i < num-1; i++){
+                sizes.push(range[0]+i*inc)
+            }
+            sizes.push(range[1])
+            for(i=0; i< num; i++){
+                var data = canvasToImage(ctx,canvas,sizes[i]);
+                saveRenderedCanvas(data);
+            }
+            alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
+            this.closeModal();   
+        }       
+    }
     
     
     choose () {
          showPicker = true;
     }
-
     render() {
-        
         
         return (
             <div>
@@ -317,17 +428,39 @@ class FabricCanvas extends Component {
                     <canvas id = "c" width={300} height={300}></canvas>   
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
-                <div className = "buttons" style = {{height: 30, width: 650, float:'none'}}>
+                <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
                     <button onClick = {this.saveButton}>Save Image</button>
                     <button onClick = {this.buttonClick}>Preview</button> 
-                    <button onClick = {this.moveObjectForward}>+</button>
-                    <button onClick = {this.moveObjectBackward}>-</button>
+                    <button onClick = {this.openModal}>Create Group</button>
+                    <Modal
+                        isOpen = {this.state.modalIsOpen}
+                        onAfterOpen = {this.afterOpenModal}
+                        onRequestClose = {this.closeModal}
+                        style = {customStyles}
+                        contentLabel = "Example Modal"
+                    >
+                    <div style = {{padding:'2px 16px', 'backgroundColor':'#13496e',color: 'white'}}>
+                        <p>Create Group Based on Size</p>            
+                    </div>      
+                                 
+                    <div style = {{padding:'2px 16px','fontSize':'12px'}}>               
+                        <p>Min = {this.state.range[0]}px</p>
+                       <Range id= "group_range" allowCross={false} min={5} max={100} defaultValue={[25,75]} onChange={this.onRangeChange}/>
+                        <p>Max = {this.state.range[1]}px</p>
+                        Number of Pins: <input id = "group_num" type="number" min="2" max = "100"></input>
+                    </div>
+                    <div style = {{padding:'2px 16px'}}>
+                        <button onClick={this.closeModal}>Cancel</button>
+                        <button onClick={this.saveGroup}>Save</button>
+                    </div>
+                    </Modal>
+                    <button onClick = {this.moveObjectForward}>Bring Forward</button>
+                    <button onClick = {this.moveObjectBackward}>Bring Backward</button>
                     <button onClick = {this.deleteActiveObject}>Delete Object</button>
                     <button onClick = {this.addText}>Add Text</button>
                     <button onClick = {this.selectColor}>Color Fill</button>
                     <button onClick = {this.setHalo}>Set Halo</button>
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
-                    
                 </div>  
             </div>          
         );
@@ -338,13 +471,15 @@ FabricCanvas.propTypes = {
 
 	images: PropTypes.string,
     previewClicked: PropTypes.func.isRequired,
-    value: PropTypes.number
+    size: PropTypes.number,
+    maxSize: PropTypes.number
 }
 
 FabricCanvas.defaultProps = {
 
 	images: [],
     previewClicked: (dataURL) => console.log("Clicked on preview"),
+    maxSize: 100
 
 }
 
@@ -358,7 +493,7 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = (state) => {
 	return {
 		images:state.library.src,
-        value: state.slider.value,
+        size: state.slider.value,
 		color: state.color.color,
 	}
 }

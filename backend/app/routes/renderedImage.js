@@ -13,34 +13,38 @@ var router = express.Router({mergeParams: true});
 // get all rendered images for the user
 // !!! TODO: need to restrict the access of this project for other users
 router.get('/', function(req, res) {
-    var urls = [];
-    var query = Project.findOne({_id:req.params.project_id});    
-    query.select('renderedImages');
-    query.exec(function(err,imgs){
-        if (err){
-            res.json({ success: false, imgs:urls});
-        }else{
-            try{
-                for(var i = 0; i< imgs.renderedImages.length;i++){
-                try{
-                   var params = {Bucket:s3['bucketName'],Key:'renderedImages/'+imgs.renderedImages[i].toString(),Expires:7200};
-                    s3.getSignedUrl('getObject', params,function(err,url){
-                        if (!err){
-                            urls.push(url);  
-                        }                         
-                    }); 
-                }catch(err){}               
-               
-            }  
-            console.log(urls);
-            res.json({ success: true, imgs:urls});  
-            }catch(err){}
-            
-        }
-        
-    });
+  Project.findOne({
+    _id: req.params.project_id
+  }, function(err, project) {
+    if (!project){
+      res.json({ success: false, message: 'no project was found with the given id.'});
+    } else{
+      res.json({ success: true, message: 'rendered images found', renderedImages: project.renderedImages});
+    }
+  });
 });
 
+router.get('/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no custom image was found with the given id.'});
+    } else{
+      // get object and pipe it to the client
+      s3.getObject({
+        Bucket: s3['bucketName']+'/renderedImages',
+        Key: renderedImage.id
+      }, function(err, data){
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+          var stream = AWS.util.buffer.toStream(data.Body);
+          stream.pipe(res);
+        }
+      });
+    }
+  });
+}); 
 
 // upload an renderedCanvas to s3
 // !!! TODO: need to restrict the access of this project for other users
@@ -60,14 +64,12 @@ router.post('/', function(req, res) {
         s3.putObject(params,          
             function(err, data) {
                 if (err) throw err;
-
-                // set attribute of the custom image and save
                 newRenderedImage.eTag = data.ETag;
                 newRenderedImage.save(function(err) {
                 if (err) throw err;
             });
 
-          // add new customImage to the project and save
+          // add new to the project and save
           project.renderedImages.push(newRenderedImage);
           project.save(function(err) {
             if (err) throw err;
