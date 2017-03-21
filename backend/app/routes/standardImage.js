@@ -30,6 +30,9 @@ router.get('/base', function(req, res) {
             res.json({ success: false, message: 'no std image with given key'});
         }
         else{
+            if (req.query.key.includes(".svg")){
+                res.setHeader('content-type', 'image/svg+xml');
+            }
             var stream = AWS.util.buffer.toStream(data.Body);
             stream.pipe(res);
         }
@@ -63,6 +66,9 @@ router.get('/interior', function(req, res) {
             res.json({ success: false, message: 'no std image with given key'});
         }
         else{
+            if (req.query.key.includes(".svg")){
+                res.setHeader('content-type', 'image/svg+xml');
+            }
             var stream = AWS.util.buffer.toStream(data.Body);
             stream.pipe(res);
         }
