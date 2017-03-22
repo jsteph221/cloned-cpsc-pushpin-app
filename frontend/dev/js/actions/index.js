@@ -27,8 +27,6 @@ export const sliderChange = (size) => {
     }
 };
 
-
-
 export const previewImage = (image) => {
 	return{
 		type: "PREVIEW_IMAGE",

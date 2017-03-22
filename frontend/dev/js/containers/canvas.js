@@ -9,6 +9,7 @@ import {previewImage} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
+import LayerTree from '../containers/layerTree'
 
 
 import { SwatchesPicker } from 'react-color'
@@ -421,7 +422,7 @@ class FabricCanvas extends Component {
             <div>
                 
                 <div className = "image-list" style = {{height: 300, width: 150, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
-                    Todo: Image Layer List
+                    <LayerTree />
                 </div>
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <canvas id = "c" width={300} height={300}></canvas>   
