@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import ReactScrollbar from 'react-scrollbar-js';
 
 class LayerTree extends Component {
 
@@ -23,7 +24,7 @@ class LayerTree extends Component {
     mapToImage(imageURLs){
 
         return imageURLs.map((url) =>                              
-                             <img src={url} style={{height: 20, width: 20, padding: 10}} />);
+                             <p><img src={url} style={{height: 30, width: 30, padding:10}} /> <br /></p>);
 
     }
 
@@ -31,10 +32,7 @@ class LayerTree extends Component {
 		const treeImages = this.mapToImage(this.state.images);
 
 		return (
-			<div>
-				{console.log(this.props.new_image)}
-				<p>{treeImages}</p>
-			</div>
+					<ReactScrollbar style = {{height: 300, width: 150}}><div>{treeImages}</div></ReactScrollbar>
 		);
 	}
 }
