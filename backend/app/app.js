@@ -33,6 +33,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set router
+app.get('/', function(req,res) {
+  res.sendfile('public/index.html');
+});
 app.use('/api', routes);
 
 // catch 404 and forward to error handler
