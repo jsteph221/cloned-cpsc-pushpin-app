@@ -27,6 +27,13 @@ module.exports = {
         filename: 'js/bundle.min.js'
     },
     plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin()
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.DefinePlugin({
+          "process.env": { 
+             NODE_ENV: JSON.stringify("production") 
+           }
+        })
     ]
 };
