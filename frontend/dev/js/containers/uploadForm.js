@@ -15,7 +15,6 @@ class UploadForm extends React.Component {
     
     //AJAX to post image
     postImage(files) {
-        var server = 'http://localhost:3030';
 
         /*get 1st project*/
         $.ajax(

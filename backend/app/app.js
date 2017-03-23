@@ -16,9 +16,9 @@ var AWS = require('aws-sdk');
 
 // set CORS
 app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader("Access-Control-Allow-Origin", 'http://54.242.142.24:3030');
+  // res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
@@ -33,6 +33,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set router
+app.get('/', function(req,res) {
+  res.sendfile('public/index.html');
+});
 app.use('/api', routes);
 
 // catch 404 and forward to error handler

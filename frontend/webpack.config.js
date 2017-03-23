@@ -23,7 +23,7 @@ module.exports = {
         ]
     },
     output: {
-        path: 'src',
+        path: '../backend/app/public',
         filename: 'js/bundle.min.js'
     },
     plugins: [
