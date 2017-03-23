@@ -28,6 +28,10 @@ export default function tree_reducer(state = initialState, action) {
         		object_id: action.object,
                 event: "delete"
             })
+        case 'CANVAS_CLEARED':
+        	return Object.assign({}, state, {
+                event: "clear"
+            })
 		default:
 			return state
 

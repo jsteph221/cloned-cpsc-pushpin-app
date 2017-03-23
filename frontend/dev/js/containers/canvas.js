@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 //import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown, imageDeleted} from '../actions'
+import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -354,6 +354,7 @@ class FabricCanvas extends Component {
         var object = canvas.getActiveObject();
         canvas.clear();
         canvas.renderAll();
+        this.props.canvasClear();
     }
 
     removeWhiteSpace(){
@@ -509,6 +510,7 @@ FabricCanvas.propTypes = {
     imageUp: PropTypes.func.isRequired,
     imageDown: PropTypes.func.isRequired,
     imageDelete: PropTypes.func.isRequired,
+    canvasClear: PropTypes.func.isRequired,
     size: PropTypes.number,
     maxSize: PropTypes.number,
     select_id: PropTypes.number.isRequired
@@ -521,6 +523,7 @@ FabricCanvas.defaultProps = {
     imageUp: (zindex, object) => console.log("zindex is"+zindex),
     imageDown: (zindex) => console.log("zindex is"+zindex),
     imageDelete: (zindex, object) => console.log("zindex is"+zindex),
+    canvasClear: () => console.log("canvas cleared"),
     select_id: 0,
     maxSize: 100
 
@@ -531,7 +534,8 @@ function mapDispatchToProps(dispatch) {
         previewClicked: (dataURL,sizeX,sizeY) => {dispatch(previewImage(dataURL,sizeX,sizeY))},
         imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
         imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))},
-        imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))}
+        imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))},
+        canvasClear: () => {dispatch(canvasCleared())}
     })
 }
 

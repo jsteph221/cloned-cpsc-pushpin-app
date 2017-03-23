@@ -14,6 +14,12 @@ export const treeSelect = (id) => {
 	}
 }
 
+export const canvasCleared = () => {
+	return{
+		type: "CANVAS_CLEARED"
+	}
+}
+
 export const imageBroughtUp = (index, object) => {
 	return{
 		type: "IMAGE_UP",

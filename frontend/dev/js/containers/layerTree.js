@@ -41,6 +41,9 @@ class LayerTree extends Component {
 			var zindex = this.state.images.length - nextProps.index_to_remove - 1;
 			this.state.images.splice(zindex, 1);
 		}
+		else if (nextProps.event == "clear"){
+			this.state.images = [];
+		}
 	}
 
     mapToImage(imageURLs){
