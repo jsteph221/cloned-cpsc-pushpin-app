@@ -70,7 +70,7 @@ class LogInScreen extends React.Component{
 			}
 		})
 		.fail(
-			function() { alert("ajax failure");}
+			function(xhr) { alert("ajax failure\nHTTP "+xhr.status);}
 		);
 	}
 
@@ -96,7 +96,7 @@ class LogInScreen extends React.Component{
 			}
 		})
 		.fail(
-			function() { alert("ajax failure");}
+			function(xhr) { alert("ajax failure\nHTTP "+xhr.status);}
 		);
 	}
 
