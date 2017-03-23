@@ -7,7 +7,6 @@ import cookie from 'react-cookie';
 import server from '../config/server';
 
 
-var token = cookie.load('token',true);
 class LogInScreen extends React.Component{
 	constructor(props, context){
 		super(props, context);
@@ -21,7 +20,7 @@ class LogInScreen extends React.Component{
 	componentWillMount(){
         $.ajax(
         {
-            url : server+"/api?token="+token,
+            url : server+"/api",
             type : "GET",
             dataType: "json",
             xhrFields: {
@@ -71,7 +70,7 @@ class LogInScreen extends React.Component{
 			}
 		})
 		.fail(
-			function() { alert("ajax failure");}
+			function(xhr) { alert("ajax failure\nHTTP "+xhr.status);}
 		);
 	}
 
@@ -98,7 +97,7 @@ class LogInScreen extends React.Component{
 			}
 		})
 		.fail(
-			function() { alert("ajax failure");}
+			function(xhr) { alert("ajax failure\nHTTP "+xhr.status);}
 		);
 	}
 

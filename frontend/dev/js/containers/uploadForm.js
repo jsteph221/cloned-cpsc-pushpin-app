@@ -5,8 +5,6 @@ import server from '../config/server';
 import cookie from 'react-cookie';
 
 
-var token = cookie.load('token',true);
-
 class UploadForm extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -18,12 +16,10 @@ class UploadForm extends React.Component {
     
     //AJAX to post image
     postImage(files) {
-        //var server = 'http://localhost:3030';
-
         /*get 1st project*/
         $.ajax(
         {
-            url : server+"/api/projects?token="+token,
+            url : server+"/api/projects",
             type : "GET",
             xhrFields: {
                withCredentials: true
@@ -70,7 +66,6 @@ class UploadForm extends React.Component {
         .fail(
             function() { alert("ajax failure");}
         );
-      
     }
     
   
