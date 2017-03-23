@@ -7,6 +7,22 @@ export const pickColor = (color) => {
 	}
 }
 
+export const imageBroughtUp = (index, object) => {
+	return{
+		type: "IMAGE_UP",
+		index: index,
+		object: object
+	}
+}
+
+export const imageSentDown = (index, object) => {
+	return{
+		type: "IMAGE_DOWN",
+		index: index,
+		object: object
+	}
+}
+
 export const selectImage = (image) => {
 	return{
 		type: IMAGE_SELECTED,

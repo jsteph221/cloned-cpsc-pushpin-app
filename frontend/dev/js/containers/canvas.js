@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 //import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage} from '../actions'
+import {previewImage, imageBroughtUp, imageSentDown} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -261,16 +261,28 @@ class FabricCanvas extends Component {
     moveObjectForward(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
+        var zindex = canvas.getObjects().indexOf(object);
         if (object!= null){
             canvas.bringForward(object);
+            var new_zindex = canvas.getObjects().indexOf(object);
+            if (zindex != new_zindex){
+                console.log("zindex is "+zindex+", new_zindex is "+new_zindex);
+                this.props.imageUp(new_zindex, object);
+            }
         }
     }
     
     moveObjectBackward(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
+        var zindex = canvas.getObjects().indexOf(object);
         if (object != null){
             canvas.sendBackwards(object);
+            var new_zindex = canvas.getObjects().indexOf(object);
+            if (zindex != new_zindex){
+                console.log("zindex is "+zindex+", new_zindex is "+new_zindex);
+                this.props.imageDown(new_zindex, object);
+            }
         }
     }
 
@@ -455,7 +467,7 @@ class FabricCanvas extends Component {
                     </div>
                     </Modal>
                     <button onClick = {this.moveObjectForward}>Bring Forward</button>
-                    <button onClick = {this.moveObjectBackward}>Bring Backward</button>
+                    <button onClick = {this.moveObjectBackward}>Send Backward</button>
                     <button onClick = {this.deleteActiveObject}>Delete Object</button>
                     <button onClick = {this.addText}>Add Text</button>
                     <button onClick = {this.selectColor}>Color Fill</button>
@@ -471,6 +483,8 @@ FabricCanvas.propTypes = {
 
 	images: PropTypes.string,
     previewClicked: PropTypes.func.isRequired,
+    imageUp: PropTypes.func.isRequired,
+    imageDown: PropTypes.func.isRequired,
     size: PropTypes.number,
     maxSize: PropTypes.number
 }
@@ -479,13 +493,17 @@ FabricCanvas.defaultProps = {
 
 	images: [],
     previewClicked: (dataURL) => console.log("Clicked on preview"),
+    imageUp: (zindex) => console.log("zindex is"+zindex),
+    imageDown: (zindex) => console.log("zindex is"+zindex),
     maxSize: 100
 
 }
 
 function mapDispatchToProps(dispatch) {
     return ({
-        previewClicked: (dataURL) => {dispatch(previewImage(dataURL))}
+        previewClicked: (dataURL) => {dispatch(previewImage(dataURL))},
+        imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
+        imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))}
     })
 }
 
