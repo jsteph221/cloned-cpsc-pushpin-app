@@ -178,7 +178,6 @@ class FabricCanvas extends Component {
         this.enterDrawingMode = this.enterDrawingMode.bind(this);
         this.choose = this.choose.bind(this);
         this.chooseColor = this.chooseColor.bind(this);
-        this.testState = this.testState.bind(this);
         this.saveGroup = this.saveGroup.bind(this);
         this.selectObject = this.selectObject.bind(this);
         this.clearCanvas = this.clearCanvas.bind(this);
@@ -204,6 +203,9 @@ class FabricCanvas extends Component {
         if (nextState.modalIsOpen != this.state.modalIsOpen){
             return true;
         }
+        if (nextState.text != this.state.text){
+            return true;
+        }
         if (nextState.range != this.state.range){
             return true;
         }
@@ -219,7 +221,8 @@ class FabricCanvas extends Component {
         var canvas = new fabric.Canvas('c', {
         isDrawingMode: false,
         });
-        this.setState({canvas});           
+        this.setState({
+            canvas});           
     }
 
     selectObject(id){
@@ -414,15 +417,6 @@ class FabricCanvas extends Component {
         else{
             this.setState({text : "Freehand Off"});
         }
-        this.forceUpdate();
-        canvas.renderAll();
-    }
-
-    testState(){
-        console.log(this.props);
-        var canvas = this.state.canvas;
-        canvas.clear();
-        this.setState(stateTest);
         canvas.renderAll();
     }
     
