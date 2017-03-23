@@ -181,6 +181,8 @@ class FabricCanvas extends Component {
         this.testState = this.testState.bind(this);
         this.saveGroup = this.saveGroup.bind(this);
         this.selectObject = this.selectObject.bind(this);
+        this.clearCanvas = this.clearCanvas.bind(this);
+        this.removeWhiteSpace = this.removeWhiteSpace.bind(this);
 	}
     //Global Canvas variable
     openModal() {
@@ -321,10 +323,6 @@ class FabricCanvas extends Component {
             color: cHex,
             opacity: alpha
         });
-        var whiteFilter = new fabric.Image.filters.RemoveWhite({
-              threshold: 40,
-              distance: 140
-        });
 
         if(object != null && object.get('type') == 'i-text'){
             object.setFill(cHex);
@@ -332,7 +330,6 @@ class FabricCanvas extends Component {
         }
         else if (object!= null){
             object.setFill(cHex);
-            object.filters.push(whiteFilter);
             object.filters.push(filter);
             object.applyFilters(canvas.renderAll.bind(canvas));
             canvas.renderAll();
@@ -347,6 +344,28 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
 
+    }
+
+    clearCanvas(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        canvas.clear();
+        canvas.renderAll();
+    }
+
+    removeWhiteSpace(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+        var whiteFilter = new fabric.Image.filters.RemoveWhite({
+              threshold: 40,
+              distance: 140
+        });
+        if (object!= null){
+            object.setFill(cHex);
+            object.filters.push(whiteFilter);
+            object.applyFilters(canvas.renderAll.bind(canvas));
+            canvas.renderAll();
+        }
     }
 
     chooseColor(c){
@@ -382,6 +401,7 @@ class FabricCanvas extends Component {
             canvas.renderAll();
             }
         }
+        
     }
 
     enterDrawingMode(){
@@ -480,6 +500,8 @@ class FabricCanvas extends Component {
                     <button onClick = {this.selectColor}>Color Fill</button>
                     <button onClick = {this.setHalo}>Set Halo</button>
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
+                    <button onClick = {this.clearCanvas}>Clear Canvas</button>
+                    <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
                 </div>  
             </div>          
         );
