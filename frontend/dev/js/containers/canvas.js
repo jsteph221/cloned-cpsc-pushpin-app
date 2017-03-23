@@ -110,15 +110,26 @@ function canvasToImage(ctx,canvas,size){
     var imgURL = canvas1.toDataURL();
     var tmpImage = document.createElement("IMG");    
     tmpImage.src = imgURL;
+    var sizeX,sizeY;
+    if (w/h >= 1){
+        sizeX= size;
+        sizeY = Math.ceil(sizeX/(w/h));
+    }else{
+        sizeY = size;
+        sizeX = Math.ceil(sizeY/(h/w));
+    }
     //Creates new canvas and draw cropped image of specific size
     var canvas2 = document.createElement('canvas');
     var ctx2 = canvas2.getContext('2d');
-    canvas2.width = size;
-    canvas2.height = size;
-    ctx2.drawImage(tmpImage,0,0,size,size);
-    var final = canvas2.toDataURL();    
-   
-    return final;
+    canvas2.width = sizeX;
+    canvas2.height = sizeY;
+    ctx2.drawImage(tmpImage,0,0,sizeX,sizeY);
+    var finalUrl = canvas2.toDataURL();    
+    var img = new Image();
+    img.src = finalUrl;
+    img.height = sizeY;
+    img.width = sizeX;
+    return img;
     
 }
     const customStyles = {      
@@ -215,14 +226,13 @@ class FabricCanvas extends Component {
     }
     
     buttonClick(){ 
-        console.log(this);
         var canvas = document.getElementById("c"); 
         var activeCanvas = this.state.canvas; 
         activeCanvas.discardActiveObject();
         activeCanvas.deactivateAll().renderAll();
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas,this.props.maxSize);
-        this.props.previewClicked(data);
+        var image = canvasToImage(ctx,canvas,this.props.maxSize);
+        this.props.previewClicked(image.src,image.width,image.height);
     }
     
     saveButton(){        
@@ -230,9 +240,11 @@ class FabricCanvas extends Component {
         var activeCanvas = this.state.canvas; 
         activeCanvas.discardActiveObject();       
         var ctx = canvas.getContext('2d');
-        var data = canvasToImage(ctx,canvas,this.props.maxSize);
-        var saved = saveRenderedCanvas(data);
-        console.log(saved);
+        var img = canvasToImage(ctx,canvas,this.props.size);
+        //if (img != null){
+          //  window.open(img.src);
+        //}
+        var saved = saveRenderedCanvas(img.src);
         if (saved== true){
             alert("Your image has been saved");
         }
@@ -489,7 +501,7 @@ FabricCanvas.propTypes = {
 FabricCanvas.defaultProps = {
 
 	images: [],
-    previewClicked: (dataURL) => console.log("Clicked on preview"),
+    previewClicked: (dataURL,sizeX,sizeY) => console.log("Clicked on preview"),
     imageUp: (zindex, object) => console.log("zindex is"+zindex),
     imageDown: (zindex) => console.log("zindex is"+zindex),
     imageDelete: (zindex, object) => console.log("zindex is"+zindex),
@@ -500,7 +512,7 @@ FabricCanvas.defaultProps = {
 
 function mapDispatchToProps(dispatch) {
     return ({
-        previewClicked: (dataURL) => {dispatch(previewImage(dataURL))},
+        previewClicked: (dataURL,sizeX,sizeY) => {dispatch(previewImage(dataURL,sizeX,sizeY))},
         imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
         imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))},
         imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))}

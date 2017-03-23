@@ -47,7 +47,7 @@ export const selectImage = (image) => {
 export const imageSaved = (image) => {
 	return{
 		type: "IMAGE_SAVED",
-		url: image
+		url: image,
 	}
 };
 
@@ -58,9 +58,11 @@ export const sliderChange = (size) => {
     }
 };
 
-export const previewImage = (image) => {
+export const previewImage = (image,x,y) => {
 	return{
 		type: "PREVIEW_IMAGE",
-		url: image
+		url: image,
+        sizeX:x,
+        sizeY:y
 	}
 };

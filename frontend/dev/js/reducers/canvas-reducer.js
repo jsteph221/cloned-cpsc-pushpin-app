@@ -11,7 +11,9 @@ export default function preview(state = initialState, action) {
 
 		case 'PREVIEW_IMAGE':
 			return Object.assign({}, state, {
-                src:  action.url
+                src:  action.url,
+                sizeX: action.sizeX,
+                sizeY: action.sizeY,
             })
         case 'IMAGE_SAVED':
             return Object.assign({},state,{

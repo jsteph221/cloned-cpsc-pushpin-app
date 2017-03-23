@@ -22,13 +22,15 @@ var windowWidth = $(window).width();
 var windowHeight = $(window).height();
 var styleArray = [{"featureType":"all","elementType":"geometry.fill","stylers":[{"weight":"2.00"}]},{"featureType":"all","elementType":"geometry.stroke","stylers":[{"color":"#9c9c9c"}]},{"featureType":"all","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"landscape","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#eeeeee"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#7b7b7b"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#46bcec"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"color":"#c8d7d4"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#070707"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]}];
 
-var url = './icons/car2.png';
 
 class PreviewMap extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            animate: true,
+        };
         this.mapToImage = this.mapToImage.bind(this);
+        this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
     }
 
     mapToImage(nextProps,nextState){        
@@ -36,14 +38,35 @@ class PreviewMap extends Component {
         return imageObj => <img src={this.props.url} style={{height: 10, width: 10}} />;
 
     }
+    shouldComponentUpdate(nextProps,nextState){
+        console.log(this.props.google)
+        if (this.props.value != nextProps.value){
+            this.setState({animate:false});
+        }
+        else{
+            this.setState({animate:true});
+        }
+        console.log(this.props,nextProps)
+        return true;
+    }
         
 
     render(){
         if (!this.props.url){
             //small image to display incase no preview src
-            var markersrc = './icons/FFFFFF-.0001.png'
+            var markersrc = './icons/placeholder.png'
         }else{
             var markersrc = this.props.url
+        }
+        var w = this.props.sizeX;
+        var h = this.props.sizeY;
+        var mrkX, mrkY;
+        if (w/h >= 1){
+            mrkX= this.props.value;
+            mrkY = Math.ceil(mrkX/(w/h));
+        }else{
+            mrkY = this.props.value;
+            mrkX = Math.ceil(mrkY/(h/w));
         }
         return(
            <div >
@@ -59,8 +82,9 @@ class PreviewMap extends Component {
                <Marker
                    url = {markersrc}
                    position={{lat:49.2820, lng:-123.1171}}
-                   size={this.props.value}
-
+                   sizeX={mrkX}
+                   sizeY = {mrkY}
+                    animate = {this.state.animate}
                />
                </Map>
            </div>
@@ -75,7 +99,9 @@ class PreviewMap extends Component {
 
 PreviewMap.propTypes = {
     value: PropTypes.number,
-    src: PropTypes.string,    
+    src: PropTypes.string,
+    sizeX: PropTypes.number,
+    sizeY: PropTypes.number,
 }
 
 const MapApi = GoogleApiWrapper({
@@ -87,6 +113,8 @@ const mapStateToProps = (state) => {
     return {
         value: state.slider.value,
         url: state.preview.src,
+        sizeX: state.preview.sizeX,
+        sizeY: state.preview.sizeY,
     }
 }
 
