@@ -14,6 +14,8 @@ import Modal from 'react-modal';
 import { SwatchesPicker } from 'react-color'
 import SizeSlider from '../containers/slider'
 
+import server from '../config/server';
+
 var width = $(window).width();
 var height = $(window).height();
 var cHex;
@@ -25,8 +27,6 @@ var alpha;
 var rgb;
 
 function saveRenderedCanvas(dataURI){
-    var server = 'http://localhost:3030';
-    
     $.ajax(
         {
             url : server+"/api/projects",
