@@ -265,7 +265,7 @@ class ImageLibrary extends Component {
 
         var request = new XMLHttpRequest();
 
-        request.withCredentials = true;
+        /*request.withCredentials = true;*/
 
         request.open("GET", server+"/api/projects", false);
         request.send(null);
