@@ -439,7 +439,7 @@ class FabricCanvas extends Component {
             sizes.push(range[1])
             for(i=0; i< num; i++){
                 var data = canvasToImage(ctx,canvas,sizes[i]);
-                saveRenderedCanvas(data);
+                saveRenderedCanvas(data.src);
             }
             alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
             this.closeModal();   
