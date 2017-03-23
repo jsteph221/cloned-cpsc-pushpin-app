@@ -50,7 +50,6 @@ class ImageLibrary extends Component {
        
     //AJAX to post image
     postImage(files) {
-        var server = 'http://localhost:3030';
         const self = this;
 
         /*get 1st project*/
