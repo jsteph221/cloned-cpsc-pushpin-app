@@ -23,7 +23,6 @@ class LayerTree extends Component {
 		}
 		else if (nextProps.event == "up"){
 			var zindex = this.state.images.length - nextProps.new_zindex - 1;
-			console.log("tree zindex is "+zindex);
 			if (zindex >= 0){
 				var temp = this.state.images[zindex];
 				this.state.images[zindex] = this.state.images[zindex+1];
@@ -32,19 +31,22 @@ class LayerTree extends Component {
 		}
 		else if (nextProps.event == "down"){
 			var zindex = this.state.images.length - nextProps.new_zindex - 1;
-			console.log("tree zindex is "+zindex);
 			if (zindex <= this.state.images.length - 1){
 				var temp = this.state.images[zindex];
 				this.state.images[zindex] = this.state.images[zindex-1];
 				this.state.images[zindex-1] = temp;
 			}
 		}
+		else if (nextProps.event == "delete"){
+			var zindex = this.state.images.length - nextProps.index_to_remove - 1;
+			this.state.images.splice(zindex, 1);
+		}
 	}
 
     mapToImage(imageURLs){
 
         return imageURLs.map((url) =>                              
-                             <p><img src={url} style={{height: 30, width: 30, padding:10}} /> <br /></p>);
+            <p><img src={url} style={{height: 30, width: 30, padding:10}} /> <br /></p>);
 
     }
 
@@ -52,7 +54,9 @@ class LayerTree extends Component {
 		const treeImages = this.mapToImage(this.state.images);
 
 		return (
-					<ReactScrollbar style = {{height: 300, width: 150}}><div>{treeImages}</div></ReactScrollbar>
+			<ReactScrollbar style = {{height: 300, width: 150}}>
+				<div>{treeImages}</div>
+			</ReactScrollbar>
 		);
 	}
 }
@@ -61,26 +65,28 @@ class LayerTree extends Component {
 LayerTree.propTypes = {
     new_image: PropTypes.string.isRequired,
     new_zindex: PropTypes.number.isRequired,
-    new_object: PropTypes.object.isRequired,
-    event: PropTypes.string.isRequired
+    object_id: PropTypes.number.isRequired,
+    event: PropTypes.string.isRequired,
+    index_to_remove: PropTypes.number.isRequired
 }
 
 LayerTree.defaultProps = {
     new_image: "",
     new_zindex: 0,
-    new_object: undefined,
-    event: "new"
+    object_id: 0,
+    index_to_remove: 0,
+    event: ""
 }
 
 const mapStateToProps = (state) => {
 	return {
 		new_image: state.tree.new_image,
 		new_zindex: state.tree.new_zindex,
-		new_object: state.tree.new_object,
+		object_id: state.tree.object_id,
+		index_to_remove: state.tree.index_to_remove,
 		event: state.tree.event
 	}
 }
-
 
 const LayerContainer = connect(mapStateToProps, null)(LayerTree);
 

@@ -7,6 +7,13 @@ export const pickColor = (color) => {
 	}
 }
 
+export const treeSelect = (id) => {
+	return{
+		type: "TREE_SELECT",
+		selection: id
+	}
+}
+
 export const imageBroughtUp = (index, object) => {
 	return{
 		type: "IMAGE_UP",
@@ -18,6 +25,14 @@ export const imageBroughtUp = (index, object) => {
 export const imageSentDown = (index, object) => {
 	return{
 		type: "IMAGE_DOWN",
+		index: index,
+		object: object
+	}
+}
+
+export const imageDeleted = (index, object) => {
+	return{
+		type: "IMAGE_DELETED",
 		index: index,
 		object: object
 	}

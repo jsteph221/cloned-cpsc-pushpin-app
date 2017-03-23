@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 //import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown} from '../actions'
+import {previewImage, imageBroughtUp, imageSentDown, imageDeleted} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -147,13 +147,13 @@ class FabricCanvas extends Component {
             range:[25,75],
             canvas : null,
             text: "Freehand On",
+            image_number: 0
         };
         
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.onRangeChange = this.onRangeChange.bind(this);        
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
-		this.propsToImages = this.propsToImages.bind(this);
         this.buttonClick = this.buttonClick.bind(this);
         this.saveButton = this.saveButton.bind(this);
         this.drawImage = this.drawImage.bind(this);
@@ -169,6 +169,7 @@ class FabricCanvas extends Component {
         this.chooseColor = this.chooseColor.bind(this);
         this.testState = this.testState.bind(this);
         this.saveGroup = this.saveGroup.bind(this);
+        this.selectObject = this.selectObject.bind(this);
 	}
     //Global Canvas variable
     openModal() {
@@ -182,13 +183,12 @@ class FabricCanvas extends Component {
     onRangeChange(value){
         this.setState({range:value})
     }
-        
 
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
         console.log("Something Changed");
-         if (nextState.modalIsOpen != this.state.modalIsOpen){
+        if (nextState.modalIsOpen != this.state.modalIsOpen){
             return true;
         }
         if (nextState.range != this.state.range){
@@ -196,9 +196,9 @@ class FabricCanvas extends Component {
         }
         if (nextProps.images != null && this.state.canvas !=null){
             if (this.props.size == nextProps.size){
-                this.drawImage(nextProps.images); 
+                this.drawImage(nextProps.images);
             }
-        }       
+        }
         return false;
     }   
     
@@ -207,24 +207,12 @@ class FabricCanvas extends Component {
         isDrawingMode: false,
         });
         this.setState({canvas});           
-    }       
-	propsToImages(){
-		if (this.props.images == []){
-			console.log("images was empty\n");
-		}
-		else{
-			return this.props.images.map((image) => 
-				<Image
-			        src={image['url']}
-			        crossOrigin='use-credentials'
-			        width={image['width']}
-			        height={image['height']}
-			        left={image['left']}
-			        top={image['top']} 
-			    />
-		    )
-		}
-	}
+    }
+
+    selectObject(id){
+        var canvas = this.state.canvas;
+        canvas.setActiveObject(canvas.item(id));
+    }
     
     buttonClick(){ 
         console.log(this);
@@ -252,22 +240,25 @@ class FabricCanvas extends Component {
     
     drawImage(image){
         var canvas = this.state.canvas;
+        var image_number = this.state.image_number;
+        this.state.image_number = this.state.image_number + 1;
 
         fabric.Image.fromURL(image, function(oImg){
-           canvas.add(oImg);
+            oImg.id = image_number;
+            canvas.add(oImg);
         });        
     } 
     
     moveObjectForward(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
-        var zindex = canvas.getObjects().indexOf(object);
-        if (object!= null){
+        if (object!= null){    
+            var zindex = canvas.getObjects().indexOf(object);
+            var id = object.get('id');
             canvas.bringForward(object);
             var new_zindex = canvas.getObjects().indexOf(object);
             if (zindex != new_zindex){
-                console.log("zindex is "+zindex+", new_zindex is "+new_zindex);
-                this.props.imageUp(new_zindex, object);
+                this.props.imageUp(new_zindex, id);
             }
         }
     }
@@ -275,33 +266,38 @@ class FabricCanvas extends Component {
     moveObjectBackward(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
-        var zindex = canvas.getObjects().indexOf(object);
-        if (object != null){
+        if (object != null){    
+            var zindex = canvas.getObjects().indexOf(object);
+            var id = object.get('id');
             canvas.sendBackwards(object);
             var new_zindex = canvas.getObjects().indexOf(object);
             if (zindex != new_zindex){
-                console.log("zindex is "+zindex+", new_zindex is "+new_zindex);
-                this.props.imageDown(new_zindex, object);
+                this.props.imageDown(new_zindex, id);
             }
         }
     }
 
     deleteActiveObject(){
-        console.log("Delete Key Pressed");
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object!=null){
+            var id = object.get('id');
+            var zindex = canvas.getObjects().indexOf(object);
+            this.props.imageDelete(zindex, id);
             object.remove();
         }
     }
 
     addText(){
         var canvas = this.state.canvas;
+        var image_number = this.state.image_number;
+        this.state.image_number = this.state.image_number + 1;
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
           left: 100, 
           top: 100 ,
+          id: image_number
         }));
     }
 
@@ -334,7 +330,6 @@ class FabricCanvas extends Component {
     setHalo(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
-
         if (object != null){
             object.setShadow({color: cHex, blur: 100 });
             canvas.renderAll();
@@ -485,16 +480,20 @@ FabricCanvas.propTypes = {
     previewClicked: PropTypes.func.isRequired,
     imageUp: PropTypes.func.isRequired,
     imageDown: PropTypes.func.isRequired,
+    imageDelete: PropTypes.func.isRequired,
     size: PropTypes.number,
-    maxSize: PropTypes.number
+    maxSize: PropTypes.number,
+    select_id: PropTypes.number.isRequired
 }
 
 FabricCanvas.defaultProps = {
 
 	images: [],
     previewClicked: (dataURL) => console.log("Clicked on preview"),
-    imageUp: (zindex) => console.log("zindex is"+zindex),
+    imageUp: (zindex, object) => console.log("zindex is"+zindex),
     imageDown: (zindex) => console.log("zindex is"+zindex),
+    imageDelete: (zindex, object) => console.log("zindex is"+zindex),
+    select_id: 0,
     maxSize: 100
 
 }
@@ -503,7 +502,8 @@ function mapDispatchToProps(dispatch) {
     return ({
         previewClicked: (dataURL) => {dispatch(previewImage(dataURL))},
         imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
-        imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))}
+        imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))},
+        imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))}
     })
 }
 
@@ -513,6 +513,7 @@ const mapStateToProps = (state) => {
 		images:state.library.src,
         size: state.slider.value,
 		color: state.color.color,
+        select_id: state.preview.selection
 	}
 }
 

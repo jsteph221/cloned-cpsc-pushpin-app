@@ -17,6 +17,10 @@ export default function preview(state = initialState, action) {
             return Object.assign({},state,{
               url: action.url  
             })
+        case 'TREE_SELECT':
+        	return Object.assign({},state,{
+            	selection: action.selection 
+            })
 		default:
 			return state
 
