@@ -132,26 +132,33 @@
                 var position = _props.position;
                 var mapCenter = _props.mapCenter;
                 var url = _props.url;
-                var sizeValue= _props.size;
-
+                var sizeValueX= _props.sizeX;
+                var sizeValueY = _props.sizeY;
+                var animate = _props.animate
+                console.log("animate= ", animate)
                 if (!google) {
                     return null;
                 }
-
+                var animation = false
+                if (animate == true){
+                    animation = google.maps.Animation.DROP;
+                }
                 var pos = position || mapCenter;
                 if (!(pos instanceof google.maps.LatLng)) {
                     position = new google.maps.LatLng(pos.lat, pos.lng);
                 }
                 //var temp = 28*sizeValue/100;
-                var size = new google.maps.Size(sizeValue,sizeValue);
+                var size = new google.maps.Size(sizeValueX,sizeValueY);
 
                 var pref = {
                     map: map,
-                    position: position,
+                    position: mapCenter,
                     icon:{
                         url: url,
                         scaledSize : size
-                    }
+                    },
+                    draggable:true,
+                    animation: animation,                   
                 };
                 this.marker = new google.maps.Marker(pref);
 
@@ -192,7 +199,9 @@
         position: _react.PropTypes.object,
         map: _react.PropTypes.object,
         url: _react.PropTypes.string,
-        size: _react.PropTypes.number
+        sizeX: _react.PropTypes.number,
+        syzeY:_react.PropTypes.number,
+        animate: _react.PropTypes.boolean,
     };
 
     evtNames.forEach(function (e) {

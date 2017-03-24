@@ -99,6 +99,9 @@ router.get('/:custom_id', function(req, res) {
       }, function(err, data){
         if (err) console.log(err, err.stack); // an error occurred
         else {
+          if (customImage.originalName.includes(".svg")){
+                res.setHeader('content-type', 'image/svg+xml');
+            }
           var stream = AWS.util.buffer.toStream(data.Body);
           stream.pipe(res);
         }

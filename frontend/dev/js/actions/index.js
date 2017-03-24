@@ -7,6 +7,43 @@ export const pickColor = (color) => {
 	}
 }
 
+export const treeSelect = (id) => {
+	return{
+		type: "TREE_SELECT",
+		selection: id
+	}
+}
+
+export const canvasCleared = () => {
+	return{
+		type: "CANVAS_CLEARED"
+	}
+}
+
+export const imageBroughtUp = (index, object) => {
+	return{
+		type: "IMAGE_UP",
+		index: index,
+		object: object
+	}
+}
+
+export const imageSentDown = (index, object) => {
+	return{
+		type: "IMAGE_DOWN",
+		index: index,
+		object: object
+	}
+}
+
+export const imageDeleted = (index, object) => {
+	return{
+		type: "IMAGE_DELETED",
+		index: index,
+		object: object
+	}
+}
+
 export const selectImage = (image) => {
 	return{
 		type: IMAGE_SELECTED,
@@ -16,7 +53,7 @@ export const selectImage = (image) => {
 export const imageSaved = (image) => {
 	return{
 		type: "IMAGE_SAVED",
-		url: image
+		url: image,
 	}
 };
 
@@ -27,11 +64,11 @@ export const sliderChange = (size) => {
     }
 };
 
-
-
-export const previewImage = (image) => {
+export const previewImage = (image,x,y) => {
 	return{
 		type: "PREVIEW_IMAGE",
-		url: image
+		url: image,
+        sizeX:x,
+        sizeY:y
 	}
 };
