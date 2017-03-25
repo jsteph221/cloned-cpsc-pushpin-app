@@ -254,7 +254,7 @@ class ImageLibrary extends Component {
         var result = [];
         //error when no project of given id ->Cannot read property 'map' of undefined
 	    if (response.success == true){
-		    result = response.renderedImages.map((imageID) => server+"/api/projects/"+proj+"/renderedImages/"+imageID);
+		    result = response.renderedImages.map((imageID) => server+"/api/projects/"+proj+"/renderedImages/image/"+imageID);
 	    }        
         
         return result;
