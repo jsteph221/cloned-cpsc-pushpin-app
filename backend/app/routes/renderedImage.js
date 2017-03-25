@@ -24,31 +24,9 @@ router.get('/', function(req, res) {
   });
 });
 
-router.get('/:rendered_id', function(req, res) {
-  RenderedImage.findOne({
-    _id: req.params.rendered_id
-  }, function(err, renderedImage) {
-    if (!renderedImage){
-      res.json({ success: false, message: 'no custom image was found with the given id.'});
-    } else{
-      // get object and pipe it to the client
-      s3.getObject({
-        Bucket: s3['bucketName']+'/renderedImages',
-        Key: renderedImage.id
-      }, function(err, data){
-        if (err) console.log(err, err.stack); // an error occurred
-        else {
-          var stream = AWS.util.buffer.toStream(data.Body);
-          stream.pipe(res);
-        }
-      });
-    }
-  });
-}); 
-
 // upload an renderedCanvas to s3
 // !!! TODO: need to restrict the access of this project for other users
-router.post('/', function(req, res) {
+router.post('/image', function(req, res) {
   Project.findOne({
     _id: req.params.project_id
   }, function(err, project) {
@@ -62,12 +40,12 @@ router.post('/', function(req, res) {
         console.log(newRenderedImage._id);
         var params = {Bucket:s3['bucketName']+'/renderedImages', Key: newRenderedImage.id,Body:buf, ContentEncoding: 'base64',ContentType:'image/png'};
         s3.putObject(params,          
-            function(err, data) {
-                if (err) throw err;
-                newRenderedImage.eTag = data.ETag;
-                newRenderedImage.save(function(err) {
-                if (err) throw err;
-            });
+          function(err, data) {
+              if (err) throw err;
+              newRenderedImage.eTag = data.ETag;
+              newRenderedImage.save(function(err) {
+              if (err) throw err;
+          });
 
           // add new to the project and save
           project.renderedImages.push(newRenderedImage);
@@ -82,6 +60,65 @@ router.post('/', function(req, res) {
   });
 });
 
+router.get('/image/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no rendered image was found with the given id.'});
+    } else{
+      // get object and pipe it to the client
+      s3.getObject({
+        Bucket: s3['bucketName']+'/renderedImages',
+        Key: renderedImage.id
+      }, function(err, data){
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+          var stream = AWS.util.buffer.toStream(data.Body);
+          stream.pipe(res);
+        }
+      });
+    }
+  });
+});
+
+router.put('/canvas/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no rendered image was found with the given id.'});
+    } else{
+      renderedImage.canvas = req.params.canvas;
+      newCustomImage.save(function(err) {
+        if (err) {
+          throw err; 
+        } else{
+          res.json({ success: true, message: 'serialized canvas has been stored in the rendered image document'});
+        }
+      });
+    }
+  });
+});
+
+router.put('/layer/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no rendered image was found with the given id.'});
+    } else{
+      renderedImage.layer = req.params.layer;
+      newCustomImage.save(function(err) {
+        if (err) {
+          throw err; 
+        } else{
+          res.json({ success: true, message: 'layer tree has been stored in the rendered image document'});
+        }
+      });
+    }
+  });
+});
 
 
 module.exports = router;

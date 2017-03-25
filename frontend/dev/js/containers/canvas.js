@@ -38,7 +38,7 @@ function saveRenderedCanvas(dataURI){
             success : function(data) {
                 if (data.success === true){
                     var project = data.projects[0];
-                    var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages";                      
+                    var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages/image";                      
                     $.ajax(
                            {
                             
