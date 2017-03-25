@@ -326,7 +326,7 @@ class ImageLibrary extends Component {
                                  <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>            
                                  <button value="Upload" onClick={this.handleSubmit}>Upload</button>
                              </div>
-                             
+                             <p>    Please drop files here or click to upload.</p>
                           </Dropzone>
                     </div>
                 </TabPanel>

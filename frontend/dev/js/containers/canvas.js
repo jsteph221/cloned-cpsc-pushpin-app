@@ -26,6 +26,7 @@ var stateTest;
 var colorMode;
 var alpha;
 var rgb;
+var color_code = 0;
 
 function saveRenderedCanvas(dataURI){
     $.ajax(
@@ -150,6 +151,16 @@ function canvasToImage(ctx,canvas,size){
     };
 
 
+const pallete = [
+    "#F44336",
+    "#2196F3",
+    "#8BC34A",
+    "#FF5722",
+    "#FFEB3B",
+    "#9E9E9E"
+    ]
+
+
 class FabricCanvas extends Component {
 	constructor(props){
 		super(props);
@@ -158,7 +169,7 @@ class FabricCanvas extends Component {
             range:[25,75],
             canvas : null,
             text: "Freehand On",
-            image_number: 0
+            image_number: 0,
         };
         
         this.openModal = this.openModal.bind(this);
@@ -182,6 +193,7 @@ class FabricCanvas extends Component {
         this.selectObject = this.selectObject.bind(this);
         this.clearCanvas = this.clearCanvas.bind(this);
         this.removeWhiteSpace = this.removeWhiteSpace.bind(this);
+        this.tryAnotherColor = this.tryAnotherColor.bind(this);
 	}
     //Global Canvas variable
     openModal() {
@@ -303,6 +315,7 @@ class FabricCanvas extends Component {
             this.props.imageDelete(zindex, id);
             object.remove();
         }
+        
     }
 
     addText(){
@@ -372,6 +385,35 @@ class FabricCanvas extends Component {
         }
     }
 
+    tryAnotherColor(){
+        var canvas = this.state.canvas;
+        var object = canvas.getActiveObject();
+
+        var filter = new fabric.Image.filters.Tint({
+            color: pallete[color_code],
+            opacity: alpha
+        });
+
+        if(object != null && object.get('type') == 'i-text'){
+            object.setFill(pallete[color_code]);
+            canvas.renderAll();
+        }
+        else if (object!= null){
+            object.setFill(pallete[color_code]);
+            object.filters.push(filter);
+            object.applyFilters(canvas.renderAll.bind(canvas));
+            canvas.renderAll();
+            
+            if(color_code == 5){
+                color_code = 0;
+            }
+            else {
+                color_code = color_code + 1;
+            }
+        }
+        
+    }
+    
     chooseColor(c){
         cHex = c.hex;
         rgb = c.rgb;
@@ -463,6 +505,7 @@ class FabricCanvas extends Component {
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
                 <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
+                    <button onClick = {this.tryAnotherColor}>Try Another Color</button>
                     <button onClick = {this.saveButton}>Save Image</button>
                     <button onClick = {this.buttonClick}>Preview</button> 
                     <button onClick = {this.openModal}>Create Group</button>
@@ -497,6 +540,7 @@ class FabricCanvas extends Component {
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
                     <button onClick = {this.clearCanvas}>Clear Canvas</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
+            
                 </div>  
             </div>          
         );
