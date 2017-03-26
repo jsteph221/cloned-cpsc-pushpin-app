@@ -44,6 +44,14 @@ export const imageDeleted = (index, object) => {
 	}
 }
 
+export const treeAdd = (image, id) => {
+	return{
+		type: "TREE_ADD",
+		url: image,
+		id: id
+	}
+}
+
 export const selectImage = (image) => {
 	return{
 		type: IMAGE_SELECTED,

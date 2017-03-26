@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 //import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared} from '../actions'
+import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, treeAdd} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -199,7 +199,6 @@ class FabricCanvas extends Component {
     //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
-        console.log("Something Changed");
         if (nextState.modalIsOpen != this.state.modalIsOpen){
             return true;
         }
@@ -259,6 +258,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
+        this.props.treeAdd(image, image_number);
 
         fabric.Image.fromURL(image, function(oImg){
             oImg.id = image_number;
@@ -513,7 +513,8 @@ FabricCanvas.propTypes = {
     canvasClear: PropTypes.func.isRequired,
     size: PropTypes.number,
     maxSize: PropTypes.number,
-    select_id: PropTypes.number.isRequired
+    select_id: PropTypes.number.isRequired,
+    treeAdd: PropTypes.func.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -524,6 +525,7 @@ FabricCanvas.defaultProps = {
     imageDown: (zindex) => console.log("zindex is"+zindex),
     imageDelete: (zindex, object) => console.log("zindex is"+zindex),
     canvasClear: () => console.log("canvas cleared"),
+    treeAdd: (im, id) => console.log("image added to tree"),
     select_id: 0,
     maxSize: 100
 
@@ -535,7 +537,8 @@ function mapDispatchToProps(dispatch) {
         imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
         imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))},
         imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))},
-        canvasClear: () => {dispatch(canvasCleared())}
+        canvasClear: () => {dispatch(canvasCleared())},
+        treeAdd: (im, id) => {dispatch(treeAdd(im, id))}
     })
 }
 

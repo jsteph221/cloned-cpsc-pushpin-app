@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import ReactScrollbar from 'react-scrollbar-js';
+import {treeSelect} from '../actions';
 
 class LayerTree extends Component {
 
@@ -49,7 +50,7 @@ class LayerTree extends Component {
     mapToImage(imageURLs){
 
         return imageURLs.map((url) =>                              
-            <p><img src={url} style={{height: 30, width: 30, padding:10}} /> <br /></p>);
+            <p><img src={url} onClick={() => this.props.tree_select()} style={{height: 30, width: 30, padding:10}} /> <br /></p>);
 
     }
 
@@ -69,16 +70,20 @@ LayerTree.propTypes = {
     new_image: PropTypes.string.isRequired,
     new_zindex: PropTypes.number.isRequired,
     object_id: PropTypes.number.isRequired,
+    new_id: PropTypes.number.isRequired,
     event: PropTypes.string.isRequired,
-    index_to_remove: PropTypes.number.isRequired
+    index_to_remove: PropTypes.number.isRequired,
+    tree_select: PropTypes.func.isRequired
 }
 
 LayerTree.defaultProps = {
     new_image: "",
     new_zindex: 0,
     object_id: 0,
+    new_id: 0,
     index_to_remove: 0,
-    event: ""
+    event: "",
+    tree_select: (id) => console.log(id+" was selected")
 }
 
 const mapStateToProps = (state) => {
@@ -86,6 +91,7 @@ const mapStateToProps = (state) => {
 		new_image: state.tree.new_image,
 		new_zindex: state.tree.new_zindex,
 		object_id: state.tree.object_id,
+		new_id: state.tree.new_id,
 		index_to_remove: state.tree.index_to_remove,
 		event: state.tree.event
 	}
