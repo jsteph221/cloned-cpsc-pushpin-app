@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 //import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared} from '../actions'
+import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -319,6 +319,7 @@ class FabricCanvas extends Component {
     }
 
     addText(){
+        this.props.addText();
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
@@ -557,7 +558,9 @@ FabricCanvas.propTypes = {
     canvasClear: PropTypes.func.isRequired,
     size: PropTypes.number,
     maxSize: PropTypes.number,
-    select_id: PropTypes.number.isRequired
+    select_id: PropTypes.number.isRequired,
+    addText: PropTypes.func.isRequired,
+    addFreehand: PropTypes.func.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -569,8 +572,9 @@ FabricCanvas.defaultProps = {
     imageDelete: (zindex, object) => console.log("zindex is"+zindex),
     canvasClear: () => console.log("canvas cleared"),
     select_id: 0,
-    maxSize: 100
-
+    maxSize: 100,
+    addText: () => console.log("text was added"),
+    addFreehand: () => console.log("freehand was added")
 }
 
 function mapDispatchToProps(dispatch) {
@@ -579,7 +583,9 @@ function mapDispatchToProps(dispatch) {
         imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
         imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))},
         imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))},
-        canvasClear: () => {dispatch(canvasCleared())}
+        canvasClear: () => {dispatch(canvasCleared())},
+        addText: () => {dispatch(textAdd())},
+        addFreehand: () => {dispatch(freehandAdd())}
     })
 }
 

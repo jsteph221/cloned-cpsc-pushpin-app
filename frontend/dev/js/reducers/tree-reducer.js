@@ -22,6 +22,16 @@ export default function tree_reducer(state = initialState, action) {
         		new_image: action.url,
                 event: "new"
             })
+        case 'TEXT_ADDED':
+            return Object.assign({}, state, {
+                new_image: "https://codropspz-tympanus.netdna-ssl.com/codrops/wp-content/uploads/2015/02/TextFill_image5.png",
+                event: "new"
+            })
+        case 'FREEHAND_ADDED':
+            return Object.assign({}, state, {
+                new_image: "https://cdn3.iconfinder.com/data/icons/doodles/100/doodles-36-512.png",
+                event: "new"
+            })
         case 'IMAGE_DELETED':
         	return Object.assign({}, state, {
         		index_to_remove: action.index,
