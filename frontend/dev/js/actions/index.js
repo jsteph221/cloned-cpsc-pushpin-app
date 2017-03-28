@@ -7,6 +7,18 @@ export const pickColor = (color) => {
 	}
 }
 
+export const textAdd = () => {
+	return{
+		type: "TEXT_ADDED"
+	}
+}
+
+export const freehandAdd = () => {
+	return{
+		type: "FREEHAND_ADDED"
+	}
+}
+
 export const treeSelect = (id) => {
 	return{
 		type: "TREE_SELECT",
