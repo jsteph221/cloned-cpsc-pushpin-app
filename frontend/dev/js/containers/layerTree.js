@@ -13,6 +13,7 @@ class LayerTree extends Component {
 	}
 
 	componentWillReceiveProps(nextProps){
+		console.log("cwrp called");
 		if (nextProps.event == "new"){
 			if (this.state.images == []){
 				this.state.images = [nextProps.new_image];
@@ -49,7 +50,7 @@ class LayerTree extends Component {
     mapToImage(imageURLs){
 
         return imageURLs.map((url) =>                              
-            <p><img src={url} style={{height: 30, width: 30, padding:10}} /> <br /></p>);
+            <p><img src={url} style={{height: 30, width: 30, padding:5}} /> <br /></p>);
 
     }
 
@@ -70,7 +71,8 @@ LayerTree.propTypes = {
     new_zindex: PropTypes.number.isRequired,
     object_id: PropTypes.number.isRequired,
     event: PropTypes.string.isRequired,
-    index_to_remove: PropTypes.number.isRequired
+    index_to_remove: PropTypes.number.isRequired,
+    new_id: PropTypes.number.isRequired
 }
 
 LayerTree.defaultProps = {
@@ -78,7 +80,8 @@ LayerTree.defaultProps = {
     new_zindex: 0,
     object_id: 0,
     index_to_remove: 0,
-    event: ""
+    event: "",
+    new_id: 0
 }
 
 const mapStateToProps = (state) => {
@@ -87,7 +90,8 @@ const mapStateToProps = (state) => {
 		new_zindex: state.tree.new_zindex,
 		object_id: state.tree.object_id,
 		index_to_remove: state.tree.index_to_remove,
-		event: state.tree.event
+		event: state.tree.event,
+		new_id: state.tree.new_id
 	}
 }
 
