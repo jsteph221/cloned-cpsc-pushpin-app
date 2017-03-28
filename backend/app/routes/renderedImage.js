@@ -37,7 +37,6 @@ router.post('/image', function(req, res) {
         var newRenderedImage = new RenderedImage();
         buf = new Buffer(req.body.image.replace(/^data:image\/\w+;base64,/,""), 'base64');
         // send image file
-        console.log(newRenderedImage._id);
         var params = {Bucket:s3['bucketName']+'/renderedImages', Key: newRenderedImage.id,Body:buf, ContentEncoding: 'base64',ContentType:'image/png'};
         s3.putObject(params,          
           function(err, data) {
@@ -89,11 +88,12 @@ router.put('/canvas/:rendered_id', function(req, res) {
     if (!renderedImage){
       res.json({ success: false, message: 'no rendered image was found with the given id.'});
     } else{
-      renderedImage.canvas = req.params.canvas;
-      newCustomImage.save(function(err) {
+      renderedImage.serializedCanvas = req.body.canvas;
+      renderedImage.save(function(err) {
         if (err) {
+           console.log(err);
           throw err; 
-        } else{
+        } else{      
           res.json({ success: true, message: 'serialized canvas has been stored in the rendered image document'});
         }
       });
@@ -101,6 +101,17 @@ router.put('/canvas/:rendered_id', function(req, res) {
   });
 });
 
+router.get('/canvas/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no rendered image was found with the given id.'});
+    } else{
+        res.json({success:true, json:renderedImage.serializedCanvas});
+    }
+  });
+});
 router.put('/layer/:rendered_id', function(req, res) {
   RenderedImage.findOne({
     _id: req.params.rendered_id

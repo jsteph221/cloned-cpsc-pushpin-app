@@ -13,7 +13,7 @@ import TreeReducer from './tree-reducer';
 const allReducers = combineReducers({
     slider: SliderReducer,
     library: LibReducer,
-    preview: CanvasReducer,
+    canvas: CanvasReducer,
     color: ColorReducer,
     tree: TreeReducer
 });

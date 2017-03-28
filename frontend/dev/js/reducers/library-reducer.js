@@ -11,12 +11,17 @@ export default function library(state = initialState, action) {
 		case 'IMAGE_SELECTED':
 			return Object.assign({}, state, {
                 src:  action.url,
-                draw: true,
+                event: "draw"
+            })
+        case 'RENDERED_CLICKED':
+            var index = action.url.lastIndexOf('/');
+            var key = action.url.slice(index);
+            return Object.assign({},state,{
+                key:key,
+                event: "addJson"
             })
 		default:
 			return state
 
 	}
-	
-
 }

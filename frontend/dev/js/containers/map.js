@@ -112,9 +112,9 @@ const MapApi = GoogleApiWrapper({
 const mapStateToProps = (state) => {
     return {
         value: state.slider.value,
-        url: state.preview.src,
-        sizeX: state.preview.sizeX,
-        sizeY: state.preview.sizeY,
+        url: state.canvas.src,
+        sizeX: state.canvas.sizeX,
+        sizeY: state.canvas.sizeY,
     }
 }
 

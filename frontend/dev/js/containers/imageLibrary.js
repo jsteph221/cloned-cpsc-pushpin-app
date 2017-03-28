@@ -5,8 +5,9 @@ import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
 import server from '../config/server';
-import {selectImage} from '../actions';
+import {selectImage,selectRendered} from '../actions';
 
+import Modal from 'react-modal';
 //image upload
 import Dropzone from 'react-dropzone';
 
@@ -15,6 +16,22 @@ import SizeSlider from '../containers/slider'
 /*
  * We need "if(!this.props.user)" because we set state to null by default
  * */
+const customStyles = {      
+          overlay : {
+            backgroundColor   : 'rgba(0, 0, 0, 0.5)'
+          },
+          content : {
+            margin: '15% auto',
+            left:'300',
+            right:'490',
+            width: '30%',
+            height:'30%',
+            background: '#fefefe',
+            overflow : 'hiddden',
+            padding:'0px',
+          }
+      
+    };
 
 class ImageLibrary extends Component {
 
@@ -26,6 +43,11 @@ class ImageLibrary extends Component {
         this.getRenderedImages = this.getRenderedImages.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.imageClick = this.imageClick.bind(this);
+        this.renderedImageClick = this.renderedImageClick.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.addJson = this.addJson.bind(this);
+
         this.mapToImage = this.mapToImage.bind(this);
         
         
@@ -37,11 +59,33 @@ class ImageLibrary extends Component {
         this.state = {
             projects: [], 
             customImagesLibrary: this.mapToImage(this.getCustomImages()),
-            renderedImagesLibrary: this.mapToImage(this.getRenderedImages()),
+            baseImagesLibrary:this.mapToImage(this.getBaseImages()),
+            interiorImagesLibrary:this.mapToImage(this.getInteriorImages()),
+            renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages()),
+            activeJsonKey:"",
+            modalIsOpen:false,
         };
 	};
+    shouldComponentUpdate(nextProps,nextState){        
+        return true;        
+    }
+    componentWillReceiveProps(nextProps){
+        if (nextProps.new_imageKey != this.props.new_imageKey){
+            this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
+        }
+    }
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
 
+    closeModal() {
+        this.setState({modalIsOpen: false});
+    }
     
+    addJson(){
+        this.closeModal();
+        this.props.renderedImageClicked(this.state.activeJsonKey);
+    }
     
     //implement if needed
     componentDidMount(){     
@@ -132,7 +176,11 @@ class ImageLibrary extends Component {
         this.props.imageClicked(url);
     }
 
-
+    renderedImageClick(url){        
+        this.openModal();
+        this.setState({activeJsonKey:url});
+    }
+    
 	componentWillMount(){
 
         var request = new XMLHttpRequest();
@@ -148,7 +196,7 @@ class ImageLibrary extends Component {
             hashHistory.push("/login");
         }
     }
-
+    
 	getBaseImages(){
         var request = new XMLHttpRequest();
 
@@ -290,12 +338,15 @@ class ImageLibrary extends Component {
                              <img src={url}  onClick={() => this.imageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
 
     }
+    mapToImageRendered(imageURLs){
+        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
+    }
 
     render() {
 
         
-        const baseImages = this.mapToImage(this.getBaseImages());
-        const interiorImages = this.mapToImage(this.getInteriorImages());
+        //const baseImages = this.mapToImage(this.getBaseImages());
+        //const interiorImages = this.mapToImage(this.getInteriorImages());
         
         const imagesFn = ((im) => this.mapToImage(im)).bind(this);
 
@@ -311,11 +362,11 @@ class ImageLibrary extends Component {
             	</TabList>
 
             	<TabPanel>
-            		<p>{baseImages}</p>
+            		<p>{this.state.baseImagesLibrary}</p>
             	</TabPanel>
 
             	<TabPanel>
-            		<p>{interiorImages}</p>
+            		<p>{this.state.interiorImagesLibrary}</p>
             	</TabPanel>
 
                 <TabPanel>
@@ -337,30 +388,53 @@ class ImageLibrary extends Component {
                 <TabPanel>
             		 <SizeSlider/>
             	</TabPanel>
-
-
-
             </Tabs>
+            <Modal
+                isOpen= {this.state.modalIsOpen}
+                onAfterOpen = {this.afterOpenModal}
+                onRequestClose = {this.closeModal}
+                style = {customStyles}
+                contentLabel = "Confirm Modal"
+            >
+            <div style = {{padding:'2px 16px', 'backgroundColor':'#13496e',color: 'white'}}>
+                        <p>Do you want to Download or Load Project into Canvas</p>            
+            </div>
+            <div style = {{padding:'2px 16px'}}>
+                        <p>Loading will remove current objects</p>
+                        <button onClick={this.closeModal}>Cancel</button>
+                        <button onClick={this.addJson}>Load into Canvas</button>
+                        <button>Download</button>
+            </div>
+            </Modal>
 		</div>
         );
     }
 }
 
 ImageLibrary.propTypes = {
-    imageClicked: PropTypes.func.isRequired
+    imageClicked: PropTypes.func.isRequired,
+    renderedImageClicked: PropTypes.func.isRequired
 }
 
 ImageLibrary.defaultProps = {
-    imageClicked: (image) => console.log(image+" was clicked\n")
+    imageClicked: (image) => console.log(image+" was clicked\n"),
+    renderedImageClicked: (image) =>console.log(image+" was clicked\n"),    
 }
 
 function mapDispatchToProps(dispatch) {
     return ({
-        imageClicked: (url) => {dispatch(selectImage(url))}
+        imageClicked: (url) => {dispatch(selectImage(url))},
+        renderedImageClicked: (url) => {dispatch(selectRendered(url))}
     })
 }
 
+const mapStateToProps = (state) => {
+	return {
+        new_imageKey: state.canvas.new_imageKey        
+	}
+}
 
-const LibraryContainer = connect(null, mapDispatchToProps)(ImageLibrary);
+
+const LibraryContainer = connect(mapStateToProps, mapDispatchToProps)(ImageLibrary);
 
 export default LibraryContainer;

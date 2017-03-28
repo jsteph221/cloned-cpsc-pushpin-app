@@ -5,32 +5,32 @@ export const pickColor = (color) => {
 		type: "COLOR_PICKED",
 		color: color
 	}
-}
+};
 
 export const textAdd = () => {
 	return{
 		type: "TEXT_ADDED"
 	}
-}
+};
 
 export const freehandAdd = () => {
 	return{
 		type: "FREEHAND_ADDED"
 	}
-}
+};
 
 export const treeSelect = (id) => {
 	return{
 		type: "TREE_SELECT",
 		selection: id
 	}
-}
+};
 
 export const canvasCleared = () => {
 	return{
 		type: "CANVAS_CLEARED"
 	}
-}
+};
 
 export const imageBroughtUp = (index, object) => {
 	return{
@@ -38,7 +38,7 @@ export const imageBroughtUp = (index, object) => {
 		index: index,
 		object: object
 	}
-}
+};
 
 export const imageSentDown = (index, object) => {
 	return{
@@ -46,7 +46,7 @@ export const imageSentDown = (index, object) => {
 		index: index,
 		object: object
 	}
-}
+};
 
 export const imageDeleted = (index, object) => {
 	return{
@@ -54,18 +54,18 @@ export const imageDeleted = (index, object) => {
 		index: index,
 		object: object
 	}
-}
+};
+export const imageAddedJson = (url) => {
+    return {
+        type: "IMAGE_ADDED",
+        url:url
+    }
+};
 
 export const selectImage = (image) => {
 	return{
 		type: IMAGE_SELECTED,
 		url: image
-	}
-};
-export const imageSaved = (image) => {
-	return{
-		type: "IMAGE_SAVED",
-		url: image,
 	}
 };
 
@@ -84,3 +84,16 @@ export const previewImage = (image,x,y) => {
         sizeY:y
 	}
 };
+export const selectRendered = (image)=>{
+    return{
+        type:'RENDERED_CLICKED',
+        url:image
+    }
+}
+export const imageRendered = (key) => {
+	return{
+		type: "IMAGE_SAVED",
+        key: key
+	}
+}
+
