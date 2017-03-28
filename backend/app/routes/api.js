@@ -34,7 +34,9 @@ router.post('/authenticate', function(req, res) {
           expiresIn : 60*60*24 // expires in 24 hours
         });
 
-        res.cookie('token', token, {maxAge: 60*60*24, httpOnly:true});
+        var time = 60*60*24;
+
+        res.cookie('token', token, {maxAge: time, httpOnly:true});
 
         // return the information including token as JSON
         res.json({

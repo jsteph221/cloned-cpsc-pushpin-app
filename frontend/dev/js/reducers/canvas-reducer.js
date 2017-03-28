@@ -21,7 +21,7 @@ export default function preview(state = initialState, action) {
             })
         case 'TREE_SELECT':
         	return Object.assign({},state,{
-            	selection: action.selection 
+            	selection: action.selection
             })
 		default:
 			return state

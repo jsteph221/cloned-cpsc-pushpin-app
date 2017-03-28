@@ -208,7 +208,7 @@ class FabricCanvas extends Component {
         this.setState({range:value})
     }
 
-    //Added so canvas would not rerender on props change
+    //Added so canvas would not rerender on props change 
     
     shouldComponentUpdate(nextProps, nextState){
         console.log("Something Changed");
@@ -354,12 +354,15 @@ class FabricCanvas extends Component {
     }
 
     setHalo(){
+        /*
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
             object.setShadow({color: cHex, blur: 100 });
             canvas.renderAll();
         }
+        */
+        this.selectObject(1);
 
     }
 
@@ -560,7 +563,8 @@ FabricCanvas.propTypes = {
     maxSize: PropTypes.number,
     select_id: PropTypes.number.isRequired,
     addText: PropTypes.func.isRequired,
-    addFreehand: PropTypes.func.isRequired
+    addFreehand: PropTypes.func.isRequired,
+    new_id: PropTypes.number.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -572,6 +576,7 @@ FabricCanvas.defaultProps = {
     imageDelete: (zindex, object) => console.log("zindex is"+zindex),
     canvasClear: () => console.log("canvas cleared"),
     select_id: 0,
+    new_id: 0,
     maxSize: 100,
     addText: () => console.log("text was added"),
     addFreehand: () => console.log("freehand was added")
@@ -595,7 +600,8 @@ const mapStateToProps = (state) => {
 		images:state.library.src,
         size: state.slider.value,
 		color: state.color.color,
-        select_id: state.preview.selection
+        select_id: state.preview.selection,
+        new_id: state.library.new_id
 	}
 }
 

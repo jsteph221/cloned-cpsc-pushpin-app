@@ -38,6 +38,7 @@ class ImageLibrary extends Component {
             projects: [], 
             customImagesLibrary: this.mapToImage(this.getCustomImages()),
             renderedImagesLibrary: this.mapToImage(this.getRenderedImages()),
+            image_number: 0,
         };
 	};
 
@@ -129,7 +130,9 @@ class ImageLibrary extends Component {
     
     
     imageClick(url){ 
-        this.props.imageClicked(url);
+        var image_number = this.state.image_number;
+        this.state.image_number = this.state.image_number + 1;
+        this.props.imageClicked(url, image_number);
     }
 
 
@@ -351,12 +354,12 @@ ImageLibrary.propTypes = {
 }
 
 ImageLibrary.defaultProps = {
-    imageClicked: (image) => console.log(image+" was clicked\n")
+    imageClicked: (image, id) => console.log(image+" was clicked\n")
 }
 
 function mapDispatchToProps(dispatch) {
     return ({
-        imageClicked: (url) => {dispatch(selectImage(url))}
+        imageClicked: (url, id) => {dispatch(selectImage(url, id))}
     })
 }
 

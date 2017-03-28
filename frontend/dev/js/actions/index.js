@@ -56,10 +56,11 @@ export const imageDeleted = (index, object) => {
 	}
 }
 
-export const selectImage = (image) => {
+export const selectImage = (image, id) => {
 	return{
 		type: IMAGE_SELECTED,
-		url: image
+		url: image,
+		id: id
 	}
 };
 export const imageSaved = (image) => {

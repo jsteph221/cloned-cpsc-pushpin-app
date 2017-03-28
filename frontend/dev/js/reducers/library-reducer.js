@@ -12,6 +12,7 @@ export default function library(state = initialState, action) {
 			return Object.assign({}, state, {
                 src:  action.url,
                 draw: true,
+            	new_id: action.id
             })
 		default:
 			return state
