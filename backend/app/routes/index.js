@@ -16,7 +16,6 @@ router.post('/finalPin',function(req,res){
 
         params = {Bucket:myBucket, Key:req.body.title, Body:buf, ContentEncoding: 'base64',
             ContentType:'image/png'};
-        console.log("Sending to s3: ");
         s3.putObject(params,function(err, data){
             if (err){
                 console.log("Error Sending to S3");

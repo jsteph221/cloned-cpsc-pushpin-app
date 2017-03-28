@@ -1,11 +1,11 @@
-import {previewImage,imageSaved} from '../actions';
+import {previewImage,imageSaved,imageRendered} from '../actions';
 
 const initialState = {
 
 	src: ""
 }
 
-export default function preview(state = initialState, action) {
+export default function canvas_reducer(state = initialState, action) {
 
 	switch (action.type){
 
@@ -14,18 +14,21 @@ export default function preview(state = initialState, action) {
                 src:  action.url,
                 sizeX: action.sizeX,
                 sizeY: action.sizeY,
+                event: "preview"
             })
         case 'IMAGE_SAVED':
             return Object.assign({},state,{
-              url: action.url  
+                new_imageKey:action.key,
             })
         case 'TREE_SELECT':
         	return Object.assign({},state,{
-            	selection: action.selection
+            	selection: action.selection,
+                event:"tree_select"
             })
 		default:
 			return state
 
 	}
 }
+	
 	

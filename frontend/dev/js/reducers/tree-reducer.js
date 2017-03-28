@@ -43,6 +43,11 @@ export default function tree_reducer(state = initialState, action) {
         	return Object.assign({}, state, {
                 event: "clear"
             })
+        case 'IMAGE_ADDED':
+            return Object.assign({}, state, {
+        		new_image: action.url,
+                event: "new"
+            })
 		default:
 			return state
 
