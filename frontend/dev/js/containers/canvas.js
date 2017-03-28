@@ -28,6 +28,8 @@ var alpha;
 var rgb;
 var color_code = 0;
 
+
+
 function saveRenderedCanvas(dataURI){
     $.ajax(
         {
@@ -194,7 +196,11 @@ class FabricCanvas extends Component {
         this.clearCanvas = this.clearCanvas.bind(this);
         this.removeWhiteSpace = this.removeWhiteSpace.bind(this);
         this.tryAnotherColor = this.tryAnotherColor.bind(this);
+       
+        
 	}
+    
+    
     //Global Canvas variable
     openModal() {
         this.setState({modalIsOpen: true});
@@ -234,7 +240,9 @@ class FabricCanvas extends Component {
         isDrawingMode: false,
         });
         this.setState({
-            canvas});           
+            canvas});   
+        
+    
     }
 
     selectObject(id){
@@ -398,7 +406,10 @@ class FabricCanvas extends Component {
             object.setFill(pallete[color_code]);
             canvas.renderAll();
         }
-        else if (object!= null){
+        else if (object == null){
+            alert('Select the base image by clicking on the base image.');
+        }
+        else{    
             object.setFill(pallete[color_code]);
             object.filters.push(filter);
             object.applyFilters(canvas.renderAll.bind(canvas));
@@ -410,7 +421,17 @@ class FabricCanvas extends Component {
             else {
                 color_code = color_code + 1;
             }
+            
+            //save the canvas
+            var activeCanvas = this.state.canvas; 
+            activeCanvas.discardActiveObject();       
+            var ctx = canvas.getContext('2d');
+
+            var img = canvasToImage(ctx,canvas,this.props.size);
+            var saved = saveRenderedCanvas(img.src);
         }
+        
+            
         
     }
     
@@ -505,7 +526,7 @@ class FabricCanvas extends Component {
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
                 <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
-                    <button onClick = {this.tryAnotherColor}>Try Another Color</button>
+                    <button onClick = {this.tryAnotherColor}>Try Another Color For Base Image</button>
                     <button onClick = {this.saveButton}>Save Image</button>
                     <button onClick = {this.buttonClick}>Preview</button> 
                     <button onClick = {this.openModal}>Create Group</button>
@@ -540,6 +561,7 @@ class FabricCanvas extends Component {
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
                     <button onClick = {this.clearCanvas}>Clear Canvas</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
+            
             
                 </div>  
             </div>          
