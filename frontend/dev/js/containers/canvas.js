@@ -385,16 +385,12 @@ class FabricCanvas extends Component {
     }
 
     setHalo(){
-        /*
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
             object.setShadow({color: cHex, blur: 100 });
             canvas.renderAll();
         }
-        */
-        this.selectObject(1);
-
     }
 
     clearCanvas(){
