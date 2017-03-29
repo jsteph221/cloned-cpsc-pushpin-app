@@ -175,8 +175,7 @@ class FabricCanvas extends Component {
         this.getProjects = this.getProjects.bind(this);
         this.addJsonToCanvas = this.addJsonToCanvas.bind(this);
         this.saveRenderedCanvas = this.saveRenderedCanvas.bind(this);
-       
-        
+        this.addFreehand = this.addFreehand.bind(this);
 	}
     
     
@@ -224,7 +223,15 @@ class FabricCanvas extends Component {
         isDrawingMode: false,
         });
         this.setState({
-            canvas}); 
+            canvas});
+
+        
+        var freeAdd = () => this.addFreehand();
+
+        canvas.on('path:created', function(event) {
+            // only happens when freehand object is added
+            freeAdd();
+        })
     }
     addJsonToCanvas(key){
         console.log("in add to json canvas");
@@ -353,11 +360,17 @@ class FabricCanvas extends Component {
         
     }
 
+    addFreehand(){
+        var image_number = this.state.image_number;
+        this.state.image_number = this.state.image_number + 1;
+        this.props.addFreehand(image_number);
+    }
+
     addText(){
-        this.props.addText();
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
+        this.props.addText(image_number);
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
@@ -724,8 +737,8 @@ function mapDispatchToProps(dispatch) {
         imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))},
         imageAdded: (url) => {dispatch(imageAddedJson(url))},
         canvasClear: () => {dispatch(canvasCleared())},
-        addText: () => {dispatch(textAdd())},
-        addFreehand: () => {dispatch(freehandAdd())},
+        addText: (id) => {dispatch(textAdd(id))},
+        addFreehand: (id) => {dispatch(freehandAdd(id))},
         imageSaved:(key)=>{dispatch(imageRendered(key))}
     })
 }
