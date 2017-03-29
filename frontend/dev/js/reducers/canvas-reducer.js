@@ -22,8 +22,9 @@ export default function canvas_reducer(state = initialState, action) {
             })
         case 'TREE_SELECT':
         	return Object.assign({},state,{
-            	selection: action.selection,
-                event:"tree_select"
+            	select_id: action.id,
+            	tree_num: action.tree_num,
+                event: "tree_select"
             })
 		default:
 			return state

@@ -19,10 +19,11 @@ export const freehandAdd = () => {
 	}
 };
 
-export const treeSelect = (id) => {
+export const treeSelect = (id, num) => {
 	return{
 		type: "TREE_SELECT",
-		selection: id
+		id: id,
+		tree_num: num
 	}
 };
 
