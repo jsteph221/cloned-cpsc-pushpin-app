@@ -267,8 +267,9 @@ class FabricCanvas extends Component {
 	    }                     
     }
 
+    // Selects object based on the current layer
+    // Layer 0 corresponds to the image that is the furthest back
     selectObject(id){
-        console.log("selecting object id = "+id);
         var canvas = this.state.canvas;
         canvas.setActiveObject(canvas.item(id));
     }
