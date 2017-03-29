@@ -28,9 +28,6 @@ var alpha;
 var rgb;
 var color_code = 0;
 
-
-
-
 function saveCanvasJSON(json,project,key){
     var canvasEndPoint = server+"/api/projects/"+project+"/renderedImages/canvas/"+key
     $.ajax({
@@ -150,6 +147,7 @@ class FabricCanvas extends Component {
             canvas : null,
             text: "Freehand On",
             image_number: 0,
+            selection: -1
         };
         
         this.openModal = this.openModal.bind(this);
@@ -195,11 +193,10 @@ class FabricCanvas extends Component {
         this.setState({range:value})
     }
 
-    //Added so canvas would not rerender on props change 
+    //Added so canvas would not rerender on props change
     
     shouldComponentUpdate(nextProps, nextState){
-        console.log(nextProps)
-        console.log(nextState)
+        var shouldSelect = ((nextProps.select_id != this.props.select_id) || (nextProps.tree_num != this.props.tree_num));
         if (nextState.modalIsOpen != this.state.modalIsOpen){
             return true;
         }
@@ -209,9 +206,14 @@ class FabricCanvas extends Component {
         if (nextState.range != this.state.range){
             return true;
         }
+        if (shouldSelect){
+            this.selectObject(nextProps.select_id);
+            return false;
+        }
         if (nextProps.event == "draw" && this.props.size == nextProps.size){
             this.drawImage(nextProps.image);
-        }if (nextProps.event == "addJson" && this.props.size == nextProps.size){
+        }
+        else if (nextProps.event == "addJson" && this.props.size == nextProps.size){
             this.addJsonToCanvas(nextProps.jsonKey);
         }
         return false;
@@ -265,6 +267,8 @@ class FabricCanvas extends Component {
 	    }                     
     }
 
+    // Selects object based on the current layer
+    // Layer 0 corresponds to the image that is the furthest back
     selectObject(id){
         var canvas = this.state.canvas;
         canvas.setActiveObject(canvas.item(id));
@@ -689,6 +693,7 @@ FabricCanvas.propTypes = {
     jsonKey: PropTypes.string,
     event: PropTypes.string.isRequired,
     imageSaved: PropTypes.func.isRequired,
+    tree_num: PropTypes.number.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -701,13 +706,14 @@ FabricCanvas.defaultProps = {
     imageAdded:(url)=>console.log("image added"),
     canvasClear: () => console.log("canvas cleared"),
     imageSaved:(key)=>console.log("Image Saved"),
-    select_id: 0,
+    select_id: -1,
     new_id: 0,
     maxSize: 100,
     addText: () => console.log("text was added"),
     addFreehand: () => console.log("freehand was added"),
     event:"",
-    jsonKey:""
+    jsonKey:"",
+    tree_num: -1
 }
 
 function mapDispatchToProps(dispatch) {
@@ -730,10 +736,11 @@ const mapStateToProps = (state) => {
 		image:state.library.src,
         size: state.slider.value,
 		color: state.color.color,
-        select_id: state.canvas.selection,
+        select_id: state.canvas.select_id,
         new_id: state.library.new_id,
         jsonKey: state.library.key,
-        event: state.library.event        
+        event: state.library.event,
+        tree_num: state.canvas.tree_num
 	}
 }
 

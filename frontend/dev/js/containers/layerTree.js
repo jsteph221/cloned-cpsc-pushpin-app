@@ -1,25 +1,33 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import ReactScrollbar from 'react-scrollbar-js';
+import {treeSelect} from '../actions';
 
 class LayerTree extends Component {
 
 	constructor(props){
 		super(props);
 		this.mapToImage = this.mapToImage.bind(this);
+		this.tree_click = this.tree_click.bind(this);
 		this.state = {
-			images: []
+			images: [],
+			num_selected: 0
 		}
 	}
 
+	tree_click(id){
+		var index = this.state.images.findIndex(im => im.id == id);
+		var zindex = this.state.images.length - index - 1;
+		this.props.tree_click(zindex, ++this.state.num_selected);
+	}
+
 	componentWillReceiveProps(nextProps){
-		console.log("cwrp called");
 		if (nextProps.event == "new"){
 			if (this.state.images == []){
-				this.state.images = [nextProps.new_image];
+				this.state.images = [{url: nextProps.new_image, id: nextProps.new_id}];
 			}
 			else{
-				this.state.images = [nextProps.new_image].concat(this.state.images);
+				this.state.images = [{url: nextProps.new_image, id: nextProps.new_id}].concat(this.state.images);
 			}
 		}
 		else if (nextProps.event == "up"){
@@ -47,10 +55,10 @@ class LayerTree extends Component {
 		}
 	}
 
-    mapToImage(imageURLs){
+    mapToImage(imageURLs, imageIDs){
 
-        return imageURLs.map((url) =>                              
-            <p><img src={url} style={{height: 30, width: 30, padding:5}} /> <br /></p>);
+        return imageURLs.map((obj) =>                              
+            <p><img src={obj.url} onClick={() => this.tree_click(obj.id)} style={{height: 30, width: 30, padding:5}} /> <br /></p>);
 
     }
 
@@ -72,7 +80,8 @@ LayerTree.propTypes = {
     object_id: PropTypes.number.isRequired,
     event: PropTypes.string.isRequired,
     index_to_remove: PropTypes.number.isRequired,
-    new_id: PropTypes.number.isRequired
+    new_id: PropTypes.number.isRequired,
+    tree_click: PropTypes.func.isRequired
 }
 
 LayerTree.defaultProps = {
@@ -81,7 +90,8 @@ LayerTree.defaultProps = {
     object_id: 0,
     index_to_remove: 0,
     event: "",
-    new_id: 0
+    new_id: 0,
+    tree_click: () => console.log("id "+obj.id+" was clicked")
 }
 
 const mapStateToProps = (state) => {
@@ -95,6 +105,12 @@ const mapStateToProps = (state) => {
 	}
 }
 
-const LayerContainer = connect(mapStateToProps, null)(LayerTree);
+function mapDispatchToProps(dispatch){
+	return ({
+		tree_click: (id, num) => {dispatch(treeSelect(id, num))}
+	})
+}
+
+const LayerContainer = connect(mapStateToProps, mapDispatchToProps)(LayerTree);
 
 export default LayerContainer;
