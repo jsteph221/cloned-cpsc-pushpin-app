@@ -2,7 +2,6 @@
 
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-//import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
 import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
@@ -10,11 +9,7 @@ import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
 import LayerTree from '../containers/layerTree'
-
-
-import { SwatchesPicker } from 'react-color'
 import SizeSlider from '../containers/slider'
-
 import server from '../config/server';
 
 var width = $(window).width();
@@ -695,18 +690,28 @@ class FabricCanvas extends Component {
         return (
             <div>
                 
-                <div className = "image-list" style = {{height: 300, width: 150, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
+                <div className = "image-list" style = {{height: 300, width: 55, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
                     <LayerTree />
+                </div>
+                <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
+                    <div className = "library-spacing" />
+                    <img onClick = {this.moveObjectForward} className = "up-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" />
+                    <img onClick = {this.deleteActiveObject} className = "delete-icon" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/>
+                    <img onClick = {this.moveObjectBackward} className = "down-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" />
                 </div>
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <canvas id = "c" width={300} height={300}></canvas>   
                 </div>
+                <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
+                    <img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "textAdder" />
+                    <img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "colorAdder" />
+                    <img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "previewAdder" />
+                    <img onClick = {this.saveButton} src = "https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-32.png" className = "saveAdder" />
+                </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
-                <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
-                    <button onClick = {this.tryAnotherColor}>Try Another Color For Base Image</button>
-                    <button onClick = {this.saveButton}>Save Image</button>
-                    <button onClick = {this.buttonClick}>Preview</button> 
-                    <button onClick = {this.openModal}>Create Group</button>
+                <div className = "buttons" style = {{height: 30, width: 900, float:'left'}}>
+                    <button onClick = {this.openModal}>Create Group by Size</button>
+                    <button onClick = {this.tryAnotherColor}>Create Group by Base Colors</button>
                     <Modal
                         isOpen = {this.state.modalIsOpen}
                         onAfterOpen = {this.afterOpenModal}
@@ -729,11 +734,6 @@ class FabricCanvas extends Component {
                         <button onClick={this.saveGroup}>Save</button>
                     </div>
                     </Modal>
-                    <button onClick = {this.moveObjectForward}>Bring Forward</button>
-                    <button onClick = {this.moveObjectBackward}>Send Backward</button>
-                    <button onClick = {this.deleteActiveObject}>Delete Object</button>
-                    <button onClick = {this.addText}>Add Text</button>
-                    <button onClick = {this.selectColor}>Color Fill</button>
                     <button onClick = {this.setHalo}>Set Halo</button>
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
                     <button onClick = {this.clearCanvas}>Clear Canvas</button>
