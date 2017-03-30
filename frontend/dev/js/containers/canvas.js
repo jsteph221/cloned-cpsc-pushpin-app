@@ -145,7 +145,7 @@ class FabricCanvas extends Component {
             image_number: 0,
             selection: -1,
             colorModalIsOpen:false,
-            freehandColor: 'white',
+            freehandColor: 'transparent',
             colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
         };
         
@@ -596,11 +596,11 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
         
-        if(this.state.freehandColor == 'white'){
+        if(this.state.freehandColor == 'transparent'){
             this.setState({freehandColor : 'green'});
         }
         else{
-            this.setState({freehandColor : 'white'});
+            this.setState({freehandColor : 'transparent'});
         }
         canvas.renderAll();
     }
@@ -714,11 +714,11 @@ class FabricCanvas extends Component {
 
                     <a data-tip data-for='addText'><img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "iconButton" /></a>
                     <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo.png')} className = "iconButton"/></a>
+                    <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo2.png')} className = "iconButton"/></a>
                     <a data-tip data-for='enterDrawingMode'><img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/15.Pencil-32.png" className = "iconButton" /></a>
                     <a data-tip data-for='buttonClick'><img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" /></a>
                     <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/upload2-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-48.png" className = "iconButton" /></a>
+                    <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-32.png" className = "iconButton" /></a>
                     
                     <ReactTooltip id='moveObjectForward' type='warning'>
                       <span>Move selected object forward</span>
