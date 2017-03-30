@@ -4,13 +4,14 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
+import {treeAdd, previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
 import LayerTree from '../containers/layerTree'
 import SizeSlider from '../containers/slider'
 import server from '../config/server';
+import ReactTooltip from 'react-tooltip';
 
 var width = $(window).width();
 var height = $(window).height();
@@ -144,6 +145,7 @@ class FabricCanvas extends Component {
             image_number: 0,
             selection: -1,
             colorModalIsOpen:false,
+            freehandColor: 'white',
             colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
         };
         
@@ -211,6 +213,9 @@ class FabricCanvas extends Component {
             return true;
         }
         if (nextState.text != this.state.text){
+            return true;
+        }
+        if (nextState.freehandColor != this.state.freehandColor){
             return true;
         }
         if (nextState.range != this.state.range){
@@ -339,6 +344,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
+        this.props.treeAdd(image, image_number);
 
         fabric.Image.fromURL(image, function(oImg){
             oImg.id = image_number;
@@ -591,11 +597,11 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
         
-        if(this.state.text == "Freehand Off"){
-            this.setState({text : "Freehand On"});
+        if(this.state.freehandColor == 'white'){
+            this.setState({freehandColor : 'green'});
         }
         else{
-            this.setState({text : "Freehand Off"});
+            this.setState({freehandColor : 'white'});
         }
         canvas.renderAll();
     }
@@ -693,23 +699,66 @@ class FabricCanvas extends Component {
                 <div className = "image-list" style = {{height: 300, width: 55, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
                     <LayerTree />
                 </div>
+
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-spacing" />
-                    <img onClick = {this.moveObjectForward} className = "up-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" />
-                    <img onClick = {this.deleteActiveObject} className = "delete-icon" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/>
-                    <img onClick = {this.moveObjectBackward} className = "down-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" />
+                    <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" /></a>
+                    <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/></a>
+                    <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" /></a>
                 </div>
+
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <canvas id = "c" width={300} height={300}></canvas>   
                 </div>
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
-                    <img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "textAdder" />
-                    <img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "colorAdder" />
-                    <img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "previewAdder" />
-                    <img onClick = {this.saveButton} src = "https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-32.png" className = "saveAdder" />
+                    <div className = "library-right-spacing" />
+
+                    <a data-tip data-for='addText'><img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo.png')} className = "iconButton"/></a>
+                    <a data-tip data-for='enterDrawingMode'><img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/15.Pencil-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='buttonClick'><img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/upload2-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-48.png" className = "iconButton" /></a>
+                    
+                    <ReactTooltip id='moveObjectForward' type='warning'>
+                      <span>Move selected object forward</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='deleteActiveObject' type='warning'>
+                      <span>Delete selected object</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='moveObjectBackward' type='warning'>
+                      <span>move selected object backwards</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='addText' type='warning'>
+                      <span>Add text to current Project</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='selectColor' type='warning'>
+                      <span>Fill in color to selected object</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='setHalo' type='warning'>
+                      <span>Add Halo to selected Object</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='enterDrawingMode' type='warning'>
+                      <span>Enter freehand drawing mode</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='buttonClick' type='warning'>
+                      <span>Preview project on the map</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='saveButton' type='warning'>
+                      <span>Save current project</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='clearCanvas' type='warning'>
+                      <span>Clear current project</span>
+                    </ReactTooltip>
+
+
+
+
+
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
-                <div className = "buttons" style = {{height: 30, width: 900, float:'left'}}>
+                <div className = "buttons" style = {{height: 30, width: 980, float:'left'}}>
                     <button onClick = {this.openModal}>Create Group by Size</button>
                     <button onClick = {this.tryAnotherColor}>Create Group by Base Colors</button>
                     <Modal
@@ -734,9 +783,6 @@ class FabricCanvas extends Component {
                         <button onClick={this.saveGroup}>Save</button>
                     </div>
                     </Modal>
-                    <button onClick = {this.setHalo}>Set Halo</button>
-                    <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
-                    <button onClick = {this.clearCanvas}>Clear Canvas</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
                     <button onClick = {this.removeWhiteSpace} style = {{height: 20, width: 20, backgroundColor:'#13496e' }}></button>
                     {this.state.colorList}
@@ -768,7 +814,8 @@ FabricCanvas.propTypes = {
     jsonKey: PropTypes.string,
     event: PropTypes.string.isRequired,
     imageSaved: PropTypes.func.isRequired,
-    tree_num: PropTypes.number.isRequired
+    tree_num: PropTypes.number.isRequired,
+    treeAdd: PropTypes.func.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -786,6 +833,7 @@ FabricCanvas.defaultProps = {
     maxSize: 100,
     addText: () => console.log("text was added"),
     addFreehand: () => console.log("freehand was added"),
+    treeAdd: () => console.log("added to tree"),
     event:"",
     jsonKey:"",
     tree_num: -1
@@ -801,7 +849,8 @@ function mapDispatchToProps(dispatch) {
         canvasClear: () => {dispatch(canvasCleared())},
         addText: (id) => {dispatch(textAdd(id))},
         addFreehand: (id) => {dispatch(freehandAdd(id))},
-        imageSaved:(key)=>{dispatch(imageRendered(key))}
+        imageSaved:(key)=>{dispatch(imageRendered(key))},
+        treeAdd: (im, id)=>{dispatch(treeAdd(im,id))}
     })
 }
 

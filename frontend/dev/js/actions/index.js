@@ -58,12 +58,21 @@ export const imageDeleted = (index, object) => {
 		object: object
 	}
 };
+
 export const imageAddedJson = (url) => {
     return {
         type: "IMAGE_ADDED",
         url:url
     }
 };
+
+export const treeAdd = (image, id) => {
+	return{
+		type: "TREE_ADD",
+		url: image,
+		id: id
+	}
+}
 
 export const selectImage = (image, id) => {
 	return{

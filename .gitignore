@@ -2,3 +2,5 @@
 .vscode
 frontend/dev/.DS_Store
 frontend/dev/js/.DS_Store
+backend/app/public/js/bundle.min.js
+frontend/stats.json
