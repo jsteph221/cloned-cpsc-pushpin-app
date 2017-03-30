@@ -69,11 +69,22 @@ button:hover {
 }
 
 .iconButton {
-  padding-left: 4px;
+  padding-left: 7px;
   padding-right: 10px;
 }
 
 .iconButton:hover {
+  padding-left: 4px;
+  padding-right: 10px;
+  background-color: rgba(22,160,133, 0.5);
+}
+
+.trashIcon{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.trashIcon:hover{
   padding-left: 4px;
   padding-right: 10px;
   background-color: rgba(22,160,133, 0.5);
