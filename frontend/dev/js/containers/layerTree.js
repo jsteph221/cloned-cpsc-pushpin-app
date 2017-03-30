@@ -55,10 +55,10 @@ class LayerTree extends Component {
 		}
 	}
 
-    mapToImage(imageURLs, imageIDs){
+    mapToImage(images){
 
-        return imageURLs.map((obj) =>                              
-            <p><img src={obj.url} onClick={() => this.tree_click(obj.id)} style={{height: 30, width: 30, padding:5}} /> <br /></p>);
+        return images.map((obj) =>                              
+            <p><img src={obj.url} onClick={() => this.tree_click(obj.id)} style={{height: 25, width: 25, padding:5}} /> <br /></p>);
 
     }
 
@@ -66,7 +66,7 @@ class LayerTree extends Component {
 		const treeImages = this.mapToImage(this.state.images);
 
 		return (
-			<ReactScrollbar style = {{height: 300, width: 150}}>
+			<ReactScrollbar style = {{height: 300, width: 55}}>
 				<div>{treeImages}</div>
 			</ReactScrollbar>
 		);

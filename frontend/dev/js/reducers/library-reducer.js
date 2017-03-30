@@ -1,7 +1,6 @@
 import {selectUser} from '../actions';
 
 const initialState = {
-
 	src: ""
 }
 export default function library(state = initialState, action) {

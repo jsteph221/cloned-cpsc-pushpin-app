@@ -16,8 +16,9 @@ h2 {
 }
 
 .map{
-	float: left;
 	margin: 1%;
+  padding-left: 678px;
+  padding-top: 31px;
 }
 
 .toolBarTabs{
@@ -53,6 +54,39 @@ button{
 button:hover {
     background-color: #006699;
     color: white;
+}
+
+.library-spacing{
+  padding-top: 80px;
+}
+
+.up-arrow{
+  padding-left: 4px;
+}
+
+.delete-icon{
+  padding-left: 4px;
+}
+
+.down-arrow{
+  padding-left: 4px;
+}
+
+.textAdder{
+  padding-top: 60px;
+  padding-left: 4px;
+}
+
+.colorAdder{
+  padding-left: 4px;
+}
+
+.previewAdder{
+  padding-left: 4px;
+}
+
+.saveAdder {
+  padding-left: 4px;
 }
 
 .imgToolBar{

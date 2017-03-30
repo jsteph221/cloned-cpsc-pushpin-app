@@ -7,15 +7,17 @@ export const pickColor = (color) => {
 	}
 };
 
-export const textAdd = () => {
+export const textAdd = (id) => {
 	return{
-		type: "TEXT_ADDED"
+		type: "TEXT_ADDED",
+		id: id
 	}
 };
 
-export const freehandAdd = () => {
+export const freehandAdd = (id) => {
 	return{
-		type: "FREEHAND_ADDED"
+		type: "FREEHAND_ADDED",
+		id: id
 	}
 };
 

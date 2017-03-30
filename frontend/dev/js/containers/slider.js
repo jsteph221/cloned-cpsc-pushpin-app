@@ -8,17 +8,11 @@ import {connect} from 'react-redux';
 class SizeSlider extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            value: 28,
-        };
         this.onSliderChange = this.onSliderChange.bind(this);
         this.onAfterChange= this.onAfterChange.bind(this);
     }
 
     onSliderChange(value) {
-        this.setState({
-            value: value,
-        });
         this.props.changeSize(value);
     }
 
@@ -29,11 +23,11 @@ class SizeSlider extends React.Component {
     render() {
         return (
             <div style = {{height: 100, width: 600, marginLeft: 10}}>
-                <p>{this.state.value}px</p>
+                <p>{this.props.value}px</p>
                 <Slider
                     min={5}
                     max={100}
-                    value={this.state.value}
+                    value={this.props.value}
                     onChange={this.onSliderChange}
                     onAfterChange={this.onAfterChange}
                 />
@@ -60,4 +54,4 @@ function mapDispatchToProps(dispatch) {
     })
 }
 
-export default connect(null, mapDispatchToProps)(SizeSlider);
+export default connect(mapStateToProps, mapDispatchToProps)(SizeSlider);

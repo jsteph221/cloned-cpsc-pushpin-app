@@ -2,7 +2,6 @@
 
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-//import fabric, {Canvas, Text, Image} from 'react-fabricjs';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
 import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
@@ -10,11 +9,7 @@ import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
 import LayerTree from '../containers/layerTree'
-
-
-import { SwatchesPicker } from 'react-color'
 import SizeSlider from '../containers/slider'
-
 import server from '../config/server';
 
 var width = $(window).width();
@@ -128,7 +123,7 @@ function canvasToImage(ctx,canvas,size){
     };
 
 
-const pallete = [
+var pallete = [
     "#F44336",
     "#2196F3",
     "#8BC34A",
@@ -147,7 +142,9 @@ class FabricCanvas extends Component {
             canvas : null,
             text: "Freehand On",
             image_number: 0,
-            selection: -1
+            selection: -1,
+            colorModalIsOpen:false,
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
         };
         
         this.openModal = this.openModal.bind(this);
@@ -175,10 +172,23 @@ class FabricCanvas extends Component {
         this.getProjects = this.getProjects.bind(this);
         this.addJsonToCanvas = this.addJsonToCanvas.bind(this);
         this.saveRenderedCanvas = this.saveRenderedCanvas.bind(this);
-       
-        
+        this.addFreehand = this.addFreehand.bind(this);
+        this.addColor = this.addColor.bind(this);
+        this.deleteColor = this.deleteColor.bind(this);
+        this.openColorModal = this.openColorModal.bind(this);
+        this.closeColorModal = this.closeColorModal.bind(this);
 	}
-    
+
+
+
+    //color pallete module controller
+    openColorModal() {
+        this.setState({colorModalIsOpen: true});
+    }
+
+    closeColorModal() {
+        this.setState({colorModalIsOpen: false});
+    }
     
     //Global Canvas variable
     openModal() {
@@ -206,6 +216,22 @@ class FabricCanvas extends Component {
         if (nextState.range != this.state.range){
             return true;
         }
+
+
+        //color module
+        if (nextState.colorList != this.state.colorList){
+            return true;
+        }
+
+        if (nextState.colorModalIsOpen != this.state.colorModalIsOpen){
+            return true;
+        }
+
+//        if (nextState.canvas != this.state.canvas){
+//            return true;
+//        }
+
+
         if (shouldSelect){
             this.selectObject(nextProps.select_id);
             return false;
@@ -224,7 +250,15 @@ class FabricCanvas extends Component {
         isDrawingMode: false,
         });
         this.setState({
-            canvas}); 
+            canvas});
+
+        
+        var freeAdd = () => this.addFreehand();
+
+        canvas.on('path:created', function(event) {
+            // only happens when freehand object is added
+            freeAdd();
+        })
     }
     addJsonToCanvas(key){
         console.log("in add to json canvas");
@@ -353,11 +387,17 @@ class FabricCanvas extends Component {
         
     }
 
+    addFreehand(){
+        var image_number = this.state.image_number;
+        this.state.image_number = this.state.image_number + 1;
+        this.props.addFreehand(image_number);
+    }
+
     addText(){
-        this.props.addText();
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
+        this.props.addText(image_number);
         canvas.add(new fabric.IText('Tap and type text here', { 
           fontFamily: 'arial black',
           fontSize: 20,
@@ -422,7 +462,8 @@ class FabricCanvas extends Component {
 
     tryAnotherColor(){
         var canvas = this.state.canvas;
-        var object = canvas.getActiveObject();
+        var objects = canvas.getObjects();
+        var object = objects[0];
 
         var filter = new fabric.Image.filters.Tint({
             color: pallete[color_code],
@@ -434,7 +475,7 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
         else if (object == null){
-            alert('Select the base image by clicking on the base image.');
+            alert('Please add base image to the canvas.');
         }
         else{    
             object.setFill(pallete[color_code]);
@@ -442,7 +483,7 @@ class FabricCanvas extends Component {
             object.applyFilters(canvas.renderAll.bind(canvas));
             canvas.renderAll();
             
-            if(color_code == 5){
+            if(color_code == pallete.length - 1){
                 color_code = 0;
             }
             else {
@@ -457,10 +498,35 @@ class FabricCanvas extends Component {
             var img = canvasToImage(ctx,canvas,this.props.size);
             var saved = this.saveRenderedCanvas(img.src);
         }
-        
-            
-        
     }
+
+    addColor() {
+        //add a color to the palette
+//        alert('a');
+        const cl = pallete;
+//        alert(pallete.length);
+        pallete = cl.concat([cHex]);
+//        alert(pallete.length);
+
+        this.setState({
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+        })
+    }
+
+    deleteColor(e) {
+//        alert(e);
+//        alert(pallete.length);
+        pallete.splice(e,1);
+//        alert(pallete.length);
+        this.setState({
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+        })
+
+    }
+
+
+
+
     
     chooseColor(c){
         cHex = c.hex;
@@ -624,18 +690,28 @@ class FabricCanvas extends Component {
         return (
             <div>
                 
-                <div className = "image-list" style = {{height: 300, width: 150, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
+                <div className = "image-list" style = {{height: 300, width: 55, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
                     <LayerTree />
+                </div>
+                <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
+                    <div className = "library-spacing" />
+                    <img onClick = {this.moveObjectForward} className = "up-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" />
+                    <img onClick = {this.deleteActiveObject} className = "delete-icon" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/>
+                    <img onClick = {this.moveObjectBackward} className = "down-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" />
                 </div>
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <canvas id = "c" width={300} height={300}></canvas>   
                 </div>
+                <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
+                    <img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "textAdder" />
+                    <img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "colorAdder" />
+                    <img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "previewAdder" />
+                    <img onClick = {this.saveButton} src = "https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-32.png" className = "saveAdder" />
+                </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
-                <div className = "buttons" style = {{height: 30, width: 750, float:'none'}}>
-                    <button onClick = {this.tryAnotherColor}>Try Another Color For Base Image</button>
-                    <button onClick = {this.saveButton}>Save Image</button>
-                    <button onClick = {this.buttonClick}>Preview</button> 
-                    <button onClick = {this.openModal}>Create Group</button>
+                <div className = "buttons" style = {{height: 30, width: 900, float:'left'}}>
+                    <button onClick = {this.openModal}>Create Group by Size</button>
+                    <button onClick = {this.tryAnotherColor}>Create Group by Base Colors</button>
                     <Modal
                         isOpen = {this.state.modalIsOpen}
                         onAfterOpen = {this.afterOpenModal}
@@ -658,15 +734,14 @@ class FabricCanvas extends Component {
                         <button onClick={this.saveGroup}>Save</button>
                     </div>
                     </Modal>
-                    <button onClick = {this.moveObjectForward}>Bring Forward</button>
-                    <button onClick = {this.moveObjectBackward}>Send Backward</button>
-                    <button onClick = {this.deleteActiveObject}>Delete Object</button>
-                    <button onClick = {this.addText}>Add Text</button>
-                    <button onClick = {this.selectColor}>Color Fill</button>
                     <button onClick = {this.setHalo}>Set Halo</button>
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
                     <button onClick = {this.clearCanvas}>Clear Canvas</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
+                    <button onClick = {this.removeWhiteSpace} style = {{height: 20, width: 20, backgroundColor:'#13496e' }}></button>
+                    {this.state.colorList}
+                    <button onClick = {this.addColor}>Add color</button>
+
             
             
                 </div>  
@@ -724,8 +799,8 @@ function mapDispatchToProps(dispatch) {
         imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))},
         imageAdded: (url) => {dispatch(imageAddedJson(url))},
         canvasClear: () => {dispatch(canvasCleared())},
-        addText: () => {dispatch(textAdd())},
-        addFreehand: () => {dispatch(freehandAdd())},
+        addText: (id) => {dispatch(textAdd(id))},
+        addFreehand: (id) => {dispatch(freehandAdd(id))},
         imageSaved:(key)=>{dispatch(imageRendered(key))}
     })
 }
