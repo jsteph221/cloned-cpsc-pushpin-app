@@ -4,7 +4,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
+import {treeAdd, previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -339,6 +339,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
+        this.props.treeAdd(image, image_number);
 
         fabric.Image.fromURL(image, function(oImg){
             oImg.id = image_number;
@@ -769,7 +770,8 @@ FabricCanvas.propTypes = {
     jsonKey: PropTypes.string,
     event: PropTypes.string.isRequired,
     imageSaved: PropTypes.func.isRequired,
-    tree_num: PropTypes.number.isRequired
+    tree_num: PropTypes.number.isRequired,
+    treeAdd: PropTypes.func.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -787,6 +789,7 @@ FabricCanvas.defaultProps = {
     maxSize: 100,
     addText: () => console.log("text was added"),
     addFreehand: () => console.log("freehand was added"),
+    treeAdd: () => console.log("added to tree"),
     event:"",
     jsonKey:"",
     tree_num: -1
@@ -802,7 +805,8 @@ function mapDispatchToProps(dispatch) {
         canvasClear: () => {dispatch(canvasCleared())},
         addText: (id) => {dispatch(textAdd(id))},
         addFreehand: (id) => {dispatch(freehandAdd(id))},
-        imageSaved:(key)=>{dispatch(imageRendered(key))}
+        imageSaved:(key)=>{dispatch(imageRendered(key))},
+        treeAdd: (im, id)=>{dispatch(treeAdd(im,id))}
     })
 }
 
