@@ -123,7 +123,7 @@ function canvasToImage(ctx,canvas,size){
     };
 
 
-const pallete = [
+var pallete = [
     "#F44336",
     "#2196F3",
     "#8BC34A",
@@ -142,7 +142,9 @@ class FabricCanvas extends Component {
             canvas : null,
             text: "Freehand On",
             image_number: 0,
-            selection: -1
+            selection: -1,
+            colorModalIsOpen:false,
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
         };
         
         this.openModal = this.openModal.bind(this);
@@ -171,8 +173,22 @@ class FabricCanvas extends Component {
         this.addJsonToCanvas = this.addJsonToCanvas.bind(this);
         this.saveRenderedCanvas = this.saveRenderedCanvas.bind(this);
         this.addFreehand = this.addFreehand.bind(this);
+        this.addColor = this.addColor.bind(this);
+        this.deleteColor = this.deleteColor.bind(this);
+        this.openColorModal = this.openColorModal.bind(this);
+        this.closeColorModal = this.closeColorModal.bind(this);
 	}
-    
+
+
+
+    //color pallete module controller
+    openColorModal() {
+        this.setState({colorModalIsOpen: true});
+    }
+
+    closeColorModal() {
+        this.setState({colorModalIsOpen: false});
+    }
     
     //Global Canvas variable
     openModal() {
@@ -200,6 +216,22 @@ class FabricCanvas extends Component {
         if (nextState.range != this.state.range){
             return true;
         }
+
+
+        //color module
+        if (nextState.colorList != this.state.colorList){
+            return true;
+        }
+
+        if (nextState.colorModalIsOpen != this.state.colorModalIsOpen){
+            return true;
+        }
+
+//        if (nextState.canvas != this.state.canvas){
+//            return true;
+//        }
+
+
         if (shouldSelect){
             this.selectObject(nextProps.select_id);
             return false;
@@ -430,7 +462,8 @@ class FabricCanvas extends Component {
 
     tryAnotherColor(){
         var canvas = this.state.canvas;
-        var object = canvas.getActiveObject();
+        var objects = canvas.getObjects();
+        var object = objects[0];
 
         var filter = new fabric.Image.filters.Tint({
             color: pallete[color_code],
@@ -442,7 +475,7 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
         else if (object == null){
-            alert('Select the base image by clicking on the base image.');
+            alert('Please add base image to the canvas.');
         }
         else{    
             object.setFill(pallete[color_code]);
@@ -450,7 +483,7 @@ class FabricCanvas extends Component {
             object.applyFilters(canvas.renderAll.bind(canvas));
             canvas.renderAll();
             
-            if(color_code == 5){
+            if(color_code == pallete.length - 1){
                 color_code = 0;
             }
             else {
@@ -465,10 +498,35 @@ class FabricCanvas extends Component {
             var img = canvasToImage(ctx,canvas,this.props.size);
             var saved = this.saveRenderedCanvas(img.src);
         }
-        
-            
-        
     }
+
+    addColor() {
+        //add a color to the palette
+//        alert('a');
+        const cl = pallete;
+//        alert(pallete.length);
+        pallete = cl.concat([cHex]);
+//        alert(pallete.length);
+
+        this.setState({
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+        })
+    }
+
+    deleteColor(e) {
+//        alert(e);
+//        alert(pallete.length);
+        pallete.splice(e,1);
+//        alert(pallete.length);
+        this.setState({
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+        })
+
+    }
+
+
+
+
     
     chooseColor(c){
         cHex = c.hex;
@@ -680,6 +738,10 @@ class FabricCanvas extends Component {
                     <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
                     <button onClick = {this.clearCanvas}>Clear Canvas</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
+                    <button onClick = {this.removeWhiteSpace} style = {{height: 20, width: 20, backgroundColor:'#13496e' }}></button>
+                    {this.state.colorList}
+                    <button onClick = {this.addColor}>Add color</button>
+
             
             
                 </div>  
