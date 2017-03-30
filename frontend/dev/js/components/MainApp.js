@@ -32,7 +32,7 @@ const MainApp = () => (
             </div>
 
 
-            <div className = "imageLibrary" style = {{height: 200, width: 978, marginTop: 325, marginLeft: 1.5}}>
+            <div className = "imageLibrary" style = {{height: 235, width: 978, marginLeft: 1.5, float:'left'}}>
                 <ImageLibrary />
             </div>
 

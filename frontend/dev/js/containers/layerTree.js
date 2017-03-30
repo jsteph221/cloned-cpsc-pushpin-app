@@ -66,7 +66,7 @@ class LayerTree extends Component {
 		const treeImages = this.mapToImage(this.state.images);
 
 		return (
-			<ReactScrollbar style = {{height: 300, width: 150}}>
+			<ReactScrollbar style = {{height: 300, width: 55}}>
 				<div>{treeImages}</div>
 			</ReactScrollbar>
 		);
