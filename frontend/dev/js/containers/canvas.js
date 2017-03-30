@@ -144,6 +144,7 @@ class FabricCanvas extends Component {
             image_number: 0,
             selection: -1,
             colorModalIsOpen:false,
+            freehandColor: 'white',
             colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
         };
         
@@ -211,6 +212,9 @@ class FabricCanvas extends Component {
             return true;
         }
         if (nextState.text != this.state.text){
+            return true;
+        }
+        if (nextState.freehandColor != this.state.freehandColor){
             return true;
         }
         if (nextState.range != this.state.range){
@@ -591,11 +595,11 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
         
-        if(this.state.text == "Freehand Off"){
-            this.setState({text : "Freehand On"});
+        if(this.state.freehandColor == 'white'){
+            this.setState({freehandColor : 'green'});
         }
         else{
-            this.setState({text : "Freehand Off"});
+            this.setState({freehandColor : 'white'});
         }
         canvas.renderAll();
     }
@@ -707,8 +711,10 @@ class FabricCanvas extends Component {
                     <img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "iconButton" />
                     <img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "iconButton" />
                     <img onClick = {this.setHalo} src={require('../../static/icons/halo.png')} className = "iconButton"/>
+                    <img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/15.Pencil-32.png" className = "iconButton" />
                     <img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" />
-                    <img onClick = {this.saveButton} src = "https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-32.png" className = "iconButton" />
+                    <img onClick = {this.saveButton} src = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/upload2-32.png" className = "iconButton" />
+                    <img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-48.png" className = "iconButton" />
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
                 <div className = "buttons" style = {{height: 30, width: 900, float:'left'}}>
@@ -736,8 +742,6 @@ class FabricCanvas extends Component {
                         <button onClick={this.saveGroup}>Save</button>
                     </div>
                     </Modal>
-                    <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
-                    <button onClick = {this.clearCanvas}>Clear Canvas</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
                     <button onClick = {this.removeWhiteSpace} style = {{height: 20, width: 20, backgroundColor:'#13496e' }}></button>
                     {this.state.colorList}
