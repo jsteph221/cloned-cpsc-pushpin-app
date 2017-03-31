@@ -772,9 +772,9 @@ class FabricCanvas extends Component {
 
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-spacing" />
-                    <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" /></a>
-                    <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/></a>
-                    <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" /></a>
+                    <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src="http://i.imgur.com/cBT1liY.png" style={{width: 30, height: 30}} /></a>
+                    <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src="http://www.iconsdb.com/icons/preview/red/delete-2-xxl.png" style={{width: 30, height: 30}}/></a>
+                    <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src="http://i.imgur.com/DRiJRO4.png" style={{width: 30, height: 30}} /></a>
                 </div>
 
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
