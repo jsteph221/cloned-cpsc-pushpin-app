@@ -108,7 +108,11 @@ router.get('/canvas/:rendered_id', function(req, res) {
     if (!renderedImage){
       res.json({ success: false, message: 'no rendered image was found with the given id.'});
     } else{
-        res.json({success:true, json:renderedImage.serializedCanvas});
+        if(renderedImage.serializedCanvas == ""){
+            res.json({success:false,message: "Could not find Serialized Canvase"});
+        }else{
+            res.json({success:true, json:renderedImage.serializedCanvas});
+        }
     }
   });
 });

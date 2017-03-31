@@ -305,15 +305,14 @@ class FabricCanvas extends Component {
         
         request.open("GET", server+"/api/projects/"+proj+"/renderedImages/canvas"+key, false);
         request.send(null);
-
+        
         var response = JSON.parse(request.response);
-
         if (request.status !== 200){
-            alert("synchronous request failed\n Error: "+request.status);
-            return [];
+            alert("Error Getting Serialized Canvas\n Error: "+request.status);
+            return;
         }
-	    if (response.success == true){
-            if(response.json !=""){
+        if (response.success == true){
+            if(response.json !=null){
                var canvasJson = JSON.parse(response.json);
                 var canvas = this.state.canvas;            
                 this.clearCanvas();
