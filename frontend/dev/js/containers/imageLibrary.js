@@ -113,6 +113,13 @@ class ImageLibrary extends Component {
     postImage(files) {
         const self = this;
 
+        var file = files[0];
+//        var ex = file.split('.').pop();
+//        alert(ex);
+
+        alert('A');
+
+
         /*get 1st project*/
         $.ajax(
             {

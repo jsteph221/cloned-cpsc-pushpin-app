@@ -106,7 +106,7 @@ function canvasToImage(ctx,canvas,size){
     };
 
 
-const customPalleteStyles = {
+const customPaletteStyles = {
           overlay : {
             backgroundColor   : 'rgba(0, 0, 0, 0.5)'
           },
@@ -114,8 +114,8 @@ const customPalleteStyles = {
             margin: '15% auto',
             left:'300',
             right:'490',
-            width: '40%',
-            height:'50%',
+            width: '520',
+            height:'385',
             background: '#fefefe',
             overflow : 'hiddden',
             padding:'0px',
@@ -123,8 +123,7 @@ const customPalleteStyles = {
 
     };
 
-
-var pallete = [
+var palette = [
     "#F44336",
     "#2196F3",
     "#8BC34A",
@@ -148,7 +147,7 @@ class FabricCanvas extends Component {
             selection: -1,
             colorModalIsOpen:false,
             freehandColor: 'transparent',
-            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
+            colorList: palette.map((color)=><button value={palette.indexOf(color)} onClick = {()=>this.deleteColor(palette.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
             previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
         };
         
@@ -182,11 +181,11 @@ class FabricCanvas extends Component {
         this.deleteColor = this.deleteColor.bind(this);
         this.openColorModal = this.openColorModal.bind(this);
         this.closeColorModal = this.closeColorModal.bind(this);
-        this.choosePalleteColor = this.choosePalleteColor.bind(this);
+        this.choosePaletteColor = this.choosePaletteColor.bind(this);
         this.saveTwoCanvas = this.saveTwoCanvas.bind(this);
         this.deletePreview = this.deletePreview.bind(this);
 	}
-    //color pallete module controller
+    //color palette module controller
     openColorModal() {
         this.setState({colorModalIsOpen: true});
     }
@@ -497,67 +496,59 @@ class FabricCanvas extends Component {
         }
     }
 
+
+
+    //palette functions
     tryAnotherColor(){
         var canvas = this.state.canvas;
         var objects = canvas.getObjects();
         var object = objects[0];
 
-
-
-        if(object != null && object.get('type') == 'i-text'){
-            object.setFill(pallete[color_code]);
-            canvas.renderAll();
-        }
-        else if (object == null){
+        if (object == null || object.get('type') == 'i-text'){
             alert('Please add base image to the canvas.');
         }
         else{
-
-            if(color_code >= pallete.length - 1 || color_code == null){
+            if(color_code >= palette.length - 1 || color_code == null){
                 color_code = 0;
             }
             else {
                 color_code = color_code + 1;
             }
 
+            //apply filter to base image
             var filter = new fabric.Image.filters.Tint({
-            color: pallete[color_code],
+            color: palette[color_code],
             opacity: alpha
             });
 
-            object.setFill(pallete[color_code]);
+            object.setFill(palette[color_code]);
             object.filters.push(filter);
             object.applyFilters(canvas.renderAll.bind(canvas));
             canvas.renderAll();
-            
 
-            
-            //save the canvas
+            //create a preview of the canvas
             var activeCanvas = this.state.canvas;
             activeCanvas.discardActiveObject();
             var ctx = canvas.getContext('2d');
-
             var img = canvasToImage(ctx,canvas,this.props.size);
-//            alert(img.src);
 
-            //update preview URLs
+            //add url to previewURLs and update the preview icons
             const pu = previewURLs;
             previewURLs = pu.concat([img.src]);
             this.setState({
                 previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
             });
 
-
+            //show preview on Google Maps
             this.props.previewClicked(img.src,img.width,img.height);
             var canvasJSON = activeCanvas.toDatalessJSON();
             var strJSON = JSON.stringify(canvasJSON);
 
-//            var saved = this.saveRenderedCanvas(img.src,strJSON);
         }
     }
 
-
     deletePreview(e) {
+        //delete a previewed icon by clicking on it
         previewURLs.splice(e,1);
         this.setState({
                 previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
@@ -567,10 +558,10 @@ class FabricCanvas extends Component {
     addColor() {
         //add a color to the palette
         if (p_cHex != null){
-           const cl = pallete;
-           pallete = cl.concat([p_cHex]);
+           const cl = palette;
+           palette = cl.concat([p_cHex]);
            this.setState({
-              colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+              colorList: palette.map((color)=><button value={palette.indexOf(color)} onClick = {()=>this.deleteColor(palette.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
            })
 
         }
@@ -580,22 +571,29 @@ class FabricCanvas extends Component {
     }
 
     deleteColor(e) {
-
-        pallete.splice(e,1);
+        //delete a color from the palette by clicking on it
+        palette.splice(e,1);
         this.setState({
-            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+            colorList: palette.map((color)=><button value={palette.indexOf(color)} onClick = {()=>this.deleteColor(palette.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
         })
-
     }
 
-    choosePalleteColor(c){
+    choosePaletteColor(c){
+        //choose a color for the palette
         p_cHex = c.hex;
     }
 
     saveTwoCanvas(){
+        //save all previewed icons
         for (var i=0;i<previewURLs.length;i++){
-            var saved = this.saveRenderedCanvas(previewURLs[i]);
+            var activeCanvas = this.state.canvas;
+            activeCanvas.discardActiveObject();
+            var canvasJSON = activeCanvas.toDatalessJSON();
+            var strJSON = JSON.stringify(canvasJSON);
+            var saved = this.saveRenderedCanvas(previewURLs[i],strJSON);
+
         }
+        this.closeColorModal();
 
     }
 
@@ -859,8 +857,8 @@ class FabricCanvas extends Component {
                         isOpen = {this.state.colorModalIsOpen}
                         onAfterOpen = {this.afterOpenModal}
                         onRequestClose = {this.closeColorModal}
-                        style = {customPalleteStyles}
-                        contentLabel = "Pallete Modal"
+                        style = {customPaletteStyles}
+                        contentLabel = "Palette Modal"
                     >
 
 
@@ -868,17 +866,17 @@ class FabricCanvas extends Component {
                          <p>Manage Palette</p>
                     </div>
                     <div style = {{height: 300, width: 221, float: 'left', display:'inline-block', marginLeft: 10, marginTop: 10}}>
-                        <SketchPicker color={ 'black' } onChange={ this.choosePalleteColor }/>
+                        <SketchPicker color={ 'black' } onChange={ this.choosePaletteColor }/>
                     </div>
 
                     <div style = {{height: 300, width: 221, float: 'left', marginLeft: 10, marginTop: 10}}>
-                        <p>Step 1: Create a palette</p>
+                        <p style={{padding:5, margin:0}}>Step 1: Create a palette</p>
                         {this.state.colorList}
                         <button onClick = {this.addColor} style={{paddingTop: -5}}>+</button>
 
-                        <p>Step 2: Preview with base color in the palette</p>
+                        <p style={{padding:5, margin:0}}>Step 2: Preview with base color in the palette</p>
                         <div style={{height: 130, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}>{this.state.previewList}</div>
-                        <div style = {{padding:'2px 16px', position:'absolute', bottom: 12, left: 223}}>
+                        <div style = {{padding:'2px 16px', position:'absolute', bottom: 35, left: 223}}>
                         <button onClick = {this.tryAnotherColor}>Preview and Try Another Color</button>
                         <button onClick = {this.saveTwoCanvas}>Save</button>
                         </div>
