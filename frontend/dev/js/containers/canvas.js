@@ -4,7 +4,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {treeAdd, previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson} from '../actions'
+import {treeAdd,previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson,saveLayerTree,loadLayerTree} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
@@ -41,7 +41,7 @@ function saveCanvasJSON(json,project,key){
             if (data.success == true){
                 console.log("Json Saved");
             }else{
-                alert(data.message)
+                alert("Error saving Serialized Canvas " + data.message)
             }
         }
     })
@@ -50,62 +50,43 @@ function saveCanvasJSON(json,project,key){
      );
 }
 
-function canvasToImage(ctx,canvas,size){
-    var w = canvas.width,
-    h = canvas.height,
-    pix = {x:[], y:[]},
-    imageData = ctx.getImageData(0,0,canvas.width,canvas.height),
-    x, y, index;
+function canvasToImage(ctx,canvas,size){   
+    canvas.setActiveGroup(new fabric.Group(canvas.getObjects())).renderAll();
+    var group = canvas.getActiveGroup();
+    var br = group.getBoundingRect();
+    canvas.discardActiveGroup().renderAll();
 
-    for (y = 0; y < h; y++) {
-        for (x = 0; x < w; x++) {
-            index = (y * w + x) * 4;
-            if (imageData.data[index+3] > 0) {
-
-                pix.x.push(x);
-                pix.y.push(y);
-
-            }   
-        }
-    }
-    pix.x.sort(function(a,b){return a-b});
-    pix.y.sort(function(a,b){return a-b});
-    var n = pix.x.length-1;
-
-    w = pix.x[n] - pix.x[0];
-    h = pix.y[n] - pix.y[0];
-    var cut = ctx.getImageData(pix.x[0], pix.y[0], w, h);
     
-    //Posts cropped image to new canvas and creates htmlimagesrc
-    var canvas1= document.createElement('canvas');
-    var ctx1=canvas1.getContext('2d');    
-    canvas1.width = w;
-    canvas1.height = h;
-    ctx1.putImageData(cut, 0, 0);   
-    var imgURL = canvas1.toDataURL();
-    var tmpImage = document.createElement("IMG");    
-    tmpImage.src = imgURL;
-    var sizeX,sizeY;
-    if (w/h >= 1){
-        sizeX= size;
-        sizeY = Math.ceil(sizeX/(w/h));
+    var params = {multiplier:0,left:br.left,top:br.top, width:br.width, height:br.height};
+    if(br.left < 0){
+        params.left = 0;
+        params.width = br.left + br.width;
+    }
+    if(br.top<0){
+        params.top = 0;
+        params.height = br.top+br.height;
+    }
+    if(br.left + br.width> canvas.width){
+        params.width = canvas.width-br.width;
+    }
+    if(Math.abs(br.top + br.height)> canvas.height ){
+        params.height = canvas.height-br.height;
+    }
+    var mult;
+    if(params.width > params.height){
+        mult = size/params.width;
     }else{
-        sizeY = size;
-        sizeX = Math.ceil(sizeY/(h/w));
+        mult = size/params.height;
     }
-    //Creates new canvas and draw cropped image of specific size
-    var canvas2 = document.createElement('canvas');
-    var ctx2 = canvas2.getContext('2d');
-    canvas2.width = sizeX;
-    canvas2.height = sizeY;
-    ctx2.drawImage(tmpImage,0,0,sizeX,sizeY);
-    var finalUrl = canvas2.toDataURL();    
+    params.multiplier = mult;
+
+    var dataUrl = canvas.toDataURL(params);        
+
     var img = new Image();
-    img.src = finalUrl;
-    img.height = sizeY;
-    img.width = sizeX;
-    return img;
-    
+    img.src = dataUrl;
+    img.width = params.width;
+    img.height = params.height;
+    return img;     
 }
     const customStyles = {      
           overlay : {
@@ -175,7 +156,7 @@ class FabricCanvas extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.onRangeChange = this.onRangeChange.bind(this);        
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
-        this.buttonClick = this.buttonClick.bind(this);
+        this.previewClicked = this.previewClicked.bind(this);
         this.saveButton = this.saveButton.bind(this);
         this.drawImage = this.drawImage.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -205,11 +186,6 @@ class FabricCanvas extends Component {
         this.saveTwoCanvas = this.saveTwoCanvas.bind(this);
         this.deletePreview = this.deletePreview.bind(this);
 	}
-
-
-
-
-
     //color pallete module controller
     openColorModal() {
         this.setState({colorModalIsOpen: true});
@@ -219,7 +195,6 @@ class FabricCanvas extends Component {
         this.setState({colorModalIsOpen: false});
     }
     
-    //Global Canvas variable
     openModal() {
         this.setState({modalIsOpen: true});
     }
@@ -282,12 +257,38 @@ class FabricCanvas extends Component {
     }
     
     componentDidMount(){
+        var c = document.getElementById('c');
         var canvas = new fabric.Canvas('c', {
-        isDrawingMode: false,
+            isDrawingMode: false,
         });
-        this.setState({
-            canvas});
-
+        /*
+        $(canvas.wrapperEl).on('mousewheel DOMMouseScroll', function(e) {
+            var MAX_ZOOM_OUT = 1;
+            var MAX_ZOOM_IN = 2;
+            console.log("mousewheel");
+            console.log(e)
+            var pt = new fabric.Point(e.offsetX,e.offsetY);
+            console.log(pt);
+            var delta = e.originalEvent.wheelDelta / 120;
+            var zoom;
+            if(delta>0){
+               zoom = 0.1;
+               var pt = new fabric.Point(e.offsetX,e.offsetY);
+            }else{
+                zoom = -0.1;
+                var pt = new fabric.Point(canvas.width/2,canvas.height/2);                
+            }
+            var val = canvas.getZoom()+zoom;
+            if (val<MAX_ZOOM_OUT && val>MAX_ZOOM_IN){
+                canvas.zoomToPoint(pt,val);
+                console.log(canvas.getZoom());
+                //canvas.setWidth(originalWidth * canvas.getZoom());
+                //canvas.setHeight(originalHeight * canvas.getZoom());
+            }               
+        });
+        */
+        this.setState({canvas:canvas});
+        console.log(canvas);
         
         var freeAdd = () => this.addFreehand();
 
@@ -312,28 +313,19 @@ class FabricCanvas extends Component {
             return [];
         }
 	    if (response.success == true){
-            var canvasJson = JSON.parse(response.json);
-            var canvas = this.state.canvas;
-            this.clearCanvas();
-            canvas.loadFromDatalessJSON(canvasJson, canvas.renderAll.bind(canvas));
-            var objs =  canvasJson.objects
-            for(var x in objs){
-                console.log(objs[x]);
-                if (objs[x].type == "image"){
-                    this.props.imageAdded(objs[x].src);
-                    var image_number = this.state.image_number;
-                    this.setState({image_number:image_number+1})
-                }else if (objs[x].type == "path"){
-                    this.props.addText();
-                    var image_number = this.state.image_number;
-                    this.setState({image_number:image_number+1})
-                }else if (objs[x].type == "i-text"){
-                    this.props.addFreehand();
-                    var image_number = this.state.image_number;
-                    this.setState({image_number:image_number+1})
-                }
-                
-            }
+            if(response.json !=""){
+               var canvasJson = JSON.parse(response.json);
+                var canvas = this.state.canvas;            
+                this.clearCanvas();
+                canvas.loadFromDatalessJSON(canvasJson, function(){
+                    canvas.renderAll(canvas);
+                    document.getElementById("c").click();
+                });
+                var endP = server+"/api/projects/"+proj+"/renderedImages/layer"+key;
+                this.props.loadLayerTree(endP); 
+            }else{
+                alert("No Serialized Canvas found");
+            }        
 	    }                     
     }
 
@@ -344,30 +336,33 @@ class FabricCanvas extends Component {
         canvas.setActiveObject(canvas.item(id));
     }
     
-    buttonClick(){ 
-        var canvas = document.getElementById("c"); 
-        var activeCanvas = this.state.canvas; 
-        activeCanvas.discardActiveObject();
-        activeCanvas.deactivateAll().renderAll();
-        var ctx = canvas.getContext('2d');
-        var image = canvasToImage(ctx,canvas,this.props.maxSize);
-        this.props.previewClicked(image.src,image.width,image.height);
+    previewClicked(){         
+        var activeCanvas = this.state.canvas;
+        if (activeCanvas.getObjects().length == 0){
+            alert("Add Objects to the Canvas");
+        }else{
+            activeCanvas.discardActiveObject();
+            activeCanvas.deactivateAll().renderAll();
+            var ctx = activeCanvas.getContext('2d');
+            var image = canvasToImage(ctx,activeCanvas,this.props.maxSize);
+            this.props.previewClicked(image.src,image.width,image.height);
+        }
     }
     
     saveButton(){        
-        var canvas = document.getElementById("c"); 
         var activeCanvas = this.state.canvas; 
-        activeCanvas.discardActiveObject();       
-        var ctx = canvas.getContext('2d');
-        var img = canvasToImage(ctx,canvas,this.props.size);
-        //if (img != null){
-          //  window.open(img.src);
-        //}
-        var canvasJSON = activeCanvas.toDatalessJSON();
-        var strJSON = JSON.stringify(canvasJSON);
-        var saved = this.saveRenderedCanvas(img.src,strJSON);
-        if (saved== true){
-            alert("Your image has been saved");            
+        activeCanvas.discardActiveObject();
+        if (activeCanvas.getObjects().length == 0){
+            alert("Add Objects to the Canvas");
+        }else{
+            var ctx = activeCanvas.getContext('2d');
+            var img = canvasToImage(ctx,activeCanvas,this.props.size);
+            var canvasJSON = activeCanvas.toDatalessJSON();
+            var strJSON = JSON.stringify(canvasJSON);
+            var saved = this.saveRenderedCanvas(img.src,strJSON);
+            if (saved== true){
+                alert("Your image has been saved");            
+            }
         }
     }
     
@@ -379,8 +374,13 @@ class FabricCanvas extends Component {
 
         fabric.Image.fromURL(image, function(oImg){
             oImg.id = image_number;
+            if(oImg.width>oImg.height){
+               oImg.scaleToWidth(200);
+            }else{
+                oImg.scaleToHeight(200); 
+            }
             canvas.add(oImg);
-        });        
+        },);        
     } 
     
     moveObjectForward(){
@@ -549,9 +549,10 @@ class FabricCanvas extends Component {
 
 
             this.props.previewClicked(img.src,img.width,img.height);
+            var canvasJSON = activeCanvas.toDatalessJSON();
+            var strJSON = JSON.stringify(canvasJSON);
 
-
-//            var saved = this.saveRenderedCanvas(img.src);
+//            var saved = this.saveRenderedCanvas(img.src,strJSON);
         }
     }
 
@@ -673,33 +674,36 @@ class FabricCanvas extends Component {
     }
     
     saveGroup(){
-        var canvas = document.getElementById("c"); 
         var activeCanvas = this.state.canvas; 
-        activeCanvas.discardActiveObject();       
-        var ctx = canvas.getContext('2d');        
-        var num = document.getElementById("group_num").value;
-        if (num < 2 || num > 20){
-            alert("Please choose a number between 2 and 20");
+        activeCanvas.discardActiveObject(); 
+        if (activeCanvas.getObjects().length == 0){
+            alert("Add Objects to Canvas");
         }else{
-            var canvasJSON = activeCanvas.toDatalessJSON();
-            var strJSON = JSON.stringify(canvasJSON);
-            var range = this.state.range;
-            var sizes = [range[0]]
-            var inc = Math.round((range[1]-range[0])/(num-1));
-            for (var i=1; i < num-1; i++){
-                sizes.push(range[0]+i*inc)
-            }
-            sizes.push(range[1])
-            var chk = true;
-            for(i=0; i< num; i++){
-                var data = canvasToImage(ctx,canvas,sizes[i]);
-                chk = this.saveRenderedCanvas(data.src,strJSON);
-            }
-            if (chk == true){
-                alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
-            }
-            this.closeModal();   
-        }       
+            var ctx = activeCanvas.getContext('2d');        
+            var num = document.getElementById("group_num").value;
+            if (num < 2 || num > 20){
+                alert("Please choose a number between 2 and 20");
+            }else{
+                var canvasJSON = activeCanvas.toDatalessJSON();
+                var strJSON = JSON.stringify(canvasJSON);
+                var range = this.state.range;
+                var sizes = [range[0]]
+                var inc = Math.round((range[1]-range[0])/(num-1));
+                for (var i=1; i < num-1; i++){
+                    sizes.push(range[0]+i*inc)
+                }
+                sizes.push(range[1])
+                var chk = true;
+                for(i=0; i< num; i++){
+                    var data = canvasToImage(ctx,activeCanvas,sizes[i]);
+                    chk = this.saveRenderedCanvas(data.src,strJSON);
+                }
+                if (chk == true){
+                    alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
+                }
+                this.closeModal();   
+            } 
+        }
     }
     
     saveRenderedCanvas(dataURI,canvasJSON){
@@ -732,8 +736,9 @@ class FabricCanvas extends Component {
                                     success: function(data){
                                         if (data.success == true){
                                             saveCanvasJSON(canvasJSON,project,data.renderedImage._id);
-                                            console.log(comp);
                                             comp.props.imageSaved(data.renderedImage._id);
+                                            var endP = server+"/api/projects/"+project+"/renderedImages/layer/"+data.renderedImage._id;
+                                            comp.props.saveLayerTree(endP);
 
                                         }else{
                                             alert(data.message);                    
@@ -783,7 +788,7 @@ class FabricCanvas extends Component {
                     <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "iconButton" /></a>
                     <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo2.png')} className = "iconButton"/></a>
                     <a data-tip data-for='enterDrawingMode'><img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/15.Pencil-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='buttonClick'><img onClick = {this.buttonClick} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='buttonClick'><img onClick = {this.previewClicked} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" /></a>
                     <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/upload2-32.png" className = "iconButton" /></a>
                     <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-32.png" className = "trashIcon" /></a>
                     
@@ -887,9 +892,6 @@ class FabricCanvas extends Component {
                     <button onClick = {this.openColorModal}>Palette</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
 
-
-            
-            
                 </div>  
             </div>          
         );
@@ -915,6 +917,8 @@ FabricCanvas.propTypes = {
     event: PropTypes.string.isRequired,
     imageSaved: PropTypes.func.isRequired,
     tree_num: PropTypes.number.isRequired,
+    saveLayerTree:PropTypes.func.isRequired,
+    loadLayerTree:PropTypes.func.isRequired,
     treeAdd: PropTypes.func.isRequired
 }
 
@@ -928,6 +932,8 @@ FabricCanvas.defaultProps = {
     imageAdded:(url)=>console.log("image added"),
     canvasClear: () => console.log("canvas cleared"),
     imageSaved:(key)=>console.log("Image Saved"),
+    saveLayerTree:(endP)=>console.log("Save layer tree"),
+    loadLayerTree:(endP_l)=>console.log("Load layer tree"),
     select_id: -1,
     new_id: 0,
     maxSize: 100,
@@ -950,6 +956,8 @@ function mapDispatchToProps(dispatch) {
         addText: (id) => {dispatch(textAdd(id))},
         addFreehand: (id) => {dispatch(freehandAdd(id))},
         imageSaved:(key)=>{dispatch(imageRendered(key))},
+        saveLayerTree:(endP) => {dispatch(saveLayerTree(endP))},
+        loadLayerTree:(endP_l) => {dispatch(loadLayerTree(endP_l))},    
         treeAdd: (im, id)=>{dispatch(treeAdd(im,id))}
     })
 }
