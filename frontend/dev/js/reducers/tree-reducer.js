@@ -50,6 +50,16 @@ export default function tree_reducer(state = initialState, action) {
         		new_image: action.url,
                 event: "new"
             })
+        case 'SAVE_TREE':
+            return Object.assign({},state,{
+                event: "save",
+                endP:action.endP
+            })
+        case 'LOAD_TREE':
+            return Object.assign({},state,{
+                event: "load",
+                endP_l:action.endP
+            })
 		default:
 			return state
 

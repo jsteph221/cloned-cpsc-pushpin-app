@@ -72,6 +72,18 @@ export const selectImage = (image, id) => {
 		id: id
 	}
 };
+export const saveLayerTree = (key) =>{
+    return{
+        type:"SAVE_TREE",
+        endP:key
+    }
+}
+export const loadLayerTree = (key) =>{
+    return{
+        type:"LOAD_TREE",
+        endP:key
+    }
+}
 
 export const sliderChange = (size) => {
     return{

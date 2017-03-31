@@ -112,6 +112,7 @@ router.get('/canvas/:rendered_id', function(req, res) {
     }
   });
 });
+
 router.put('/layer/:rendered_id', function(req, res) {
   RenderedImage.findOne({
     _id: req.params.rendered_id
@@ -119,8 +120,10 @@ router.put('/layer/:rendered_id', function(req, res) {
     if (!renderedImage){
       res.json({ success: false, message: 'no rendered image was found with the given id.'});
     } else{
-      renderedImage.layer = req.params.layer;
-      newCustomImage.save(function(err) {
+      console.log("ADDING LAYER TREE");
+      console.log(req.body.layer);
+      renderedImage.serializedLayer = req.body.layer;
+      renderedImage.save(function(err) {
         if (err) {
           throw err; 
         } else{
@@ -130,6 +133,20 @@ router.put('/layer/:rendered_id', function(req, res) {
     }
   });
 });
-
+router.get('/layer/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no rendered image was found with the given id.'});
+    } else{
+        if(renderedImage.serializedLayer ==""){
+            res.json({success:false,message: "Could not find layer tree"});
+        }else{
+            res.json({success:true, json:renderedImage.serializedLayer});
+        }
+    }
+  });
+});
 
 module.exports = router;
