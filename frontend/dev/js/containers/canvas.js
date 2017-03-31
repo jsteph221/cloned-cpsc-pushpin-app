@@ -501,10 +501,7 @@ class FabricCanvas extends Component {
         var objects = canvas.getObjects();
         var object = objects[0];
 
-        var filter = new fabric.Image.filters.Tint({
-            color: pallete[color_code],
-            opacity: alpha
-        });
+
 
         if(object != null && object.get('type') == 'i-text'){
             object.setFill(pallete[color_code]);
@@ -513,18 +510,26 @@ class FabricCanvas extends Component {
         else if (object == null){
             alert('Please add base image to the canvas.');
         }
-        else{    
-            object.setFill(pallete[color_code]);
-            object.filters.push(filter);
-            object.applyFilters(canvas.renderAll.bind(canvas));
-            canvas.renderAll();
-            
-            if(color_code == pallete.length - 1){
+        else{
+
+            if(color_code >= pallete.length - 1 || color_code == null){
                 color_code = 0;
             }
             else {
                 color_code = color_code + 1;
             }
+
+            var filter = new fabric.Image.filters.Tint({
+            color: pallete[color_code],
+            opacity: alpha
+            });
+
+            object.setFill(pallete[color_code]);
+            object.filters.push(filter);
+            object.applyFilters(canvas.renderAll.bind(canvas));
+            canvas.renderAll();
+            
+
             
             //save the canvas
             var activeCanvas = this.state.canvas;
@@ -560,11 +565,17 @@ class FabricCanvas extends Component {
 
     addColor() {
         //add a color to the palette
-        const cl = pallete;
-        pallete = cl.concat([p_cHex]);
-        this.setState({
-            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
-        })
+        if (p_cHex != null){
+           const cl = pallete;
+           pallete = cl.concat([p_cHex]);
+           this.setState({
+              colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+           })
+
+        }
+        else {
+            alert('Pick a color.');
+        }
     }
 
     deleteColor(e) {
