@@ -856,11 +856,12 @@ class FabricCanvas extends Component {
                     </div>
 
                     <div style = {{height: 300, width: 221, float: 'left', marginLeft: 10, marginTop: 10}}>
+                        <p>Step 1: Create a palette</p>
                         {this.state.colorList}
                         <button onClick = {this.addColor} style={{paddingTop: -5}}>+</button>
 
-
-                        <div style={{height: 200, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}>{this.state.previewList}</div>
+                        <p>Step 2: Preview with base color in the palette</p>
+                        <div style={{height: 130, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}>{this.state.previewList}</div>
                         <div style = {{padding:'2px 16px', position:'absolute', bottom: 12, left: 223}}>
                         <button onClick = {this.tryAnotherColor}>Preview and Try Another Color</button>
                         <button onClick = {this.saveTwoCanvas}>Save</button>
