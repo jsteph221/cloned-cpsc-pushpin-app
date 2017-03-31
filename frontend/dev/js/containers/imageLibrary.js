@@ -112,12 +112,12 @@ class ImageLibrary extends Component {
     //AJAX to post image
     postImage(files) {
         const self = this;
+        var arr = files[0].name.split('.');
+        var ex = arr[1];
 
-        var file = files[0];
-//        var ex = file.split('.').pop();
-//        alert(ex);
+        if (ex != null && (ex == "jpg" || ex == "png" || ex == "jpeg" || ex == "svg")) {
 
-        alert('A');
+
 
 
         /*get 1st project*/
@@ -178,13 +178,21 @@ class ImageLibrary extends Component {
             );
 
 
+            }
+
+            else {
+                alert('Please upload an image in jpg, png, or svg format.');
+
+            }
+
+
     }
 
     //handle dropped file
     onDrop(acceptedFiles, rejectedFiles) {
         console.log('Accepted files: ', acceptedFiles);
         console.log('Rejected files: ', rejectedFiles);
-        alert("dropped");
+//        alert("dropped");
         this.postImage(acceptedFiles);
     }
 
