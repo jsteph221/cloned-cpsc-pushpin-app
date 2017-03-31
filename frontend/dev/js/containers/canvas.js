@@ -4,17 +4,19 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {fabric} from 'fabric-webpack'
 import $ from 'jquery'
-import {previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson,saveLayerTree,loadLayerTree} from '../actions'
+import {treeAdd,previewImage, imageBroughtUp, imageSentDown, imageDeleted, canvasCleared, textAdd, freehandAdd,imageRendered,imageAddedJson,saveLayerTree,loadLayerTree} from '../actions'
 import { SketchPicker } from 'react-color';
 import Slider, { Range } from 'rc-slider'
 import Modal from 'react-modal';
 import LayerTree from '../containers/layerTree'
 import SizeSlider from '../containers/slider'
 import server from '../config/server';
+import ReactTooltip from 'react-tooltip';
 
 var width = $(window).width();
 var height = $(window).height();
 var cHex;
+var p_cHex;
 var showPicker = false;
 var freeText = "Enter Freehand Draw";
 var stateTest;
@@ -54,7 +56,6 @@ function canvasToImage(ctx,canvas,size){
     var br = group.getBoundingRect();
     canvas.discardActiveGroup().renderAll();
 
-    console.log(br);
     
     var params = {multiplier:0,left:br.left,top:br.top, width:br.width, height:br.height};
     if(br.left < 0){
@@ -71,7 +72,6 @@ function canvasToImage(ctx,canvas,size){
     if(Math.abs(br.top + br.height)> canvas.height ){
         params.height = canvas.height-br.height;
     }
-    console.log(params);
     var mult;
     if(params.width > params.height){
         mult = size/params.width;
@@ -79,11 +79,9 @@ function canvasToImage(ctx,canvas,size){
         mult = size/params.height;
     }
     params.multiplier = mult;
-        console.log(params);
 
     var dataUrl = canvas.toDataURL(params);        
-    window.open(dataUrl)
-    
+
     var img = new Image();
     img.src = dataUrl;
     img.width = params.width;
@@ -108,7 +106,25 @@ function canvasToImage(ctx,canvas,size){
     };
 
 
-const pallete = [
+const customPalleteStyles = {
+          overlay : {
+            backgroundColor   : 'rgba(0, 0, 0, 0.5)'
+          },
+          content : {
+            margin: '15% auto',
+            left:'300',
+            right:'490',
+            width: '40%',
+            height:'50%',
+            background: '#fefefe',
+            overflow : 'hiddden',
+            padding:'0px',
+          }
+
+    };
+
+
+var pallete = [
     "#F44336",
     "#2196F3",
     "#8BC34A",
@@ -116,6 +132,8 @@ const pallete = [
     "#FFEB3B",
     "#9E9E9E"
     ]
+
+var previewURLs = []
 
 
 class FabricCanvas extends Component {
@@ -127,7 +145,11 @@ class FabricCanvas extends Component {
             canvas : null,
             text: "Freehand On",
             image_number: 0,
-            selection: -1
+            selection: -1,
+            colorModalIsOpen:false,
+            freehandColor: 'transparent',
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
+            previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
         };
         
         this.openModal = this.openModal.bind(this);
@@ -156,9 +178,23 @@ class FabricCanvas extends Component {
         this.addJsonToCanvas = this.addJsonToCanvas.bind(this);
         this.saveRenderedCanvas = this.saveRenderedCanvas.bind(this);
         this.addFreehand = this.addFreehand.bind(this);
+        this.addColor = this.addColor.bind(this);
+        this.deleteColor = this.deleteColor.bind(this);
+        this.openColorModal = this.openColorModal.bind(this);
+        this.closeColorModal = this.closeColorModal.bind(this);
+        this.choosePalleteColor = this.choosePalleteColor.bind(this);
+        this.saveTwoCanvas = this.saveTwoCanvas.bind(this);
+        this.deletePreview = this.deletePreview.bind(this);
 	}
+    //color pallete module controller
+    openColorModal() {
+        this.setState({colorModalIsOpen: true});
+    }
 
-    //Global Canvas variable
+    closeColorModal() {
+        this.setState({colorModalIsOpen: false});
+    }
+    
     openModal() {
         this.setState({modalIsOpen: true});
     }
@@ -181,9 +217,32 @@ class FabricCanvas extends Component {
         if (nextState.text != this.state.text){
             return true;
         }
+        if (nextState.freehandColor != this.state.freehandColor){
+            return true;
+        }
         if (nextState.range != this.state.range){
             return true;
         }
+
+
+        //color module
+        if (nextState.colorList != this.state.colorList){
+            return true;
+        }
+
+        if (nextState.colorModalIsOpen != this.state.colorModalIsOpen){
+            return true;
+        }
+
+        if (nextState.canvas != this.state.canvas){
+            return true;
+        }
+
+        if (nextState.previewList != this.state.previewList){
+            return true;
+        }
+
+
         if (shouldSelect){
             this.selectObject(nextProps.select_id);
             return false;
@@ -311,11 +370,15 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
+        this.props.treeAdd(image, image_number);
 
         fabric.Image.fromURL(image, function(oImg){
             oImg.id = image_number;
-            oImg.scaleToHeight(200); 
-            oImg.scaleToWidth(200)
+            if(oImg.width>oImg.height){
+               oImg.scaleToWidth(200);
+            }else{
+                oImg.scaleToHeight(200); 
+            }
             canvas.add(oImg);
         },);        
     } 
@@ -436,7 +499,8 @@ class FabricCanvas extends Component {
 
     tryAnotherColor(){
         var canvas = this.state.canvas;
-        var object = canvas.getActiveObject();
+        var objects = canvas.getObjects();
+        var object = objects[0];
 
         var filter = new fabric.Image.filters.Tint({
             color: pallete[color_code],
@@ -448,7 +512,7 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
         else if (object == null){
-            alert('Select the base image by clicking on the base image.');
+            alert('Please add base image to the canvas.');
         }
         else{    
             object.setFill(pallete[color_code]);
@@ -456,7 +520,7 @@ class FabricCanvas extends Component {
             object.applyFilters(canvas.renderAll.bind(canvas));
             canvas.renderAll();
             
-            if(color_code == 5){
+            if(color_code == pallete.length - 1){
                 color_code = 0;
             }
             else {
@@ -464,17 +528,67 @@ class FabricCanvas extends Component {
             }
             
             //save the canvas
-            var activeCanvas = this.state.canvas; 
-            activeCanvas.discardActiveObject();       
+            var activeCanvas = this.state.canvas;
+            activeCanvas.discardActiveObject();
             var ctx = canvas.getContext('2d');
 
             var img = canvasToImage(ctx,canvas,this.props.size);
-            var saved = this.saveRenderedCanvas(img.src);
+//            alert(img.src);
+
+            //update preview URLs
+            const pu = previewURLs;
+            previewURLs = pu.concat([img.src]);
+            this.setState({
+                previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
+            });
+
+
+            this.props.previewClicked(img.src,img.width,img.height);
+            var canvasJSON = activeCanvas.toDatalessJSON();
+            var strJSON = JSON.stringify(canvasJSON);
+
+//            var saved = this.saveRenderedCanvas(img.src,strJSON);
         }
-        
-            
-        
     }
+
+
+    deletePreview(e) {
+        previewURLs.splice(e,1);
+        this.setState({
+                previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
+            });
+    }
+
+    addColor() {
+        //add a color to the palette
+        const cl = pallete;
+        pallete = cl.concat([p_cHex]);
+        this.setState({
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+        })
+    }
+
+    deleteColor(e) {
+
+        pallete.splice(e,1);
+        this.setState({
+            colorList: pallete.map((color)=><button value={pallete.indexOf(color)} onClick = {()=>this.deleteColor(pallete.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>)
+        })
+
+    }
+
+    choosePalleteColor(c){
+        p_cHex = c.hex;
+    }
+
+    saveTwoCanvas(){
+        for (var i=0;i<previewURLs.length;i++){
+            var saved = this.saveRenderedCanvas(previewURLs[i]);
+        }
+
+    }
+
+
     
     chooseColor(c){
         cHex = c.hex;
@@ -539,11 +653,11 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
         
-        if(this.state.text == "Freehand Off"){
-            this.setState({text : "Freehand On"});
+        if(this.state.freehandColor == 'transparent'){
+            this.setState({freehandColor : 'green'});
         }
         else{
-            this.setState({text : "Freehand Off"});
+            this.setState({freehandColor : 'transparent'});
         }
         canvas.renderAll();
     }
@@ -645,25 +759,68 @@ class FabricCanvas extends Component {
                 <div className = "image-list" style = {{height: 300, width: 55, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
                     <LayerTree />
                 </div>
+
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-spacing" />
-                    <img onClick = {this.moveObjectForward} className = "up-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" />
-                    <img onClick = {this.deleteActiveObject} className = "delete-icon" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/>
-                    <img onClick = {this.moveObjectBackward} className = "down-arrow" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" />
+                    <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_up_48px-32.png" /></a>
+                    <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src="https://cdn4.iconfinder.com/data/icons/e-commerce-icon-set/48/Remove-32.png"/></a>
+                    <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-32.png" /></a>
                 </div>
+
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <canvas id = "c" width={300} height={300}></canvas>   
                 </div>
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
-                    <img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "textAdder" />
-                    <img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "colorAdder" />
-                    <img onClick = {this.previewClicked} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "previewAdder" />
-                    <img onClick = {this.saveButton} src = "https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-32.png" className = "saveAdder" />
+                    <div className = "library-right-spacing" />
+
+                    <a data-tip data-for='addText'><img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo2.png')} className = "iconButton"/></a>
+                    <a data-tip data-for='enterDrawingMode'><img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/15.Pencil-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='buttonClick'><img onClick = {this.previewClicked} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/upload2-32.png" className = "iconButton" /></a>
+                    <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-32.png" className = "trashIcon" /></a>
+                    
+                    <ReactTooltip id='moveObjectForward' type='warning'>
+                      <span>Move selected object forward</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='deleteActiveObject' type='warning'>
+                      <span>Delete selected object</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='moveObjectBackward' type='warning'>
+                      <span>move selected object backwards</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='addText' type='warning'>
+                      <span>Add text to current Project</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='selectColor' type='warning'>
+                      <span>Fill in color to selected object</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='setHalo' type='warning'>
+                      <span>Add Halo to selected Object</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='enterDrawingMode' type='warning'>
+                      <span>Enter freehand drawing mode</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='buttonClick' type='warning'>
+                      <span>Preview project on the map</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='saveButton' type='warning'>
+                      <span>Save current project</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='clearCanvas' type='warning'>
+                      <span>Clear current project</span>
+                    </ReactTooltip>
+
+
+
+
+
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
-                <div className = "buttons" style = {{height: 30, width: 900, float:'left'}}>
+                <div className = "buttons" style = {{height: 30, width: 980, float:'left'}}>
                     <button onClick = {this.openModal}>Create Group by Size</button>
-                    <button onClick = {this.tryAnotherColor}>Create Group by Base Colors</button>
+
                     <Modal
                         isOpen = {this.state.modalIsOpen}
                         onAfterOpen = {this.afterOpenModal}
@@ -686,13 +843,44 @@ class FabricCanvas extends Component {
                         <button onClick={this.saveGroup}>Save</button>
                     </div>
                     </Modal>
-                    <button onClick = {this.setHalo}>Set Halo</button>
-                    <button onClick = {this.enterDrawingMode}>{this.state.text}</button>
-                    <button onClick = {this.clearCanvas}>Clear Canvas</button>
+
+                    <Modal
+                        isOpen = {this.state.colorModalIsOpen}
+                        onAfterOpen = {this.afterOpenModal}
+                        onRequestClose = {this.closeColorModal}
+                        style = {customPalleteStyles}
+                        contentLabel = "Pallete Modal"
+                    >
+
+
+                    <div style = {{padding:'2px 16px', 'backgroundColor':'#13496e',color: 'white'}}>
+                         <p>Manage Palette</p>
+                    </div>
+                    <div style = {{height: 300, width: 221, float: 'left', display:'inline-block', marginLeft: 10, marginTop: 10}}>
+                        <SketchPicker color={ 'black' } onChange={ this.choosePalleteColor }/>
+                    </div>
+
+                    <div style = {{height: 300, width: 221, float: 'left', marginLeft: 10, marginTop: 10}}>
+                        <p>Step 1: Create a palette</p>
+                        {this.state.colorList}
+                        <button onClick = {this.addColor} style={{paddingTop: -5}}>+</button>
+
+                        <p>Step 2: Preview with base color in the palette</p>
+                        <div style={{height: 130, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}>{this.state.previewList}</div>
+                        <div style = {{padding:'2px 16px', position:'absolute', bottom: 12, left: 223}}>
+                        <button onClick = {this.tryAnotherColor}>Preview and Try Another Color</button>
+                        <button onClick = {this.saveTwoCanvas}>Save</button>
+                        </div>
+                    </div>
+
+
+
+
+                    </Modal>
+
+                    <button onClick = {this.openColorModal}>Palette</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
-                    
-            
-            
+
                 </div>  
             </div>          
         );
@@ -719,7 +907,8 @@ FabricCanvas.propTypes = {
     imageSaved: PropTypes.func.isRequired,
     tree_num: PropTypes.number.isRequired,
     saveLayerTree:PropTypes.func.isRequired,
-    loadLayerTree:PropTypes.func.isRequired
+    loadLayerTree:PropTypes.func.isRequired,
+    treeAdd: PropTypes.func.isRequired
 }
 
 FabricCanvas.defaultProps = {
@@ -739,6 +928,7 @@ FabricCanvas.defaultProps = {
     maxSize: 100,
     addText: () => console.log("text was added"),
     addFreehand: () => console.log("freehand was added"),
+    treeAdd: () => console.log("added to tree"),
     event:"",
     jsonKey:"",
     tree_num: -1
@@ -756,8 +946,8 @@ function mapDispatchToProps(dispatch) {
         addFreehand: (id) => {dispatch(freehandAdd(id))},
         imageSaved:(key)=>{dispatch(imageRendered(key))},
         saveLayerTree:(endP) => {dispatch(saveLayerTree(endP))},
-        loadLayerTree:(endP_l) => {dispatch(loadLayerTree(endP_l))}
-        
+        loadLayerTree:(endP_l) => {dispatch(loadLayerTree(endP_l))},    
+        treeAdd: (im, id)=>{dispatch(treeAdd(im,id))}
     })
 }
 
