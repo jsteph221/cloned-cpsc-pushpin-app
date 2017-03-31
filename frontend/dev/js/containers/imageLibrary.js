@@ -310,7 +310,7 @@ class ImageLibrary extends Component {
 
     }
     mapToImageRendered(imageURLs){
-        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 40, width: 40, padding: 10}} />);
+        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
     }
 
     render() {

@@ -58,6 +58,7 @@ function canvasToImage(ctx,canvas,size){
 
     
     var params = {multiplier:0,left:br.left,top:br.top, width:br.width, height:br.height};
+    console.log(params);
     if(br.left < 0){
         params.left = 0;
         params.width = br.left + br.width;
@@ -67,10 +68,10 @@ function canvasToImage(ctx,canvas,size){
         params.height = br.top+br.height;
     }
     if(br.left + br.width> canvas.width){
-        params.width = canvas.width-br.width;
+        params.width = canvas.width-params.left;
     }
     if(Math.abs(br.top + br.height)> canvas.height ){
-        params.height = canvas.height-br.height;
+        params.height = canvas.height-params.top;
     }
     var mult;
     if(params.width > params.height){
@@ -79,6 +80,8 @@ function canvasToImage(ctx,canvas,size){
         mult = size/params.height;
     }
     params.multiplier = mult;
+    console.log(params);
+
 
     var dataUrl = canvas.toDataURL(params);        
 
@@ -304,15 +307,14 @@ class FabricCanvas extends Component {
         
         request.open("GET", server+"/api/projects/"+proj+"/renderedImages/canvas"+key, false);
         request.send(null);
-
+        
         var response = JSON.parse(request.response);
-
         if (request.status !== 200){
-            alert("synchronous request failed\n Error: "+request.status);
-            return [];
+            alert("Error Getting Serialized Canvas\n Error: "+request.status);
+            return;
         }
-	    if (response.success == true){
-            if(response.json !=""){
+        if (response.success == true){
+            if(response.json !=null){
                var canvasJson = JSON.parse(response.json);
                 var canvas = this.state.canvas;            
                 this.clearCanvas();

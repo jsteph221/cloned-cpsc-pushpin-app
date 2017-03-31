@@ -106,6 +106,7 @@ class LayerTree extends Component {
 	    if (response.success == true){
             if (response.json == null){
                 alert("No layer tree for this project found");
+                this.setState({images:[]});
             }else{
                 var layerJson = JSON.parse(response.json);
                 return layerJson; 
