@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import ReactScrollbar from 'react-scrollbar-js';
 import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
@@ -69,9 +70,7 @@ class ImageLibrary extends Component {
             modalIsOpen:false,
         };
     };
-    shouldComponentUpdate(nextProps,nextState){
-        return true;
-    }
+
     componentWillReceiveProps(nextProps){
         if (nextProps.new_imageKey != this.props.new_imageKey){
             this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
@@ -109,11 +108,6 @@ class ImageLibrary extends Component {
         document.body.removeChild(a);
 
     }
-
-    //implement if needed
-    componentDidMount(){
-    }
-
 
     //AJAX to post image
     postImage(files) {
@@ -192,8 +186,6 @@ class ImageLibrary extends Component {
         e.preventDefault();
         this.postImage(document.getElementById('imageForm').files);
     }
-
-
 
     imageClick(url){
         var image_number = this.state.image_number;
@@ -299,10 +291,6 @@ class ImageLibrary extends Component {
             return [];
         }
 
-        {/*
-         this.setState({projects: response.projects});
-         */}
-
         return response.projects;
 
     }
@@ -315,13 +303,10 @@ class ImageLibrary extends Component {
 
     }
     mapToImageRendered(imageURLs){
-        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
+        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 40, width: 40, padding: 10}} />);
     }
 
     render() {
-
-
-        const imagesFn = ((im) => this.mapToImage(im)).bind(this);
 
         return (
             <div>
@@ -335,32 +320,54 @@ class ImageLibrary extends Component {
                     </TabList>
 
                     <TabPanel>
-                        <p>{this.state.baseImagesLibrary}</p>
+                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                            <div>
+                                {this.state.baseImagesLibrary}
+                            </div>
+                        </ReactScrollbar>
                     </TabPanel>
 
                     <TabPanel>
-                        <p>{this.state.interiorImagesLibrary}</p>
+                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                            <div>
+                                {this.state.interiorImagesLibrary}
+                            </div>
+                        </ReactScrollbar>
                     </TabPanel>
 
                     <TabPanel>
-                        <div className = "uploadForm">
-                            <Dropzone onDrop={this.onDrop} style={{height: 150, width: 976, backgroundColor: "#f2f2f2", marginTop: 0}}>
-                                {this.state.customImagesLibrary}
-                                <div style={{marginLeft : 5}}>
-                                    <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>
-                                    <button value="Upload" onClick={this.handleSubmit}>Upload</button>
-                                </div>
-                                <p>    Please drop files here or click to upload.</p>
-                            </Dropzone>
-                        </div>
+                            <div className = "uploadForm">
+                                <Dropzone onDrop={this.onDrop} style={{height: 125, width: 976, backgroundColor: "#f2f2f2", marginTop: 0}}>
+                                    <ReactScrollbar style = {{height: 120, width: 976}}>
+                                        <div>
+                                            {this.state.customImagesLibrary}
+                                        </div>
+                                    </ReactScrollbar>
+                                    <div style={{marginLeft : 5, marginTop: 10}}>
+                                        Please drop above or click below to upload.
+                                    </div>
+                                    <div style={{marginLeft : 5, marginTop: 5}}>
+                                        <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>
+                                        <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+                                    </div>
+                                </Dropzone>
+                            </div>
                     </TabPanel>
 
                     <TabPanel>
-                        <p>{this.state.renderedImagesLibrary}</p>
+                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                            <div>
+                                {this.state.renderedImagesLibrary}
+                            </div>
+                        </ReactScrollbar>
                     </TabPanel>
+
                     <TabPanel>
+                    <div>
                         <SizeSlider/>
+                    </div>
                     </TabPanel>
+
                 </Tabs>
                 <Modal
                     isOpen= {this.state.modalIsOpen}
