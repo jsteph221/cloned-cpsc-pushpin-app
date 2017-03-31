@@ -70,9 +70,7 @@ class ImageLibrary extends Component {
             modalIsOpen:false,
         };
     };
-    shouldComponentUpdate(nextProps,nextState){
-        return true;
-    }
+
     componentWillReceiveProps(nextProps){
         if (nextProps.new_imageKey != this.props.new_imageKey){
             this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
@@ -110,11 +108,6 @@ class ImageLibrary extends Component {
         document.body.removeChild(a);
 
     }
-
-    //implement if needed
-    componentDidMount(){
-    }
-
 
     //AJAX to post image
     postImage(files) {
@@ -193,8 +186,6 @@ class ImageLibrary extends Component {
         e.preventDefault();
         this.postImage(document.getElementById('imageForm').files);
     }
-
-
 
     imageClick(url){
         var image_number = this.state.image_number;
@@ -300,10 +291,6 @@ class ImageLibrary extends Component {
             return [];
         }
 
-        {/*
-         this.setState({projects: response.projects});
-         */}
-
         return response.projects;
 
     }
@@ -320,9 +307,6 @@ class ImageLibrary extends Component {
     }
 
     render() {
-
-
-        const imagesFn = ((im) => this.mapToImage(im)).bind(this);
 
         return (
             <div>
