@@ -71,8 +71,6 @@ class UploadForm extends React.Component {
     
   
     onDrop(acceptedFiles, rejectedFiles) {
-      console.log('Accepted files: ', acceptedFiles);
-      console.log('Rejected files: ', rejectedFiles);
       alert("dropped");        
       this.postImage(acceptedFiles);            
     }

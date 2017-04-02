@@ -82,7 +82,7 @@ InteriorColorPicker.propTypes = {
 }
 
 InteriorColorPicker.defaultProps = {
-    colorPicked: (color) => console.log(color+" was picked\n")
+    colorPicked: (color) => (e)
 }
 
 function mapDispatchToProps(dispatch){

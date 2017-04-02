@@ -39,7 +39,6 @@ function saveCanvasJSON(json,project,key){
         crossDomain:true,
         success: function(data){
             if (data.success == true){
-                console.log("Json Saved");
             }else{
                 alert("Error saving Serialized Canvas " + data.message)
             }
@@ -58,7 +57,6 @@ function canvasToImage(ctx,canvas,size){
 
     
     var params = {multiplier:0,left:br.left,top:br.top, width:br.width, height:br.height};
-    console.log(params);
     if(br.left < 0){
         params.left = 0;
         params.width = br.left + br.width;
@@ -80,7 +78,6 @@ function canvasToImage(ctx,canvas,size){
         mult = size/params.height;
     }
     params.multiplier = mult;
-    console.log(params);
 
 
     var dataUrl = canvas.toDataURL(params);        
@@ -290,7 +287,6 @@ class FabricCanvas extends Component {
         });
         */
         this.setState({canvas:canvas});
-        console.log(canvas);
         
         var freeAdd = () => this.addFreehand();
 
@@ -300,7 +296,6 @@ class FabricCanvas extends Component {
         })
     }
     addJsonToCanvas(key){
-        console.log("in add to json canvas");
         var proj = this.getProjects()[0];
         var request = new XMLHttpRequest();
         request.withCredentials = true;
@@ -395,7 +390,6 @@ class FabricCanvas extends Component {
             if (zindex != new_zindex){
                 this.props.imageUp(new_zindex, id);
             }
-            console.log(canvas);
         }
     }
     
@@ -605,35 +599,37 @@ class FabricCanvas extends Component {
         cHex = c.hex;
         rgb = c.rgb;
         alpha = c.rgb.a;
-        var canvas = this.state.canvas;
-        var object = canvas.getActiveObject();
-        var filter = new fabric.Image.filters.Tint({
-            color: c.hex,
-            opacity: 1.0
-        });
-        var whiteFilter = new fabric.Image.filters.RemoveWhite({
-              threshold: 40,
-              distance: 140
-        });
-        if(colorMode == "interior"){
-            if(object != null && object.get('type') == 'i-text'){
-                object.setFill(c.hex);
-                canvas.renderAll();
-            }
-            else if (object!= null){
-                object.setFill(c.hex);
-                object.filters.push(whiteFilter);
-                object.filters.push(filter);
-                object.applyFilters(canvas.renderAll.bind(canvas));
-                canvas.renderAll();
-            }
 
-        }else if(colorMode == "halo"){
-            if (object != null){
-            object.setShadow({color: c.hex, blur: 100 });
-            canvas.renderAll();
-            }
-        }
+        // Uncomment and change if want color to change on color click instead of button click
+        // var canvas = this.state.canvas;
+        // var object = canvas.getActiveObject();
+        // var filter = new fabric.Image.filters.Tint({
+        //     color: c.hex,
+        //     opacity: 1.0
+        // });
+        // var whiteFilter = new fabric.Image.filters.RemoveWhite({
+        //       threshold: 40,
+        //       distance: 140
+        // });
+        // if(colorMode == "interior"){
+        //     if(object != null && object.get('type') == 'i-text'){
+        //         object.setFill(c.hex);
+        //         canvas.renderAll();
+        //     }
+        //     else if (object!= null){
+        //         object.setFill(c.hex);
+        //         object.filters.push(whiteFilter);
+        //         object.filters.push(filter);
+        //         object.applyFilters(canvas.renderAll.bind(canvas));
+        //         canvas.renderAll();
+        //     }
+
+        // }else if(colorMode == "halo"){
+        //     if (object != null){
+        //     object.setShadow({color: c.hex, blur: 100 });
+        //     canvas.renderAll();
+        //     }
+        // }
         
     }
     getProjects(){
@@ -922,21 +918,21 @@ FabricCanvas.propTypes = {
 FabricCanvas.defaultProps = {
 
 	image: "",
-    previewClicked: (dataURL,sizeX,sizeY) => console.log("Clicked on preview"),
-    imageUp: (zindex, object) => console.log("zindex is"+zindex),
-    imageDown: (zindex) => console.log("zindex is"+zindex),
-    imageDelete: (zindex, object) => console.log("zindex is"+zindex),
-    imageAdded:(url)=>console.log("image added"),
-    canvasClear: () => console.log("canvas cleared"),
-    imageSaved:(key)=>console.log("Image Saved"),
-    saveLayerTree:(endP)=>console.log("Save layer tree"),
-    loadLayerTree:(endP_l)=>console.log("Load layer tree"),
+    previewClicked: (dataURL,sizeX,sizeY) => (e),
+    imageUp: (zindex, object) => (e),
+    imageDown: (zindex) => (e),
+    imageDelete: (zindex, object) => (e),
+    imageAdded:(url)=> (e),
+    canvasClear: () => (e),
+    imageSaved:(key)=> (e),
+    saveLayerTree:(endP)=> (e),
+    loadLayerTree:(endP_l)=> (e),
     select_id: -1,
     new_id: 0,
     maxSize: 100,
-    addText: () => console.log("text was added"),
-    addFreehand: () => console.log("freehand was added"),
-    treeAdd: () => console.log("added to tree"),
+    addText: () => (e),
+    addFreehand: () => (e),
+    treeAdd: () => (e),
     event:"",
     jsonKey:"",
     tree_num: -1

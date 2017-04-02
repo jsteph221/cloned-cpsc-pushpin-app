@@ -190,8 +190,6 @@ class ImageLibrary extends Component {
 
     //handle dropped file
     onDrop(acceptedFiles, rejectedFiles) {
-        console.log('Accepted files: ', acceptedFiles);
-        console.log('Rejected files: ', rejectedFiles);
 //        alert("dropped");
         this.postImage(acceptedFiles);
     }
@@ -412,8 +410,8 @@ ImageLibrary.propTypes = {
 }
 
 ImageLibrary.defaultProps = {
-    imageClicked: (image, id) => console.log(image+" was clicked\n"),
-    renderedImageClicked: (image) =>console.log(image+" was clicked\n"),
+    imageClicked: (image, id) => (e),
+    renderedImageClicked: (image) => (e),
 }
 
 function mapDispatchToProps(dispatch) {

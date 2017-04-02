@@ -66,10 +66,7 @@ class LayerTree extends Component {
         }
 	}
     saveTree(endP){        
-        console.log("Saving Layer Tree");
-        console.log(endP);
         var json = JSON.stringify(this.state.images);
-        console.log(json);
         $.ajax({
             url:endP,
             type: "PUT",
@@ -82,7 +79,6 @@ class LayerTree extends Component {
             crossDomain:true,
             success: function(data){
                 if (data.success == true){
-                    console.log("Layer Tree Saved");
                 }else{
                     alert(data.message)
                 }
@@ -93,7 +89,6 @@ class LayerTree extends Component {
          );
     }
     loadTree(endP){
-        console.log("Loading layer tree: ",endP)
         var request = new XMLHttpRequest();
         request.withCredentials = true;
         request.open("GET",endP,false);
@@ -149,7 +144,7 @@ LayerTree.defaultProps = {
     index_to_remove: 0,
     event: "",
     new_id: 0,
-    tree_click: () => console.log("id "+obj.id+" was clicked")
+    tree_click: () => (e)
 }
 
 const mapStateToProps = (state) => {
