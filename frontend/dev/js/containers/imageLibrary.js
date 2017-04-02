@@ -112,6 +112,13 @@ class ImageLibrary extends Component {
     //AJAX to post image
     postImage(files) {
         const self = this;
+        var arr = files[0].name.split('.');
+        var ex = arr[1];
+
+        if (ex != null && (ex == "jpg" || ex == "png" || ex == "jpeg" || ex == "svg")) {
+
+
+
 
         /*get 1st project*/
         $.ajax(
@@ -171,13 +178,21 @@ class ImageLibrary extends Component {
             );
 
 
+            }
+
+            else {
+                alert('Please upload an image in jpg, png, or svg format.');
+
+            }
+
+
     }
 
     //handle dropped file
     onDrop(acceptedFiles, rejectedFiles) {
         console.log('Accepted files: ', acceptedFiles);
         console.log('Rejected files: ', rejectedFiles);
-        alert("dropped");
+//        alert("dropped");
         this.postImage(acceptedFiles);
     }
 
@@ -303,7 +318,7 @@ class ImageLibrary extends Component {
 
     }
     mapToImageRendered(imageURLs){
-        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 40, width: 40, padding: 10}} />);
+        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
     }
 
     render() {
