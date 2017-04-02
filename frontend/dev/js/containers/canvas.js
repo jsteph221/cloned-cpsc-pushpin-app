@@ -773,9 +773,9 @@ class FabricCanvas extends Component {
 
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-spacing" />
-                    <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src="http://i.imgur.com/cBT1liY.png" style={{width: 30, height: 30}} /></a>
-                    <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src="http://www.iconsdb.com/icons/preview/red/delete-2-xxl.png" style={{width: 30, height: 30}}/></a>
-                    <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src="http://i.imgur.com/DRiJRO4.png" style={{width: 30, height: 30}} /></a>
+                    <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src={require('../../static/icons/layer_up.png')} style={{width: 30, height: 30}} /></a>
+                    <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src={require('../../static/icons/delete.png')} style={{width: 30, height: 30}}/></a>
+                    <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src={require('../../static/icons/layer_down.png')} style={{width: 30, height: 30}} /></a>
                 </div>
 
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
@@ -784,13 +784,13 @@ class FabricCanvas extends Component {
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-right-spacing" />
 
-                    <a data-tip data-for='addText'><img onClick = {this.addText} src = "https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-23-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = "https://cdn0.iconfinder.com/data/icons/outline-icons/320/Paint-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo2.png')} className = "iconButton"/></a>
-                    <a data-tip data-for='enterDrawingMode'><img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/15.Pencil-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='buttonClick'><img onClick = {this.previewClicked} src = "https://cdn1.iconfinder.com/data/icons/freeline/32/eye_preview_see_seen_view-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/upload2-32.png" className = "iconButton" /></a>
-                    <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src = "https://cdn0.iconfinder.com/data/icons/octicons/1024/trashcan-32.png" className = "trashIcon" /></a>
+                    <a data-tip data-for='addText'><img onClick = {this.addText} src = {require('../../static/icons/text.png')} className = "iconButton" /></a>
+                    <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = {require('../../static/icons/bucket.png')} className = "iconButton" /></a>
+                    <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo.png')} className = "iconButton"/></a>
+                    <a data-tip data-for='enterDrawingMode'><img onClick = {this.enterDrawingMode} style = {{backgroundColor: this.state.freehandColor}} src = {require('../../static/icons/pencil.png')} className = "iconButton" /></a>
+                    <a data-tip data-for='buttonClick'><img onClick = {this.previewClicked} src = {require('../../static/icons/eye.png')} className = "iconButton" /></a>
+                    <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = {require('../../static/icons/upload.png')} className = "iconButton" /></a>
+                    <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src ={require('../../static/icons/trashcan.png')} className = "trashIcon" /></a>
                     
                     <ReactTooltip id='moveObjectForward' type='warning'>
                       <span>Move selected object forward</span>
