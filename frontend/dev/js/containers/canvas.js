@@ -823,9 +823,6 @@ class FabricCanvas extends Component {
                     </ReactTooltip>
 
 
-
-
-
                 </div>
                 <div style = {{height: 300, width: 221, float: 'left', borderStyle: 'solid', borderWidth: 1, borderColor: '#13496e', marginLeft: 0}}><SketchPicker color={ 'black' } onChange={ this.chooseColor }/></div>
                 <div className = "buttons" style = {{height: 30, width: 980, float:'left'}}>
@@ -888,7 +885,7 @@ class FabricCanvas extends Component {
 
                     </Modal>
 
-                    <button onClick = {this.openColorModal}>Palette</button>
+                    <button onClick = {this.openColorModal}>Create Group by Color</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
 
                 </div>  
