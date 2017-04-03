@@ -805,11 +805,11 @@ class FabricCanvas extends Component {
 
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-spacing" />
-                    <a data-tip data-for='opacityInc'><img onClick = {this.increaseOpacity} src = {require('../../static/icons/opacity-inc.png')} className = "iconButton" /></a>
+                    {/*<a data-tip data-for='opacityInc'><img onClick = {this.increaseOpacity} src = {require('../../static/icons/opacity-inc.png')} className = "iconButton" /></a>*/}
                     <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src={require('../../static/icons/layer_up.png')} style={{width: 30, height: 30}} /></a>
                     <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src={require('../../static/icons/delete.png')} style={{width: 30, height: 30}}/></a>
                     <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src={require('../../static/icons/layer_down.png')} style={{width: 30, height: 30}} /></a>
-                    <a data-tip data-for='opacityDec'><img onClick = {this.decreaseOpacity} src = {require('../../static/icons/opacity-dec.png')} className = "iconButton" /></a>
+                    {/*<a data-tip data-for='opacityDec'><img onClick = {this.decreaseOpacity} src = {require('../../static/icons/opacity-dec.png')} className = "iconButton" /></a>*/}
 
                 </div>
 
