@@ -49,6 +49,7 @@ class ImageLibrary extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.addJson = this.addJson.bind(this);
         this.getDownload = this.getDownload.bind(this);
+        this.deleteImage = this.deleteImage.bind(this);
 
         this.mapToImage = this.mapToImage.bind(this);
 
@@ -106,7 +107,26 @@ class ImageLibrary extends Component {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-
+    }
+    
+    deleteImage(){
+        console.log("Delete pressed");
+        var proj = this.getProjects()[0];
+        var index = this.state.activeJsonKey.lastIndexOf('/');
+        var key = this.state.activeJsonKey.slice(index);
+        var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        request.open('DELETE',server+"/api/projects/"+proj+"/renderedImages/image"+key, false);
+        request.send(null);
+        var response = JSON.parse(request.response);
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+        }
+        if (response.success == true){
+            this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
+            alert("Image has been deleted");
+        }
+        this.closeModal();
     }
 
     //AJAX to post image
@@ -397,6 +417,7 @@ class ImageLibrary extends Component {
                         <button onClick={this.closeModal}>Cancel</button>
                         <button onClick={this.addJson}>Load into Canvas</button>
                         <button onClick={this.getDownload}> Download </button>
+                        <button onClick={this.deleteImage}> Delete </button>
                     </div>
                 </Modal>
             </div>

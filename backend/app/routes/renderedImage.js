@@ -59,6 +59,31 @@ router.post('/image', function(req, res) {
   });
 });
 
+router.delete('/image/:rendered_id', function(req, res) {
+    Project.findOne({
+        _id: req.params.project_id
+        }, function(err, project) {
+        project.renderedImages.remove(req.params.rendered_id);
+        project.save(function(err){
+            RenderedImage.findOneAndRemove({
+                _id: req.params.rendered_id
+              }, function(err, renderedImage) {
+                  s3.deleteObject({
+                    Bucket: s3['bucketName']+'/renderedImages',
+                    Key: renderedImage.id
+                  }, function(err, data){
+                    if (err) console.log(err, err.stack); // an error occurred
+                    else {
+                        res.json({success:true, message:"image has been deleted from S3 and DB"});
+                    }
+                  });
+                
+              });            
+        });
+    });
+});
+
+
 router.get('/image/:rendered_id', function(req, res) {
   RenderedImage.findOne({
     _id: req.params.rendered_id

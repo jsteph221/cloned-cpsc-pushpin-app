@@ -13,6 +13,7 @@ import SizeSlider from '../containers/slider'
 import server from '../config/server';
 import ReactTooltip from 'react-tooltip';
 
+
 var width = $(window).width();
 var height = $(window).height();
 var cHex;
@@ -184,6 +185,8 @@ class FabricCanvas extends Component {
         this.choosePaletteColor = this.choosePaletteColor.bind(this);
         this.saveTwoCanvas = this.saveTwoCanvas.bind(this);
         this.deletePreview = this.deletePreview.bind(this);
+        this.increaseOpacity = this.increaseOpacity.bind(this);
+        this.decreaseOpacity = this.decreaseOpacity.bind(this)
 	}
     //color palette module controller
     openColorModal() {
@@ -259,6 +262,11 @@ class FabricCanvas extends Component {
         var c = document.getElementById('c');
         var canvas = new fabric.Canvas('c', {
             isDrawingMode: false,
+        });
+        $(document).on("keydown", function (e) {
+            if (e.which === 8 && !$(e.target).is("input, textarea")) {
+                e.preventDefault();
+            }
         });
         /*
         $(canvas.wrapperEl).on('mousewheel DOMMouseScroll', function(e) {
@@ -378,6 +386,34 @@ class FabricCanvas extends Component {
             canvas.add(oImg);
         },);        
     } 
+
+    increaseOpacity(){
+        var canvas = this.state.canvas;
+        var obj =  canvas.getActiveObject();
+        if(obj){
+            var curOpacity = obj.getOpacity();
+            if(curOpacity + 0.05 <= 1){
+                obj.setOpacity(curOpacity+0.05);
+            }else{
+                obj.setOpacity(1);
+            }
+            canvas.renderAll();
+        }
+    }
+    
+    decreaseOpacity(){
+        var canvas = this.state.canvas;
+        var obj =  canvas.getActiveObject();
+        if(obj){
+            var curOpacity = obj.getOpacity();
+            if(curOpacity - 0.05 >= 0){
+                obj.setOpacity(curOpacity-0.05);
+            }else{
+                obj.setOpacity(0);
+            }
+            canvas.renderAll();
+        }
+    }
     
     moveObjectForward(){
         var canvas = this.state.canvas;
@@ -769,9 +805,12 @@ class FabricCanvas extends Component {
 
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-spacing" />
+                    <a data-tip data-for='opacityInc'><img onClick = {this.increaseOpacity} src = {require('../../static/icons/opacity-inc.png')} className = "iconButton" /></a>
                     <a data-tip data-for='moveObjectForward'><img onClick = {this.moveObjectForward} className = "iconButton" src={require('../../static/icons/layer_up.png')} style={{width: 30, height: 30}} /></a>
                     <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src={require('../../static/icons/delete.png')} style={{width: 30, height: 30}}/></a>
                     <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src={require('../../static/icons/layer_down.png')} style={{width: 30, height: 30}} /></a>
+                    <a data-tip data-for='opacityDec'><img onClick = {this.decreaseOpacity} src = {require('../../static/icons/opacity-dec.png')} className = "iconButton" /></a>
+
                 </div>
 
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
@@ -779,7 +818,6 @@ class FabricCanvas extends Component {
                 </div>
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-right-spacing" />
-
                     <a data-tip data-for='addText'><img onClick = {this.addText} src = {require('../../static/icons/text.png')} className = "iconButton" /></a>
                     <a data-tip data-for='selectColor'><img onClick = {this.selectColor} src = {require('../../static/icons/bucket.png')} className = "iconButton" /></a>
                     <a data-tip data-for='setHalo'><img onClick = {this.setHalo} src={require('../../static/icons/halo.png')} className = "iconButton"/></a>
@@ -788,6 +826,12 @@ class FabricCanvas extends Component {
                     <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = {require('../../static/icons/upload.png')} className = "iconButton" /></a>
                     <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src ={require('../../static/icons/trashcan.png')} className = "trashIcon" /></a>
                     
+                    <ReactTooltip id='opacityInc' type='warning'>
+                      <span>Increase selected image's opacity</span>
+                    </ReactTooltip>
+                    <ReactTooltip id='opacityDec' type='warning'>
+                      <span>Decrease selected image's opacity</span>
+                    </ReactTooltip>                                                                             
                     <ReactTooltip id='moveObjectForward' type='warning'>
                       <span>Move selected object forward</span>
                     </ReactTooltip>
@@ -884,7 +928,6 @@ class FabricCanvas extends Component {
 
                     <button onClick = {this.openColorModal}>Create Group by Color</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
-
                 </div>  
             </div>          
         );
