@@ -449,7 +449,7 @@ class FabricCanvas extends Component {
         if (object!=null){
             var id = object.get('id');
             var zindex = canvas.getObjects().indexOf(object);
-            this.props.imageDelete(zindex, id);
+            this.props.imageDelete(zindex, id, object);
             object.remove();
         }
         
@@ -986,7 +986,7 @@ function mapDispatchToProps(dispatch) {
         previewClicked: (dataURL,sizeX,sizeY) => {dispatch(previewImage(dataURL,sizeX,sizeY))},
         imageUp: (zindex, object) => {dispatch(imageBroughtUp(zindex, object))},
         imageDown: (zindex, object) => {dispatch(imageSentDown(zindex, object))},
-        imageDelete: (zindex, object) => {dispatch(imageDeleted(zindex, object))},
+        imageDelete: (zindex, id, object) => {dispatch(imageDeleted(zindex, id, object))},
         imageAdded: (url) => {dispatch(imageAddedJson(url))},
         canvasClear: () => {dispatch(canvasCleared())},
         addText: (id) => {dispatch(textAdd(id))},
@@ -1008,7 +1008,7 @@ const mapStateToProps = (state) => {
         new_id: state.library.new_id,
         jsonKey: state.library.key,
         event: state.library.event,
-        tree_num: state.canvas.tree_num
+        tree_num: state.canvas.tree_num,
 	}
 }
 

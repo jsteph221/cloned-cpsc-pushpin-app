@@ -51,10 +51,11 @@ export const imageSentDown = (index, object) => {
 	}
 };
 
-export const imageDeleted = (index, object) => {
+export const imageDeleted = (index, id, object) => {
 	return{
 		type: "IMAGE_DELETED",
 		index: index,
+		id: id,
 		object: object
 	}
 };

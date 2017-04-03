@@ -152,6 +152,7 @@ const mapStateToProps = (state) => {
 		new_image: state.tree.new_image,
 		new_zindex: state.tree.new_zindex,
 		object_id: state.tree.object_id,
+        object: state.tree.object,
 		index_to_remove: state.tree.index_to_remove,
 		event: state.tree.event,
 		new_id: state.tree.new_id,

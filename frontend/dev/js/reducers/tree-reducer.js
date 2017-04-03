@@ -38,7 +38,8 @@ export default function tree_reducer(state = initialState, action) {
         case 'IMAGE_DELETED':
         	return Object.assign({}, state, {
         		index_to_remove: action.index,
-        		object_id: action.object,
+        		object_id: action.id,
+                object: action.object,
                 event: "delete"
             })
         case 'CANVAS_CLEARED':
