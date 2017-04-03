@@ -59,6 +59,31 @@ router.post('/image', function(req, res) {
   });
 });
 
+router.delete('/image/:rendered_id', function(req, res) {
+    Project.findOne({
+        _id: req.params.project_id
+        }, function(err, project) {
+        project.renderedImages.remove(req.params.rendered_id);
+        project.save(function(err){
+            RenderedImage.findOneAndRemove({
+                _id: req.params.rendered_id
+              }, function(err, renderedImage) {
+                  s3.deleteObject({
+                    Bucket: s3['bucketName']+'/renderedImages',
+                    Key: renderedImage.id
+                  }, function(err, data){
+                    if (err) console.log(err, err.stack); // an error occurred
+                    else {
+                        res.json({success:true, message:"image has been deleted from S3 and DB"});
+                    }
+                  });
+                
+              });            
+        });
+    });
+});
+
+
 router.get('/image/:rendered_id', function(req, res) {
   RenderedImage.findOne({
     _id: req.params.rendered_id
@@ -108,10 +133,15 @@ router.get('/canvas/:rendered_id', function(req, res) {
     if (!renderedImage){
       res.json({ success: false, message: 'no rendered image was found with the given id.'});
     } else{
-        res.json({success:true, json:renderedImage.serializedCanvas});
+        if(renderedImage.serializedCanvas == ""){
+            res.json({success:false,message: "Could not find Serialized Canvase"});
+        }else{
+            res.json({success:true, json:renderedImage.serializedCanvas});
+        }
     }
   });
 });
+
 router.put('/layer/:rendered_id', function(req, res) {
   RenderedImage.findOne({
     _id: req.params.rendered_id
@@ -119,8 +149,10 @@ router.put('/layer/:rendered_id', function(req, res) {
     if (!renderedImage){
       res.json({ success: false, message: 'no rendered image was found with the given id.'});
     } else{
-      renderedImage.layer = req.params.layer;
-      newCustomImage.save(function(err) {
+      console.log("ADDING LAYER TREE");
+      console.log(req.body.layer);
+      renderedImage.serializedLayer = req.body.layer;
+      renderedImage.save(function(err) {
         if (err) {
           throw err; 
         } else{
@@ -130,6 +162,20 @@ router.put('/layer/:rendered_id', function(req, res) {
     }
   });
 });
-
+router.get('/layer/:rendered_id', function(req, res) {
+  RenderedImage.findOne({
+    _id: req.params.rendered_id
+  }, function(err, renderedImage) {
+    if (!renderedImage){
+      res.json({ success: false, message: 'no rendered image was found with the given id.'});
+    } else{
+        if(renderedImage.serializedLayer ==""){
+            res.json({success:false,message: "Could not find layer tree"});
+        }else{
+            res.json({success:true, json:renderedImage.serializedLayer});
+        }
+    }
+  });
+});
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import ReactScrollbar from 'react-scrollbar-js';
 import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
@@ -48,6 +49,7 @@ class ImageLibrary extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.addJson = this.addJson.bind(this);
         this.getDownload = this.getDownload.bind(this);
+        this.deleteImage = this.deleteImage.bind(this);
 
         this.mapToImage = this.mapToImage.bind(this);
 
@@ -69,9 +71,7 @@ class ImageLibrary extends Component {
             modalIsOpen:false,
         };
     };
-    shouldComponentUpdate(nextProps,nextState){
-        return true;
-    }
+
     componentWillReceiveProps(nextProps){
         if (nextProps.new_imageKey != this.props.new_imageKey){
             this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
@@ -107,17 +107,38 @@ class ImageLibrary extends Component {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-
     }
-
-    //implement if needed
-    componentDidMount(){
+    
+    deleteImage(){
+        console.log("Delete pressed");
+        var proj = this.getProjects()[0];
+        var index = this.state.activeJsonKey.lastIndexOf('/');
+        var key = this.state.activeJsonKey.slice(index);
+        var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        request.open('DELETE',server+"/api/projects/"+proj+"/renderedImages/image"+key, false);
+        request.send(null);
+        var response = JSON.parse(request.response);
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+        }
+        if (response.success == true){
+            this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
+            alert("Image has been deleted");
+        }
+        this.closeModal();
     }
-
 
     //AJAX to post image
     postImage(files) {
         const self = this;
+        var arr = files[0].name.split('.');
+        var ex = arr[1];
+
+        if (ex != null && (ex == "jpg" || ex == "png" || ex == "jpeg" || ex == "svg")) {
+
+
+
 
         /*get 1st project*/
         $.ajax(
@@ -177,13 +198,19 @@ class ImageLibrary extends Component {
             );
 
 
+            }
+
+            else {
+                alert('Please upload an image in jpg, png, or svg format.');
+
+            }
+
+
     }
 
     //handle dropped file
     onDrop(acceptedFiles, rejectedFiles) {
-        console.log('Accepted files: ', acceptedFiles);
-        console.log('Rejected files: ', rejectedFiles);
-        alert("dropped");
+//        alert("dropped");
         this.postImage(acceptedFiles);
     }
 
@@ -192,8 +219,6 @@ class ImageLibrary extends Component {
         e.preventDefault();
         this.postImage(document.getElementById('imageForm').files);
     }
-
-
 
     imageClick(url){
         var image_number = this.state.image_number;
@@ -299,10 +324,6 @@ class ImageLibrary extends Component {
             return [];
         }
 
-        {/*
-         this.setState({projects: response.projects});
-         */}
-
         return response.projects;
 
     }
@@ -320,9 +341,6 @@ class ImageLibrary extends Component {
 
     render() {
 
-
-        const imagesFn = ((im) => this.mapToImage(im)).bind(this);
-
         return (
             <div>
                 <Tabs>
@@ -335,32 +353,54 @@ class ImageLibrary extends Component {
                     </TabList>
 
                     <TabPanel>
-                        <p>{this.state.baseImagesLibrary}</p>
+                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                            <div>
+                                {this.state.baseImagesLibrary}
+                            </div>
+                        </ReactScrollbar>
                     </TabPanel>
 
                     <TabPanel>
-                        <p>{this.state.interiorImagesLibrary}</p>
+                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                            <div>
+                                {this.state.interiorImagesLibrary}
+                            </div>
+                        </ReactScrollbar>
                     </TabPanel>
 
                     <TabPanel>
-                        <div className = "uploadForm">
-                            <Dropzone onDrop={this.onDrop} style={{height: 150, width: 976, backgroundColor: "#f2f2f2", marginTop: 0}}>
-                                {this.state.customImagesLibrary}
-                                <div style={{marginLeft : 5}}>
-                                    <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>
-                                    <button value="Upload" onClick={this.handleSubmit}>Upload</button>
-                                </div>
-                                <p>    Please drop files here or click to upload.</p>
-                            </Dropzone>
-                        </div>
+                            <div className = "uploadForm">
+                                <Dropzone onDrop={this.onDrop} style={{height: 125, width: 976, backgroundColor: "#f2f2f2", marginTop: 0}}>
+                                    <ReactScrollbar style = {{height: 120, width: 976}}>
+                                        <div>
+                                            {this.state.customImagesLibrary}
+                                        </div>
+                                    </ReactScrollbar>
+                                    <div style={{marginLeft : 5, marginTop: 10}}>
+                                        Please drop above or click below to upload.
+                                    </div>
+                                    <div style={{marginLeft : 5, marginTop: 5}}>
+                                        <input id="imageForm" name="customImage" type="file" accept=".svg, .jpg, .png"/>
+                                        <button value="Upload" onClick={this.handleSubmit}>Upload</button>
+                                    </div>
+                                </Dropzone>
+                            </div>
                     </TabPanel>
 
                     <TabPanel>
-                        <p>{this.state.renderedImagesLibrary}</p>
+                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                            <div>
+                                {this.state.renderedImagesLibrary}
+                            </div>
+                        </ReactScrollbar>
                     </TabPanel>
+
                     <TabPanel>
+                    <div>
                         <SizeSlider/>
+                    </div>
                     </TabPanel>
+
                 </Tabs>
                 <Modal
                     isOpen= {this.state.modalIsOpen}
@@ -377,6 +417,7 @@ class ImageLibrary extends Component {
                         <button onClick={this.closeModal}>Cancel</button>
                         <button onClick={this.addJson}>Load into Canvas</button>
                         <button onClick={this.getDownload}> Download </button>
+                        <button onClick={this.deleteImage}> Delete </button>
                     </div>
                 </Modal>
             </div>
@@ -390,8 +431,8 @@ ImageLibrary.propTypes = {
 }
 
 ImageLibrary.defaultProps = {
-    imageClicked: (image, id) => console.log(image+" was clicked\n"),
-    renderedImageClicked: (image) =>console.log(image+" was clicked\n"),
+    imageClicked: (image, id) => (e),
+    renderedImageClicked: (image) => (e),
 }
 
 function mapDispatchToProps(dispatch) {

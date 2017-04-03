@@ -39,14 +39,12 @@ class PreviewMap extends Component {
 
     }
     shouldComponentUpdate(nextProps,nextState){
-        console.log(this.props.google)
         if (this.props.value != nextProps.value){
             this.setState({animate:false});
         }
         else{
             this.setState({animate:true});
         }
-        console.log(this.props,nextProps)
         return true;
     }
         

@@ -1,6 +1,4 @@
 import React from 'react';
-import UserList from '../containers/user-list';
-import UserDetails from '../containers/user-detail';
 import Canvas from '../containers/canvas';
 import Toolbar from '../containers/toolbar';
 import ImageLibrary from '../containers/imageLibrary';
@@ -8,13 +6,9 @@ import PreviewMap from '../containers/map';
 import UploadForm from '../containers/uploadForm';
 import SizeSlider from '../containers/slider'
 import InteriorColorPicker from '../containers/interiorColorPicker';
-import $ from 'jquery';
 
 
 require('../../scss/style.scss');
-
-var windowWidth = $(window).width();
-var windowHeight = $(window).height();
 
 const MainApp = () => (
     <div className = "mainScreen" style = {{height: 600, width: 979, borderWidth: 0.5, borderStyle: 'solid', borderColor: '#13496e'}}>

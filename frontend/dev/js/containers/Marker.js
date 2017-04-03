@@ -135,7 +135,6 @@
                 var sizeValueX= _props.sizeX;
                 var sizeValueY = _props.sizeY;
                 var animate = _props.animate
-                console.log("animate= ", animate)
                 if (!google) {
                     return null;
                 }

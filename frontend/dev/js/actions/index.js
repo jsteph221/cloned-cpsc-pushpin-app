@@ -51,10 +51,11 @@ export const imageSentDown = (index, object) => {
 	}
 };
 
-export const imageDeleted = (index, object) => {
+export const imageDeleted = (index, id, object) => {
 	return{
 		type: "IMAGE_DELETED",
 		index: index,
+		id: id,
 		object: object
 	}
 };
@@ -81,6 +82,18 @@ export const selectImage = (image, id) => {
 		id: id
 	}
 };
+export const saveLayerTree = (key) =>{
+    return{
+        type:"SAVE_TREE",
+        endP:key
+    }
+}
+export const loadLayerTree = (key) =>{
+    return{
+        type:"LOAD_TREE",
+        endP:key
+    }
+}
 
 export const sliderChange = (size) => {
     return{

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import ReactScrollbar from 'react-scrollbar-js';
 import {treeSelect} from '../actions';
+import $ from 'jquery'
 
 class LayerTree extends Component {
 
@@ -9,6 +10,7 @@ class LayerTree extends Component {
 		super(props);
 		this.mapToImage = this.mapToImage.bind(this);
 		this.tree_click = this.tree_click.bind(this);
+        this.saveTree = this.saveTree.bind(this);
 		this.state = {
 			images: [],
 			num_selected: 0
@@ -53,8 +55,59 @@ class LayerTree extends Component {
 		else if (nextProps.event == "clear"){
 			this.state.images = [];
 		}
+        else if(nextProps.event == "save"){
+            this.saveTree(nextProps.new_save);
+        }
+        else if(nextProps.event == "load"){
+            var newState = this.loadTree(nextProps.new_load);
+            if (newState != null){
+                this.state.images = newState;
+            }            
+        }
 	}
-
+    saveTree(endP){        
+        var json = JSON.stringify(this.state.images);
+        $.ajax({
+            url:endP,
+            type: "PUT",
+            xhrFields: {
+                withCredentials: true
+            },
+            data :{
+                layer:json
+            },
+            crossDomain:true,
+            success: function(data){
+                if (data.success == true){
+                }else{
+                    alert(data.message)
+                }
+            }
+        })
+        .fail(
+          function() { alert("ajax failure");}
+         );
+    }
+    loadTree(endP){
+        var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        request.open("GET",endP,false);
+        request.send(null);
+        var response = JSON.parse(request.response);
+        if (request.status !== 200){
+            alert("synchronous request for Layer Tree failed\n Error: "+request.status);
+            return [];
+        }
+	    if (response.success == true){
+            if (response.json == null){
+                alert("No layer tree for this project found");
+                this.setState({images:[]});
+            }else{
+                var layerJson = JSON.parse(response.json);
+                return layerJson; 
+            }                       
+	    }         
+    }
     mapToImage(images){
 
         return images.map((obj) =>                              
@@ -91,7 +144,7 @@ LayerTree.defaultProps = {
     index_to_remove: 0,
     event: "",
     new_id: 0,
-    tree_click: () => console.log("id "+obj.id+" was clicked")
+    tree_click: () => (e)
 }
 
 const mapStateToProps = (state) => {
@@ -99,9 +152,12 @@ const mapStateToProps = (state) => {
 		new_image: state.tree.new_image,
 		new_zindex: state.tree.new_zindex,
 		object_id: state.tree.object_id,
+        object: state.tree.object,
 		index_to_remove: state.tree.index_to_remove,
 		event: state.tree.event,
-		new_id: state.tree.new_id
+		new_id: state.tree.new_id,
+        new_save: state.tree.endP,
+        new_load:state.tree.endP_l,
 	}
 }
 
