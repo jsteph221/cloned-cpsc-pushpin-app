@@ -574,10 +574,6 @@ class FabricCanvas extends Component {
             var ctx = canvas.getContext('2d');
             var img = canvasToImage(ctx,canvas,this.props.size);
 
-
-
-
-            alert("s");
             //add url to previewURLs and update the preview icons
             const pu = previewURLs;
             previewURLs = pu.concat([img.src]);
