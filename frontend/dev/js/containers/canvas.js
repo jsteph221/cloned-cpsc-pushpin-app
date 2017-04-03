@@ -133,7 +133,8 @@ var palette = [
     "#9E9E9E"
     ]
 
-var previewURLs = []
+var previewURLs = [];
+var previewJSONs = [];
 
 
 class FabricCanvas extends Component {
@@ -149,7 +150,7 @@ class FabricCanvas extends Component {
             colorModalIsOpen:false,
             freehandColor: 'transparent',
             colorList: palette.map((color)=><button value={palette.indexOf(color)} onClick = {()=>this.deleteColor(palette.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
-            previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
+            previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>),
         };
         
         this.openModal = this.openModal.bind(this);
@@ -547,6 +548,16 @@ class FabricCanvas extends Component {
                 color_code = color_code + 1;
             }
 
+
+            var activeCanvas = this.state.canvas;
+            activeCanvas.discardActiveObject();
+
+            //add JSON
+            var canvasJSON = activeCanvas.toDatalessJSON();
+            var strJSON = JSON.stringify(canvasJSON);
+            const pj = previewJSONs;
+            previewJSONs = pj.concat([strJSON]);
+
             //apply filter to base image
             var filter = new fabric.Image.filters.Tint({
             color: palette[color_code],
@@ -559,11 +570,14 @@ class FabricCanvas extends Component {
             canvas.renderAll();
 
             //create a preview of the canvas
-            var activeCanvas = this.state.canvas;
-            activeCanvas.discardActiveObject();
+
             var ctx = canvas.getContext('2d');
             var img = canvasToImage(ctx,canvas,this.props.size);
 
+
+
+
+            alert("s");
             //add url to previewURLs and update the preview icons
             const pu = previewURLs;
             previewURLs = pu.concat([img.src]);
@@ -581,6 +595,7 @@ class FabricCanvas extends Component {
 
     deletePreview(e) {
         //delete a previewed icon by clicking on it
+        previewJSONs.splice(e,1);
         previewURLs.splice(e,1);
         this.setState({
                 previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
@@ -618,11 +633,7 @@ class FabricCanvas extends Component {
     saveTwoCanvas(){
         //save all previewed icons
         for (var i=0;i<previewURLs.length;i++){
-            var activeCanvas = this.state.canvas;
-            activeCanvas.discardActiveObject();
-            var canvasJSON = activeCanvas.toDatalessJSON();
-            var strJSON = JSON.stringify(canvasJSON);
-            var saved = this.saveRenderedCanvas(previewURLs[i],strJSON);
+            var saved = this.saveRenderedCanvas(previewURLs[i],previewJSONs[i]);
 
         }
         this.closeColorModal();
