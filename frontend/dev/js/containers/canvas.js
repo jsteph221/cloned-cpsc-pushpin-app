@@ -27,7 +27,8 @@ var rgb;
 var color_code = 0;
 
 function saveCanvasJSON(json,project,key){
-    var canvasEndPoint = server+"/api/projects/"+project+"/renderedImages/canvas/"+key
+    var canvasEndPoint = server+"/api/projects/"+project+"/renderedImages/canvas/"+key;
+    var self = this;
     $.ajax({
         url:canvasEndPoint,
         type: "PUT",
@@ -40,6 +41,8 @@ function saveCanvasJSON(json,project,key){
         crossDomain:true,
         success: function(data){
             if (data.success == true){
+                var endP = server+"/api/projects/"+project+"/renderedImages/layer/"+key;
+                self.props.saveLayerTree(endP);
             }else{
                 alert("Error saving Serialized Canvas " + data.message)
             }
@@ -475,7 +478,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
-            object.setShadow({color: cHex, blur: 40});
+            object.setShadow({color: cHex, blur: 35});
             canvas.renderAll();
         }
     }
