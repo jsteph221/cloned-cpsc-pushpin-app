@@ -201,7 +201,7 @@ class ImageLibrary extends Component {
                                 success : function(data) {
                                     if (data.success === true){
                                         var id = data.customImages._id;
-                                        alert("A custom image has been submitted and created with id: " + id);
+                                        alert("Your custom image is being uploaded. Depending on the size of the image, this may take several seconds.");
 
                                         //update custom images in state
                                         self.setState({
@@ -354,17 +354,22 @@ class ImageLibrary extends Component {
 
     mapToImageCustom(imageURLs){
 
+        const customClick = (url) => this.imageClick(url);
+
         return imageURLs.map((url) => 
                             <ContextMenuTrigger id="custom_context" renderTag="span" attributes={{'url':url}}>
-                             <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
-                            </ContextMenuTrigger>  
+                             <a data-tip data-for='image'><img src = {url} onClick={() => customClick(url)} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
+                            </ContextMenuTrigger> 
         );    
     }
         
     mapToImageRendered(imageURLs){
+
+        const renderedClick = (url) => this.props.renderedImageClicked(url);
+
         return imageURLs.map((url) => 
                             <ContextMenuTrigger id="rendered_context" renderTag="span" attributes={{'url':url}}>
-                             <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 20, width: 20, padding: 10}} /></a>
+                             <a data-tip data-for='image'><img src = {url} onClick={() => renderedClick(url)} className = "iconButton" style={{height: 20, width: 20, padding: 10}} /></a>
                             </ContextMenuTrigger>        
         );
     }

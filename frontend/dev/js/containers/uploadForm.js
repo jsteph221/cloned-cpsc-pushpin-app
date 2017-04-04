@@ -47,7 +47,7 @@ class UploadForm extends React.Component {
                         success : function(data) {
                             if (data.success === true){
                                 var id = data.customImages._id;
-                                alert("A custom image has been submitted and created with id: " + id);
+                                alert("Your custom image is being uploaded. Depending on the size of the image, this may take several seconds.");
                             }
                             else{
                                 alert(data.message);
