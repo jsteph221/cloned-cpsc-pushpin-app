@@ -357,7 +357,7 @@ class ImageLibrary extends Component {
         const customClick = (url) => this.imageClick(url);
 
         return imageURLs.map((url) => 
-                            <ContextMenuTrigger id="custom_context" renderTag="span" attributes={{'url':url}}>
+                            <ContextMenuTrigger holdToDisplay={0.1} id="custom_context" renderTag="span" attributes={{'url':url}}>
                              <a data-tip data-for='image'><img src = {url} onClick={() => customClick(url)} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
                             </ContextMenuTrigger>  
         );    
@@ -365,7 +365,7 @@ class ImageLibrary extends Component {
         
     mapToImageRendered(imageURLs){
         return imageURLs.map((url) => 
-                            <ContextMenuTrigger id="rendered_context" renderTag="span" attributes={{'url':url}}>
+                            <ContextMenuTrigger holdToDisplay={0.1} id="rendered_context" renderTag="span" attributes={{'url':url}}>
                              <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 20, width: 20, padding: 10}} /></a>
                             </ContextMenuTrigger>        
         );
@@ -443,7 +443,7 @@ class ImageLibrary extends Component {
                 <ReactTooltip id='image' type='warning'>
                       <span>Right Click for Image Options</span>
                     </ReactTooltip>
-                <ContextMenu id="rendered_context">
+                <ContextMenu id="rendered_context" >
                     <MenuItem data={{ action: 'add' }} onClick={this.handleClickRendered}>
                       Load Into Canvas
                     </MenuItem>
