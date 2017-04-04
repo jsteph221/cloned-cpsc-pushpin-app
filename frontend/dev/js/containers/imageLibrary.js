@@ -6,9 +6,11 @@ import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
 import server from '../config/server';
-import {selectImage,selectRendered} from '../actions';
+import {selectImage,selectRendered,previewImage} from '../actions';
+import ReactTooltip from 'react-tooltip';
 
-import Modal from 'react-modal';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+
 //image upload
 import Dropzone from 'react-dropzone';
 
@@ -17,22 +19,6 @@ import SizeSlider from '../containers/slider'
 /*
  * We need "if(!this.props.user)" because we set state to null by default
  * */
-const customStyles = {
-    overlay : {
-        backgroundColor   : 'rgba(0, 0, 0, 0.5)'
-    },
-    content : {
-        margin: '15% auto',
-        left:'300',
-        right:'490',
-        width: '30%',
-        height:'30%',
-        background: '#fefefe',
-        overflow : 'hiddden',
-        padding:'0px',
-    }
-
-};
 
 class ImageLibrary extends Component {
 
@@ -43,16 +29,18 @@ class ImageLibrary extends Component {
         this.getCustomImages = this.getCustomImages.bind(this);
         this.getRenderedImages = this.getRenderedImages.bind(this);
         this.getProjects = this.getProjects.bind(this);
-        this.imageClick = this.imageClick.bind(this);
-        this.renderedImageClick = this.renderedImageClick.bind(this);
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
         this.addJson = this.addJson.bind(this);
         this.getDownload = this.getDownload.bind(this);
         this.deleteImage = this.deleteImage.bind(this);
+        this.deleteCustom = this.deleteCustom.bind(this);
+        this.imageClick = this.imageClick.bind(this);
 
         this.mapToImage = this.mapToImage.bind(this);
-
+        this.mapToImageRendered = this.mapToImageRendered.bind(this);
+        this.mapToImageCustom = this.mapToImageCustom.bind(this);
+        this.handleClickRendered = this.handleClickRendered.bind(this);
+        this.handleClickCustom = this.handleClickCustom.bind(this);
+        
 
 
         //image upload
@@ -62,37 +50,65 @@ class ImageLibrary extends Component {
 
         this.state = {
             projects: [],
-            customImagesLibrary: this.mapToImage(this.getCustomImages()),
+            customImagesLibrary: this.mapToImageCustom(this.getCustomImages()),
             image_number: 0,
             baseImagesLibrary:this.mapToImage(this.getDefaultImages('base')),
             interiorImagesLibrary:this.mapToImage(this.getDefaultImages('interior')),
             renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages()),
             activeJsonKey:"",
-            modalIsOpen:false,
         };
     };
-
+    handleClickRendered(e, data,target) {
+        var action = data.action;
+        var url = target.getElementsByTagName('img')[0].src;
+        if (action == "add" && url){
+            this.addJson(url)
+        }else if(action == "download" && url){
+            this.getDownload(url);
+        }else if(action == "delete" && url){
+            this.deleteImage(url);
+        }else if(action == "open" && url){
+            window.open(url);
+        }else if(action == "preview" && url){
+            var self= this;
+            var img = new Image();
+            img.onload = function(){
+                self.props.previewClicked(img.src,img.width,img.height);
+            }
+            img.src = url;
+        }
+        return;
+    }
+    
+    handleClickCustom(e,data,target) {
+        var action = data.action;
+        var url = target.getElementsByTagName('img')[0].src;
+        if (action == "add" && url){
+            var image_number = this.state.image_number;
+            this.state.image_number = this.state.image_number + 1;
+            this.props.imageClicked(url, image_number);        
+        }else if(action == "delete" && url){
+            this.deleteCustom(url);
+        }
+        return;
+    }
+    
+    imageClick(url){
+        var image_number = this.state.image_number;
+        this.state.image_number = this.state.image_number + 1;
+        this.props.imageClicked(url, image_number); 
+    }
     componentWillReceiveProps(nextProps){
         if (nextProps.new_imageKey != this.props.new_imageKey){
             this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
         }
     }
-    openModal() {
-        this.setState({modalIsOpen: true});
+
+    addJson(url){
+        this.props.renderedImageClicked(url);
     }
 
-    closeModal() {
-        this.setState({modalIsOpen: false});
-    }
-
-    addJson(){
-        this.closeModal();
-        this.props.renderedImageClicked(this.state.activeJsonKey);
-    }
-
-    getDownload(){
-        this.closeModal();
-
+    getDownload(url){
         var defaultName = prompt("Name your image:", "myPushpin");
 
         if (defaultName != null){
@@ -100,7 +116,6 @@ class ImageLibrary extends Component {
         }else return;
 
 
-        var url = this.state.activeJsonKey;
         var a = document.createElement("a");
         a.download = defaultName;
         a.href = url;
@@ -109,11 +124,10 @@ class ImageLibrary extends Component {
         document.body.removeChild(a);
     }
     
-    deleteImage(){
-        console.log("Delete pressed");
+    deleteImage(url){
         var proj = this.getProjects()[0];
-        var index = this.state.activeJsonKey.lastIndexOf('/');
-        var key = this.state.activeJsonKey.slice(index);
+        var index = url.lastIndexOf('/');
+        var key = url.slice(index);
         var request = new XMLHttpRequest();
         request.withCredentials = true;
         request.open('DELETE',server+"/api/projects/"+proj+"/renderedImages/image"+key, false);
@@ -126,7 +140,23 @@ class ImageLibrary extends Component {
             this.setState({renderedImagesLibrary: this.mapToImageRendered(this.getRenderedImages())});
             alert("Image has been deleted");
         }
-        this.closeModal();
+    }
+    deleteCustom(url){
+        var proj = this.getProjects()[0];
+        var index = url.lastIndexOf('/');
+        var key = url.slice(index);
+        var request = new XMLHttpRequest();
+        request.withCredentials = true;
+        request.open('DELETE',server+"/api/projects/"+proj+"/customImages"+key, false);
+        request.send(null);
+        var response = JSON.parse(request.response);
+        if (request.status !== 200){
+            alert("synchronous request failed\n Error: "+request.status);
+        }
+        if (response.success == true){
+            this.setState({customImagesLibrary: this.mapToImageCustom(this.getCustomImages())});
+            alert("Image has been deleted");
+        }
     }
 
     //AJAX to post image
@@ -175,7 +205,7 @@ class ImageLibrary extends Component {
 
                                         //update custom images in state
                                         self.setState({
-                                            customImagesLibrary: self.mapToImage(self.getCustomImages())
+                                            customImagesLibrary: self.mapToImageCustom(self.getCustomImages())
                                         });
 
                                     }
@@ -220,14 +250,8 @@ class ImageLibrary extends Component {
         this.postImage(document.getElementById('imageForm').files);
     }
 
-    imageClick(url){
-        var image_number = this.state.image_number;
-        this.state.image_number = this.state.image_number + 1;
-        this.props.imageClicked(url, image_number);
-    }
 
     renderedImageClick(url){
-        this.openModal();
         this.setState({activeJsonKey:url});
     }
 
@@ -328,15 +352,27 @@ class ImageLibrary extends Component {
 
     }
 
+    mapToImageCustom(imageURLs){
+
+        return imageURLs.map((url) => 
+                            <ContextMenuTrigger id="custom_context" renderTag="span" attributes={{'url':url}}>
+                             <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
+                            </ContextMenuTrigger>  
+        );    
+    }
+        
+    mapToImageRendered(imageURLs){
+        return imageURLs.map((url) => 
+                            <ContextMenuTrigger id="rendered_context" renderTag="span" attributes={{'url':url}}>
+                             <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 20, width: 20, padding: 10}} /></a>
+                            </ContextMenuTrigger>        
+        );
+    }
     mapToImage(imageURLs){
 
-        return imageURLs.map((url) =>
-            <img src={url}  onClick={() => this.imageClick(url)} style={{height: 40, width: 40, padding: 10}} />);
-
-
-    }
-    mapToImageRendered(imageURLs){
-        return imageURLs.map((url) => <img src={url}  onClick={() => this.renderedImageClick(url)} style={{height: 20, width: 20, padding: 10}} />);
+        return imageURLs.map((url) => 
+                             <img src={url}  onClick={() => this.imageClick(url)} style={{height: 40, width: 40, padding: 10}} />          
+        );      
     }
 
     render() {
@@ -399,27 +435,42 @@ class ImageLibrary extends Component {
                     <div>
                         <SizeSlider/>
                     </div>
-                    </TabPanel>
+                    </TabPanel>      
 
                 </Tabs>
-                <Modal
-                    isOpen= {this.state.modalIsOpen}
-                    onAfterOpen = {this.afterOpenModal}
-                    onRequestClose = {this.closeModal}
-                    style = {customStyles}
-                    contentLabel = "Confirm Modal"
-                >
-                    <div style = {{padding:'2px 16px', 'backgroundColor':'#13496e',color: 'white'}}>
-                        <p>Do you want to Download or Load Project into Canvas</p>
-                    </div>
-                    <div style = {{padding:'2px 16px'}}>
-                        <p>Loading will remove current objects</p>
-                        <button onClick={this.closeModal}>Cancel</button>
-                        <button onClick={this.addJson}>Load into Canvas</button>
-                        <button onClick={this.getDownload}> Download </button>
-                        <button onClick={this.deleteImage}> Delete </button>
-                    </div>
-                </Modal>
+                <ReactTooltip id='image' type='warning'>
+                      <span>Right Click for Image Options</span>
+                    </ReactTooltip>
+                <ContextMenu id="rendered_context">
+                    <MenuItem data={{ action: 'add' }} onClick={this.handleClickRendered}>
+                      Load Into Canvas
+                    </MenuItem>
+                     <MenuItem divider />
+                    <MenuItem data={{ action: 'download' }} onClick={this.handleClickRendered}>
+                      Download
+                    </MenuItem>
+                    <MenuItem divider />
+                    <MenuItem data={{ action: 'delete' }} onClick={this.handleClickRendered}>
+                      Delete
+                    </MenuItem>
+                    <MenuItem divider />
+                    <MenuItem data={{ action: 'open' }} onClick={this.handleClickRendered}>
+                      Open
+                    </MenuItem>
+                    <MenuItem divider />
+                    <MenuItem data={{ action: 'preview' }} onClick={this.handleClickRendered}>
+                      View On Map
+                    </MenuItem>
+                  </ContextMenu>
+                <ContextMenu id="custom_context" style={{backgroundColor   : 'rgba(0, 0, 0, 0.5)'}}>
+                    <MenuItem data={{ action: 'add' }} onClick={this.handleClickCustom}>
+                      Add To Canvas
+                    </MenuItem>
+                    <MenuItem divider />
+                    <MenuItem data={{ action: 'delete' }} onClick={this.handleClickCustom}>
+                      Delete
+                    </MenuItem>
+                  </ContextMenu>
             </div>
         );
     }
@@ -427,18 +478,21 @@ class ImageLibrary extends Component {
 
 ImageLibrary.propTypes = {
     imageClicked: PropTypes.func.isRequired,
-    renderedImageClicked: PropTypes.func.isRequired
+    renderedImageClicked: PropTypes.func.isRequired,
+    previewClicked: PropTypes.func.isRequired,
 }
 
 ImageLibrary.defaultProps = {
     imageClicked: (image, id) => (e),
     renderedImageClicked: (image) => (e),
+    previewClicked: (dataURL,sizeX,sizeY) => (e),
 }
 
 function mapDispatchToProps(dispatch) {
     return ({
         imageClicked: (url, id) => {dispatch(selectImage(url, id))},
-        renderedImageClicked: (url) => {dispatch(selectRendered(url))}
+        renderedImageClicked: (url) => {dispatch(selectRendered(url))},
+        previewClicked: (dataURL,sizeX,sizeY) => {dispatch(previewImage(dataURL,sizeX,sizeY))},
     })
 }
 

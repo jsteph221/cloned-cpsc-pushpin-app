@@ -30,6 +30,7 @@
     "react-addons-test-utils": "^15.1.0",
     "react-bootstrap-slider": "^1.1.4",
     "react-color": "^2.11.3",
+    "react-contextmenu": "^2.4.0",
     "react-cookie": "^1.0.4",
     "react-dom": "^15.1.0",
     "react-dropzone": "^2.2.4",
