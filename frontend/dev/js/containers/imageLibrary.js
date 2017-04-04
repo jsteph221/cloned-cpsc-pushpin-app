@@ -354,16 +354,15 @@ class ImageLibrary extends Component {
 
     mapToImageCustom(imageURLs){
 
-        const customClick = (url) => this.imageClick(url);
-
         return imageURLs.map((url) => 
                             <ContextMenuTrigger holdToDisplay={0.1} id="custom_context" renderTag="span" attributes={{'url':url}}>
-                             <a data-tip data-for='image'><img src = {url} onClick={() => customClick(url)} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
-                            </ContextMenuTrigger>  
+                             <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
+                            </ContextMenuTrigger> 
         );    
     }
         
     mapToImageRendered(imageURLs){
+
         return imageURLs.map((url) => 
                             <ContextMenuTrigger holdToDisplay={0.1} id="rendered_context" renderTag="span" attributes={{'url':url}}>
                              <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 20, width: 20, padding: 10}} /></a>
