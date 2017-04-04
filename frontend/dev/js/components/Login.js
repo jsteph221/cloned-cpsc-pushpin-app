@@ -104,27 +104,29 @@ class LogInScreen extends React.Component{
 		return (
 			<section className = "Log In Screen">
 				<div className = "log-in-app">
-					<h1>Hello, please log in</h1>
-					<table>
-						<tbody>
-						<tr>
-							<td><b>Username</b></td>
-							<td><input name='name' value={this.state.name} onChange={this.handleNameChange} type='text'></input></td>
-						</tr>
-						<tr>
-							<td><b>Password</b></td>
-							<td><input name='password' value={this.state.password} onChange={this.handlePWChange} type='password'></input></td>
-						</tr>
-						<tr>
-							<td />
-							<td><button type="button" onClick={this.signUp}>Sign up</button><button type="button" onClick={this.logIn}>Log in</button></td>
-						</tr>
-						</tbody>
-					</table>
+					<div class="login-page">
+					  <div className="form">
+					    <form className="register-form">
+					      <input type="text" placeHolder="name" value={this.state.name} onChange={this.handleNameChange}/>
+					      <input type="password" placeHolder="password" value={this.state.password} onChange={this.handlePWChange}/>
+					      <input type="text" placeHolder="email address"/>
+					      <button>create</button>
+					      <p className="message">Already registered? <a href="#">Sign In</a></p>
+					    </form>
+					    <form className="login-form">
+					      <input type="text" placeholder="username"/>
+					      <input type="password" placeholder="password"/>
+					      <button onClick={this.logIn}>logIn</button>
+					      <button onClick={this.signUp}>Sign Up</button>
+					    </form>
+					  </div>
+					</div>
 				</div>
 			</section>
 		);
 	}
 }
+
+
 
 export default LogInScreen;
