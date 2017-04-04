@@ -23,39 +23,3 @@ Backend and frontend has been decoupled, and they are developed completely separ
     * React.js: single page application library
     * Webpack: module bundler for creating static assets
     * Jest: testing framework
-
-
-## Notes
-* building a REST API
-    * what is REST architecture
-        * https://www.tutorialspoint.com/nodejs/nodejs_restful_api.htm
-    * using Express.js
-        * http://expressjs.com/
-* authentication
-    * using Json Web Token (JWT)
-        * https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec#.9wmfw3b0c
-        * https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
-* redirecting user image request to S3
-    * using pipe
-        * http://stackoverflow.com/questions/17516820/serving-files-stored-in-s3-in-express-nodejs-app
-        * http://stackoverflow.com/questions/19883561/showing-an-image-from-amazon-s3-with-nodejs-expressjs-and-knox
-* React.js
-    * basic tutorial
-        * https://www.youtube.com/playlist?list=PL6gx4Cwl9DGBuKtLgPR_zWYnrwv-JllpA
-    * Redux tutorial
-        * https://www.youtube.com/playlist?list=PL6gx4Cwl9DGBbSLZjvleMwldX8jGgXV6a
-* Fabric js
-    * saving current Canvas state into JSON
-        * http://stackoverflow.com/questions/37328570/how-can-i-make-fabric-js-save-the-state-position-of-each-object-in-canvas-and-r
-* Front-end testing
-    * Jest
-        * https://facebook.github.io/jest/
-* Back-end testing
-    * Mocha
-        * https://mochajs.org/
-
-
-
-![alt text](./doc/carl.png "This is Carl")
-
-
