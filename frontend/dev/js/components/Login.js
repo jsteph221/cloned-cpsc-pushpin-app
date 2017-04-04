@@ -105,15 +105,24 @@ class LogInScreen extends React.Component{
 			<section className = "Log In Screen">
 				<div className = "log-in-app">
 					<div class="login-page">
-					  <div className="form">
-					    <form className="login-form">
-					      <input type="text" placeholder="username" value={this.state.name} onChange={this.handleNameChange}/>
-					      <input type="password" placeholder="password" value={this.state.password} onChange={this.handlePWChange}/>
-					      <button onClick={this.logIn}>logIn</button>
-					      <button onClick={this.signUp}>Sign Up</button>
-					    </form>
-					  </div>
-					</div>
+					  <h1>Hello, please log in</h1>
+					<table>
+						<tbody>
+						<tr>
+							<td><b>Username</b></td>
+							<td><input name='name' value={this.state.name} onChange={this.handleNameChange} type='text'></input></td>
+						</tr>
+						<tr>
+							<td><b>Password</b></td>
+							<td><input name='password' value={this.state.password} onChange={this.handlePWChange} type='password'></input></td>
+						</tr>
+						<tr>
+							<td />
+							<td><button type="button" onClick={this.signUp}>Sign up</button><button type="button" onClick={this.logIn}>Log in</button></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
 				</div>
 			</section>
 		);
