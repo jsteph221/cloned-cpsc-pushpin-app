@@ -475,7 +475,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
-            object.setShadow({color: cHex, blur: 50});
+            object.setShadow({color: cHex, blur: 40});
             canvas.renderAll();
         }
     }
