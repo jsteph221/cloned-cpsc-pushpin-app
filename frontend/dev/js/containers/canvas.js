@@ -27,7 +27,8 @@ var rgb;
 var color_code = 0;
 
 function saveCanvasJSON(json,project,key){
-    var canvasEndPoint = server+"/api/projects/"+project+"/renderedImages/canvas/"+key
+    var canvasEndPoint = server+"/api/projects/"+project+"/renderedImages/canvas/"+key;
+    var self = this;
     $.ajax({
         url:canvasEndPoint,
         type: "PUT",
@@ -40,6 +41,8 @@ function saveCanvasJSON(json,project,key){
         crossDomain:true,
         success: function(data){
             if (data.success == true){
+                var endP = server+"/api/projects/"+project+"/renderedImages/layer/"+key;
+                self.props.saveLayerTree(endP);
             }else{
                 alert("Error saving Serialized Canvas " + data.message)
             }
@@ -50,45 +53,6 @@ function saveCanvasJSON(json,project,key){
      );
 }
 
-function canvasToImage(ctx,canvas,size){   
-    canvas.setActiveGroup(new fabric.Group(canvas.getObjects())).renderAll();
-    var group = canvas.getActiveGroup();
-    var br = group.getBoundingRect();
-    canvas.discardActiveGroup().renderAll();
-
-    
-    var params = {multiplier:0,left:br.left,top:br.top, width:br.width, height:br.height};
-    if(br.left < 0){
-        params.left = 0;
-        params.width = br.left + br.width;
-    }
-    if(br.top<0){
-        params.top = 0;
-        params.height = br.top+br.height;
-    }
-    if(br.left + br.width> canvas.width){
-        params.width = canvas.width-params.left;
-    }
-    if(Math.abs(br.top + br.height)> canvas.height ){
-        params.height = canvas.height-params.top;
-    }
-    var mult;
-    if(params.width > params.height){
-        mult = size/params.width;
-    }else{
-        mult = size/params.height;
-    }
-    params.multiplier = mult;
-
-
-    var dataUrl = canvas.toDataURL(params);        
-
-    var img = new Image();
-    img.src = dataUrl;
-    img.width = params.width;
-    img.height = params.height;
-    return img;     
-}
     const customStyles = {      
           overlay : {
             backgroundColor   : 'rgba(0, 0, 0, 0.5)'
@@ -187,7 +151,8 @@ class FabricCanvas extends Component {
         this.saveTwoCanvas = this.saveTwoCanvas.bind(this);
         this.deletePreview = this.deletePreview.bind(this);
         this.increaseOpacity = this.increaseOpacity.bind(this);
-        this.decreaseOpacity = this.decreaseOpacity.bind(this)
+        this.decreaseOpacity = this.decreaseOpacity.bind(this);
+        this.canvasToImage = this.canvasToImage.bind(this);
 	}
     //color palette module controller
     openColorModal() {
@@ -320,11 +285,19 @@ class FabricCanvas extends Component {
         if (response.success == true){
             if(response.json !=null){
                var canvasJson = JSON.parse(response.json);
-                var canvas = this.state.canvas;            
+                var canvas = this.state.canvas;   
+                var ctx = canvas.getContext();
                 this.clearCanvas();
-                canvas.loadFromDatalessJSON(canvasJson, function(){
-                    canvas.renderAll(canvas);
-                    document.getElementById("c").click();
+                self = this;
+                canvas.loadFromJSON(canvasJson,function(){
+                    canvas.forEachObject(function(obj) {
+                        if (obj.type === 'image' && obj.filters.length) {
+                          obj.applyFilters(function() {
+                            obj.canvas.renderAll();
+                          });
+                        }
+                    });
+                    canvas.renderAll();
                 });
                 var endP = server+"/api/projects/"+proj+"/renderedImages/layer"+key;
                 this.props.loadLayerTree(endP); 
@@ -349,8 +322,10 @@ class FabricCanvas extends Component {
             activeCanvas.discardActiveObject();
             activeCanvas.deactivateAll().renderAll();
             var ctx = activeCanvas.getContext('2d');
-            var image = canvasToImage(ctx,activeCanvas,this.props.maxSize);
-            this.props.previewClicked(image.src,image.width,image.height);
+            self = this;
+            this.canvasToImage(ctx,activeCanvas,this.props.maxSize,function(url,sizeX,sizeY){
+                self.props.previewClicked(url,sizeX,sizeY);
+            });
         }
     }
     
@@ -361,13 +336,15 @@ class FabricCanvas extends Component {
             alert("Add Objects to the Canvas");
         }else{
             var ctx = activeCanvas.getContext('2d');
-            var img = canvasToImage(ctx,activeCanvas,this.props.size);
-            var canvasJSON = activeCanvas.toDatalessJSON();
-            var strJSON = JSON.stringify(canvasJSON);
-            var saved = this.saveRenderedCanvas(img.src,strJSON);
-            if (saved== true){
-                alert("Your image has been saved");            
-            }
+            self = this;
+            this.canvasToImage(ctx,activeCanvas,this.props.size,function(url,sizeX,sizeY){
+                var canvasJSON = activeCanvas.toDatalessJSON();
+                var strJSON = JSON.stringify(canvasJSON);
+                var saved = self.saveRenderedCanvas(url,strJSON);
+                if (saved== true){
+                    alert("Your image has been saved");            
+                }
+            });
         }
     }
     
@@ -501,7 +478,7 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
         if (object != null){
-            object.setShadow({color: cHex, blur: 100 });
+            object.setShadow({color: cHex, blur: 35});
             canvas.renderAll();
         }
     }
@@ -572,20 +549,20 @@ class FabricCanvas extends Component {
             //create a preview of the canvas
 
             var ctx = canvas.getContext('2d');
-            var img = canvasToImage(ctx,canvas,this.props.size);
-
+            self = this;
+            this.canvasToImage(ctx,canvas,this.props.size,function(url,sizeX,sizeY){                
             //add url to previewURLs and update the preview icons
-            const pu = previewURLs;
-            previewURLs = pu.concat([img.src]);
-            this.setState({
-                previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
+                const pu = previewURLs;
+                previewURLs = pu.concat([url]);
+                self.setState({
+                    previewList: previewURLs.map((url)=><img src={url} style={{padding: 6,height: 20, width: 20}} onClick = {()=>self.deletePreview(previewURLs.indexOf(url))}/>)
+                });
+
+                //show preview on Google Maps
+                self.props.previewClicked(url,sizeX,sizeY);
+                var canvasJSON = activeCanvas.toDatalessJSON();
+                var strJSON = JSON.stringify(canvasJSON);
             });
-
-            //show preview on Google Maps
-            this.props.previewClicked(img.src,img.width,img.height);
-            var canvasJSON = activeCanvas.toDatalessJSON();
-            var strJSON = JSON.stringify(canvasJSON);
-
         }
     }
 
@@ -733,14 +710,16 @@ class FabricCanvas extends Component {
                 }
                 sizes.push(range[1])
                 var chk = true;
+                self = this;
                 for(i=0; i< num; i++){
-                    var data = canvasToImage(ctx,activeCanvas,sizes[i]);
-                    chk = this.saveRenderedCanvas(data.src,strJSON);
+                    this.canvasToImage(ctx,activeCanvas,sizes[i],function(url,sizeX,sizeY){
+                        self.saveRenderedCanvas(url,strJSON);                        
+                    });
                 }
                 if (chk == true){
                     alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
                 }
-                this.closeModal();   
+                this.closeModal(); 
             } 
         }
     }
@@ -796,7 +775,64 @@ class FabricCanvas extends Component {
                 function() { alert("ajax failure");return false;}        
             ); 
     return true;
-}
+    }
+    canvasToImage(ctx,canvas,size,callback){   
+        canvas.setActiveGroup(new fabric.Group(canvas.getObjects())).renderAll();
+        var group = canvas.getActiveGroup();
+        var br = group.getBoundingRect();
+        canvas.discardActiveGroup().renderAll();
+
+
+        var params = {multiplier:0,left:br.left,top:br.top, width:br.width, height:br.height};
+        if(br.left < 0){
+            params.left = 0;
+            params.width = br.left + br.width;
+        }
+        if(br.top<0){
+            params.top = 0;
+            params.height = br.top+br.height;
+        }
+        if(br.left + br.width> canvas.width){
+            params.width = canvas.width-params.left;
+        }
+        if(Math.abs(br.top + br.height)> canvas.height ){
+            params.height = canvas.height-params.top;
+        }
+        var mult;
+        if(params.width > params.height){
+            mult = size/params.width;
+        }else{
+            mult = size/params.height;
+        }
+        params.multiplier = 1;
+
+        var img = new Image();
+        img.width = params.width;
+        img.height = params.height;
+        img.onload = function(){
+            /// create an extra step for re-sizing image
+             var tmpCanvas1 = document.createElement('canvas'),
+                 tmpCanvas2 = document.createElement('canvas');
+
+             /// set this canvas to 50% of image
+             tmpCanvas1.width = img.width * 0.5;
+             tmpCanvas1.height = img.height * 0.5;
+
+             /// draw image step 1
+             tmpCanvas1.getContext('2d').drawImage(img, 0, 0, img.width * 0.5, img.height * 0.5);
+
+             /// draw image step 2
+             tmpCanvas2.width = img.width * mult;
+             tmpCanvas2.height = img.height*mult;
+             tmpCanvas2.getContext('2d').drawImage(tmpCanvas1, 0, 0, tmpCanvas2.width, tmpCanvas2.height);
+            var finalImg = new Image();
+            finalImg.onload = function(){
+                callback(finalImg.src,tmpCanvas2.width,tmpCanvas2.height)
+            }
+            finalImg.src = tmpCanvas2.toDataURL();
+        }
+        img.src = canvas.toDataURL(params);  
+    }
     
     choose () {
          showPicker = true;
@@ -817,7 +853,6 @@ class FabricCanvas extends Component {
                     <a data-tip data-for='deleteActiveObject'><img onClick = {this.deleteActiveObject} className = "iconButton" src={require('../../static/icons/delete.png')} style={{width: 30, height: 30}}/></a>
                     <a data-tip data-for='moveObjectBackward'><img onClick = {this.moveObjectBackward} className = "iconButton" src={require('../../static/icons/layer_down.png')} style={{width: 30, height: 30}} /></a>
                     {/*<a data-tip data-for='opacityDec'><img onClick = {this.decreaseOpacity} src = {require('../../static/icons/opacity-dec.png')} className = "iconButton" /></a>*/}
-
                 </div>
 
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>

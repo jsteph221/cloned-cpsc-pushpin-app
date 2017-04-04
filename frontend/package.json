@@ -30,6 +30,7 @@
     "react-addons-test-utils": "^15.1.0",
     "react-bootstrap-slider": "^1.1.4",
     "react-color": "^2.11.3",
+    "react-contextmenu": "^2.4.0",
     "react-cookie": "^1.0.4",
     "react-dom": "^15.1.0",
     "react-dropzone": "^2.2.4",
@@ -57,6 +58,7 @@
   "devDependencies": {
     "babel-plugin-react-transform": "^2.0.2",
     "babel-preset-stage-0": "^6.5.0",
-    "react-transform-hmr": "^1.0.4"
+    "react-transform-hmr": "^1.0.4",
+    "webpack": "^1.14.0"
   }
 }

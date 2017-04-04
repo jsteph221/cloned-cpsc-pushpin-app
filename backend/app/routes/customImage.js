@@ -109,5 +109,17 @@ router.get('/:custom_id', function(req, res) {
     }
   });
 }); 
-
+router.delete('/:custom_id', function(req, res) {
+    Project.findOne({
+        _id: req.params.project_id
+        }, function(err, project) {
+        project.customImages.remove(req.params.custom_id);
+        project.save(function(err){
+            if (err) console.log(err);
+            else{
+                res.json({success:true, message:"image has been deleted"});
+            }
+        });
+    });
+});
 module.exports = router;

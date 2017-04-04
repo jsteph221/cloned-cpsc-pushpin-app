@@ -40,7 +40,11 @@ class PreviewMap extends Component {
     }
     shouldComponentUpdate(nextProps,nextState){
         if (this.props.value != nextProps.value){
-            this.setState({animate:false});
+            if(this.props.url && this.props.url.slice(0,4) == 'http' ){
+                return false;
+            }else{
+                this.setState({animate:false});
+            }
         }
         else{
             this.setState({animate:true});
@@ -59,12 +63,17 @@ class PreviewMap extends Component {
         var w = this.props.sizeX;
         var h = this.props.sizeY;
         var mrkX, mrkY;
-        if (w/h >= 1){
-            mrkX= this.props.value;
-            mrkY = Math.ceil(mrkX/(w/h));
+        if(markersrc.slice(0,4) == 'http'){
+            mrkX = w;
+            mrkY = h;
         }else{
-            mrkY = this.props.value;
-            mrkX = Math.ceil(mrkY/(h/w));
+            if (w/h >= 1){
+                mrkX= this.props.value;
+                mrkY = Math.ceil(mrkX/(w/h));
+            }else{
+                mrkY = this.props.value;
+                mrkX = Math.ceil(mrkY/(h/w));
+            }
         }
         return(
            <div >

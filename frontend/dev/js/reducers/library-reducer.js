@@ -1,4 +1,4 @@
-import {selectUser} from '../actions';
+import {selectUser,previewImage} from '../actions';
 
 const initialState = {
 	src: ""
@@ -20,6 +20,14 @@ export default function library(state = initialState, action) {
                 key:key,
                 event: "addJson"
             })
+        case 'PREVIEW_IMAGE':
+			return Object.assign({}, state, {
+                src:  action.url,
+                sizeX: action.sizeX,
+                sizeY: action.sizeY,
+                event: "preview"
+            })
+        
 		default:
 			return state
 
