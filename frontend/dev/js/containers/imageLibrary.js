@@ -165,7 +165,7 @@ class ImageLibrary extends Component {
         var arr = files[0].name.split('.');
         var ex = arr[1];
 
-        if (ex != null && (ex == "jpg" || ex == "png" || ex == "jpeg" || ex == "svg")) {
+        if (ex != null && (ex == "jpg" || ex == "png" || ex == "jpeg" || ex == "svg" || ex == "JPG" || ex == "PNG" || ex == "JPEG" || ex == "SVG")) {
 
 
 
