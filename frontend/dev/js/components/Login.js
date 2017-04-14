@@ -55,6 +55,10 @@ class LogInScreen extends React.Component{
 	}
 
 	signUp(){
+		if(this.state.name == "" || this.state.password == ""){
+			alert("Please enter non-blank username or password");
+			return;
+		}
 		$.ajax(
 		{
 			url : server+"/api/signup",
@@ -75,6 +79,10 @@ class LogInScreen extends React.Component{
 	}
 
 	logIn(){
+		if(this.state.name == "" || this.state.password == ""){
+			alert("Please enter non-blank username or password");
+			return;
+		}
 		$.ajax(
 		{
 			url : server+"/api/authenticate",
