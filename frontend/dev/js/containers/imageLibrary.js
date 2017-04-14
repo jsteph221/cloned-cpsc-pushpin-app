@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import ReactScrollbar from 'react-scrollbar-js';
+import {Scrollbars} from 'react-custom-scrollbars';
 import {hashHistory} from 'react-router';
 import $ from 'jquery';
 
@@ -390,29 +390,29 @@ class ImageLibrary extends Component {
                     </TabList>
 
                     <TabPanel>
-                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                        <Scrollbars style = {{height: 190, width: 978}}>
                             <div>
                                 {this.state.baseImagesLibrary}
                             </div>
-                        </ReactScrollbar>
+                        </Scrollbars>
                     </TabPanel>
 
                     <TabPanel>
-                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                        <Scrollbars style = {{height: 190, width: 978}}>
                             <div>
                                 {this.state.interiorImagesLibrary}
                             </div>
-                        </ReactScrollbar>
+                        </Scrollbars>
                     </TabPanel>
 
                     <TabPanel>
                             <div className = "uploadForm">
                                 <Dropzone onDrop={this.onDrop} style={{height: 125, width: 976, backgroundColor: "#f2f2f2", marginTop: 0}}>
-                                    <ReactScrollbar style = {{height: 120, width: 976}}>
+                                    <Scrollbars style = {{height: 120, width: 976}}>
                                         <div>
                                             {this.state.customImagesLibrary}
                                         </div>
-                                    </ReactScrollbar>
+                                    </Scrollbars>
                                     <div style={{marginLeft : 5, marginTop: 10}}>
                                         Please drop above or click below to upload.
                                     </div>
@@ -425,11 +425,11 @@ class ImageLibrary extends Component {
                     </TabPanel>
 
                     <TabPanel>
-                        <ReactScrollbar style = {{height: 190, width: 978}}>
+                        <Scrollbars style = {{height: 190, width: 978}}>
                             <div>
                                 {this.state.renderedImagesLibrary}
                             </div>
-                        </ReactScrollbar>
+                        </Scrollbars>
                     </TabPanel>
 
                     <TabPanel>
