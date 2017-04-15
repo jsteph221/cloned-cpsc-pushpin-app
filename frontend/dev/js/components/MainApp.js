@@ -6,6 +6,7 @@ import PreviewMap from '../containers/map';
 import UploadForm from '../containers/uploadForm';
 import SizeSlider from '../containers/slider'
 import InteriorColorPicker from '../containers/interiorColorPicker';
+import LogOut from '../containers/logout';
 
 
 require('../../scss/style.scss');
@@ -13,8 +14,8 @@ require('../../scss/style.scss');
 const MainApp = () => (
     <div className = "mainScreen" style = {{height: 600, width: 979, borderWidth: 0.5, borderStyle: 'solid', borderColor: '#13496e'}}>
 
-            <div className="title" style = {{paddingTop: 3, paddingleft: 10, height:28, width: 980}}>    
-                    <p style = {{marginTop: 3, marginLeft: 10}}>Pushpin Creator</p>
+            <div className="title" style = {{paddingTop: 3, paddingleft: 10, height:28, width: 980}}>   
+                    Pushpin Creator<div style = {{float:'right', paddingRight:10}}><LogOut/></div> 
             </div>
 
             <div>

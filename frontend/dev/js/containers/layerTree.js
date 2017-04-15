@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import ReactScrollbar from 'react-scrollbar-js';
+import {Scrollbars} from 'react-custom-scrollbars';
 import {treeSelect} from '../actions';
 import $ from 'jquery'
 
@@ -119,9 +119,9 @@ class LayerTree extends Component {
 		const treeImages = this.mapToImage(this.state.images);
 
 		return (
-			<ReactScrollbar style = {{height: 300, width: 55}}>
+			<Scrollbars style = {{height: 300, width: 55}}>
 				<div>{treeImages}</div>
-			</ReactScrollbar>
+			</Scrollbars>
 		);
 	}
 }

@@ -489,6 +489,7 @@ class FabricCanvas extends Component {
         canvas.clear();
         canvas.renderAll();
         this.props.canvasClear();
+        self.props.previewClicked(null,0,0);
     }
 
     removeWhiteSpace(){
@@ -610,6 +611,11 @@ class FabricCanvas extends Component {
 
         }
         this.closeColorModal();
+        previewURLs = [];
+        previewJSONs = [];
+        this.setState({
+            previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>)
+        });
 
     }
 
