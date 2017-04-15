@@ -55,6 +55,10 @@ class LogInScreen extends React.Component{
 	}
 
 	signUp(){
+		if(this.state.name == "" || this.state.password == ""){
+			alert("Please enter non-blank username or password");
+			return;
+		}
 		$.ajax(
 		{
 			url : server+"/api/signup",
@@ -75,6 +79,10 @@ class LogInScreen extends React.Component{
 	}
 
 	logIn(){
+		if(this.state.name == "" || this.state.password == ""){
+			alert("Please enter non-blank username or password");
+			return;
+		}
 		$.ajax(
 		{
 			url : server+"/api/authenticate",
@@ -104,25 +112,14 @@ class LogInScreen extends React.Component{
 		return (
 			<section className = "Log In Screen">
 				<div className = "log-in-app">
-					<div class="login-page">
-					  <h1>Hello, please log in</h1>
-					<table>
-						<tbody>
-						<tr>
-							<td><b>Username</b></td>
-							<td><input name='name' value={this.state.name} onChange={this.handleNameChange} type='text'></input></td>
-						</tr>
-						<tr>
-							<td><b>Password</b></td>
-							<td><input name='password' value={this.state.password} onChange={this.handlePWChange} type='password'></input></td>
-						</tr>
-						<tr>
-							<td />
-							<td><button type="button" onClick={this.signUp}>Sign up</button><button type="button" onClick={this.logIn}>Log in</button></td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
+					  <div className="form">
+					    <div className="login-form">
+					      <input name='name' value={this.state.name} onChange={this.handleNameChange} type='test' placeholder='Username'/>
+					      <input name='password' value={this.state.password} onChange={this.handlePWChange} type='password' placeholder='Password'/>
+					      <button onClick={this.logIn}>logIn</button>
+					      <button onClick={this.signUp}>Sign Up</button>
+					    </div>
+					  </div>
 				</div>
 			</section>
 		);
