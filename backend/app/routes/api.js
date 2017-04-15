@@ -52,7 +52,18 @@ router.post('/authenticate', function(req, res) {
 
 // User Signup
 router.post('/signup', function(req, res) {
-   // find the user
+  // verify empty inputs
+  if (req.body.name == ""){
+    res.json({ success: false, message: 'Empty username is not allowed' });
+    return;
+  } 
+
+  if (req.body.password == ""){
+    res.json({ success: false, message: 'Empty password is not allowed' });
+    return;
+  }
+
+  // find the user
   User.findOne({
     name: req.body.name
   }, function(err, user) {
@@ -113,6 +124,18 @@ router.use(function(req, res, next) {
     });
     
   }
+});
+
+//signout
+router.post('/signout', function(req, res) {
+  token = 'invalid token';
+  // delete cookie on the frontend
+  res.cookie('token', token, {maxAge: -1, httpOnly:true});
+  res.json({
+    success: true,
+    message: 'Successfully signed out',
+    token: token
+  });
 });
 
 

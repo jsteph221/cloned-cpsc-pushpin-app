@@ -6,6 +6,7 @@ import PreviewMap from '../containers/map';
 import UploadForm from '../containers/uploadForm';
 import SizeSlider from '../containers/slider'
 import InteriorColorPicker from '../containers/interiorColorPicker';
+import LogOut from '../containers/logout';
 
 
 require('../../scss/style.scss');
@@ -15,6 +16,7 @@ const MainApp = () => (
 
             <div className="title" style = {{paddingTop: 3, paddingleft: 10, height:28, width: 980}}>    
                     <p style = {{marginTop: 3, marginLeft: 10}}>Pushpin Creator</p>
+                    <LogOut/>
             </div>
 
             <div>
