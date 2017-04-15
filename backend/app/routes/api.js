@@ -126,6 +126,18 @@ router.use(function(req, res, next) {
   }
 });
 
+//signout
+router.post('/signout', function(req, res) {
+  token = 'invalid token';
+  // delete cookie on the frontend
+  res.cookie('token', token, {maxAge: -1, httpOnly:true});
+  res.json({
+    success: true,
+    message: 'Successfully signed out',
+    token: token
+  });
+});
+
 
 router.get('/', function(req, res) {
   res.json({ success: true, message: 'The user is logged in, and the token is valid.' }); 
