@@ -489,7 +489,7 @@ class FabricCanvas extends Component {
         canvas.clear();
         canvas.renderAll();
         this.props.canvasClear();
-        self.props.previewClicked(null,0,0);
+        this.props.previewClicked(null,0,0);
     }
 
     removeWhiteSpace(){
