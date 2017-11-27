@@ -53,7 +53,7 @@ function saveCanvasJSON(json,project,key){
      );
 }
 
-    const customStyles = {      
+    const customStyles = {
           overlay : {
             backgroundColor   : 'rgba(0, 0, 0, 0.5)'
           },
@@ -67,7 +67,7 @@ function saveCanvasJSON(json,project,key){
             overflow : 'hiddden',
             padding:'0px',
           }
-      
+
     };
 
 
@@ -116,10 +116,10 @@ class FabricCanvas extends Component {
             colorList: palette.map((color)=><button value={palette.indexOf(color)} onClick = {()=>this.deleteColor(palette.indexOf(color))} style = {{height: 20, width: 20, backgroundColor:color }}></button>),
             previewList: previewURLs.map((url)=><img src={url} style={{padding: 6}} onClick = {()=>this.deletePreview(previewURLs.indexOf(url))}/>),
         };
-        
+
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.onRangeChange = this.onRangeChange.bind(this);        
+        this.onRangeChange = this.onRangeChange.bind(this);
         this.shouldComponentUpdate = this.shouldComponentUpdate.bind(this);
         this.previewClicked = this.previewClicked.bind(this);
         this.saveButton = this.saveButton.bind(this);
@@ -162,7 +162,7 @@ class FabricCanvas extends Component {
     closeColorModal() {
         this.setState({colorModalIsOpen: false});
     }
-    
+
     openModal() {
         this.setState({modalIsOpen: true});
     }
@@ -170,13 +170,13 @@ class FabricCanvas extends Component {
     closeModal() {
         this.setState({modalIsOpen: false});
     }
-    
+
     onRangeChange(value){
         this.setState({range:value})
     }
 
     //Added so canvas would not rerender on props change
-    
+
     shouldComponentUpdate(nextProps, nextState){
         var shouldSelect = ((nextProps.select_id != this.props.select_id) || (nextProps.tree_num != this.props.tree_num));
         if (nextState.modalIsOpen != this.state.modalIsOpen){
@@ -223,7 +223,7 @@ class FabricCanvas extends Component {
         }
         return false;
     }
-    
+
     componentDidMount(){
         var c = document.getElementById('c');
         var canvas = new fabric.Canvas('c', {
@@ -249,7 +249,7 @@ class FabricCanvas extends Component {
                var pt = new fabric.Point(e.offsetX,e.offsetY);
             }else{
                 zoom = -0.1;
-                var pt = new fabric.Point(canvas.width/2,canvas.height/2);                
+                var pt = new fabric.Point(canvas.width/2,canvas.height/2);
             }
             var val = canvas.getZoom()+zoom;
             if (val<MAX_ZOOM_OUT && val>MAX_ZOOM_IN){
@@ -257,11 +257,11 @@ class FabricCanvas extends Component {
                 console.log(canvas.getZoom());
                 //canvas.setWidth(originalWidth * canvas.getZoom());
                 //canvas.setHeight(originalHeight * canvas.getZoom());
-            }               
+            }
         });
         */
         this.setState({canvas:canvas});
-        
+
         var freeAdd = () => this.addFreehand();
 
         canvas.on('path:created', function(event) {
@@ -273,10 +273,10 @@ class FabricCanvas extends Component {
         var proj = this.getProjects()[0];
         var request = new XMLHttpRequest();
         request.withCredentials = true;
-        
+
         request.open("GET", server+"/api/projects/"+proj+"/renderedImages/canvas"+key, false);
         request.send(null);
-        
+
         var response = JSON.parse(request.response);
         if (request.status !== 200){
             alert("Error Getting Serialized Canvas\n Error: "+request.status);
@@ -285,7 +285,7 @@ class FabricCanvas extends Component {
         if (response.success == true){
             if(response.json !=null){
                var canvasJson = JSON.parse(response.json);
-                var canvas = this.state.canvas;   
+                var canvas = this.state.canvas;
                 var ctx = canvas.getContext();
                 this.clearCanvas();
                 self = this;
@@ -300,11 +300,11 @@ class FabricCanvas extends Component {
                     canvas.renderAll();
                 });
                 var endP = server+"/api/projects/"+proj+"/renderedImages/layer"+key;
-                this.props.loadLayerTree(endP); 
+                this.props.loadLayerTree(endP);
             }else{
                 alert("No Serialized Canvas found");
-            }        
-	    }                     
+            }
+	    }
     }
 
     // Selects object based on the current layer
@@ -313,8 +313,8 @@ class FabricCanvas extends Component {
         var canvas = this.state.canvas;
         canvas.setActiveObject(canvas.item(id));
     }
-    
-    previewClicked(){         
+
+    previewClicked(){
         var activeCanvas = this.state.canvas;
         if (activeCanvas.getObjects().length == 0){
             alert("Add Objects to the Canvas");
@@ -328,9 +328,9 @@ class FabricCanvas extends Component {
             });
         }
     }
-    
-    saveButton(){        
-        var activeCanvas = this.state.canvas; 
+
+    saveButton(){
+        var activeCanvas = this.state.canvas;
         activeCanvas.discardActiveObject();
         if (activeCanvas.getObjects().length == 0){
             alert("Add Objects to the Canvas");
@@ -342,12 +342,12 @@ class FabricCanvas extends Component {
                 var strJSON = JSON.stringify(canvasJSON);
                 var saved = self.saveRenderedCanvas(url,strJSON);
                 if (saved== true){
-                    alert("Your image has been saved");            
+                    alert("Your image has been saved");
                 }
             });
         }
     }
-    
+
     drawImage(image){
         var canvas = this.state.canvas;
         var image_number = this.state.image_number;
@@ -359,11 +359,11 @@ class FabricCanvas extends Component {
             if(oImg.width>oImg.height){
                oImg.scaleToWidth(200);
             }else{
-                oImg.scaleToHeight(200); 
+                oImg.scaleToHeight(200);
             }
             canvas.add(oImg);
-        },);        
-    } 
+        },{crossOrigin:'anonymous'}); 
+    }
 
     increaseOpacity(){
         var canvas = this.state.canvas;
@@ -378,7 +378,7 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
     }
-    
+
     decreaseOpacity(){
         var canvas = this.state.canvas;
         var obj =  canvas.getActiveObject();
@@ -392,11 +392,11 @@ class FabricCanvas extends Component {
             canvas.renderAll();
         }
     }
-    
+
     moveObjectForward(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
-        if (object!= null){    
+        if (object!= null){
             var zindex = canvas.getObjects().indexOf(object);
             var id = object.get('id');
             canvas.bringForward(object);
@@ -406,11 +406,11 @@ class FabricCanvas extends Component {
             }
         }
     }
-    
+
     moveObjectBackward(){
         var canvas = this.state.canvas;
         var object = canvas.getActiveObject();
-        if (object != null){    
+        if (object != null){
             var zindex = canvas.getObjects().indexOf(object);
             var id = object.get('id');
             canvas.sendBackwards(object);
@@ -430,7 +430,7 @@ class FabricCanvas extends Component {
             this.props.imageDelete(zindex, id, object);
             object.remove();
         }
-        
+
     }
 
     addFreehand(){
@@ -444,10 +444,10 @@ class FabricCanvas extends Component {
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
         this.props.addText(image_number);
-        canvas.add(new fabric.IText('Tap and type text here', { 
+        canvas.add(new fabric.IText('Tap and type text here', {
           fontFamily: 'arial black',
           fontSize: 20,
-          left: 100, 
+          left: 100,
           top: 100 ,
           id: image_number
         }));
@@ -551,7 +551,7 @@ class FabricCanvas extends Component {
 
             var ctx = canvas.getContext('2d');
             self = this;
-            this.canvasToImage(ctx,canvas,this.props.size,function(url,sizeX,sizeY){                
+            this.canvasToImage(ctx,canvas,this.props.size,function(url,sizeX,sizeY){
             //add url to previewURLs and update the preview icons
                 const pu = previewURLs;
                 previewURLs = pu.concat([url]);
@@ -620,7 +620,7 @@ class FabricCanvas extends Component {
     }
 
 
-    
+
     chooseColor(c){
         cHex = c.hex;
         rgb = c.rgb;
@@ -656,7 +656,7 @@ class FabricCanvas extends Component {
         //     canvas.renderAll();
         //     }
         // }
-        
+
     }
     getProjects(){
 
@@ -685,7 +685,7 @@ class FabricCanvas extends Component {
     enterDrawingMode(){
         var canvas = this.state.canvas;
         canvas.isDrawingMode = !canvas.isDrawingMode;
-        
+
         if(this.state.freehandColor == 'transparent'){
             this.setState({freehandColor : 'green'});
         }
@@ -694,14 +694,14 @@ class FabricCanvas extends Component {
         }
         canvas.renderAll();
     }
-    
+
     saveGroup(){
-        var activeCanvas = this.state.canvas; 
-        activeCanvas.discardActiveObject(); 
+        var activeCanvas = this.state.canvas;
+        activeCanvas.discardActiveObject();
         if (activeCanvas.getObjects().length == 0){
             alert("Add Objects to Canvas");
         }else{
-            var ctx = activeCanvas.getContext('2d');        
+            var ctx = activeCanvas.getContext('2d');
             var num = document.getElementById("group_num").value;
             if (num < 2 || num > 20){
                 alert("Please choose a number between 2 and 20");
@@ -719,17 +719,17 @@ class FabricCanvas extends Component {
                 self = this;
                 for(i=0; i< num; i++){
                     this.canvasToImage(ctx,activeCanvas,sizes[i],function(url,sizeX,sizeY){
-                        self.saveRenderedCanvas(url,strJSON);                        
+                        self.saveRenderedCanvas(url,strJSON);
                     });
                 }
                 if (chk == true){
                     alert(num + ' Push pins have been saved with sizes between ' + range[0] + ' and ' + range[1]);
                 }
-                this.closeModal(); 
-            } 
+                this.closeModal();
+            }
         }
     }
-    
+
     saveRenderedCanvas(dataURI,canvasJSON){
         var comp = this;
         $.ajax(
@@ -743,7 +743,7 @@ class FabricCanvas extends Component {
                 success : function(data) {
                     if (data.success === true){
                         var project = data.projects[0];
-                        var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages/image";                      
+                        var renderedImageEndPoint = server+"/api/projects/"+project+"/renderedImages/image";
                         $.ajax(
                                {
 
@@ -765,7 +765,7 @@ class FabricCanvas extends Component {
                                             comp.props.saveLayerTree(endP);
 
                                         }else{
-                                            alert(data.message);                    
+                                            alert(data.message);
                                         }
                                     }
                             })
@@ -778,11 +778,11 @@ class FabricCanvas extends Component {
                 }
             })
             .fail(
-                function() { alert("ajax failure");return false;}        
-            ); 
+                function() { alert("ajax failure");return false;}
+            );
     return true;
     }
-    canvasToImage(ctx,canvas,size,callback){   
+    canvasToImage(ctx,canvas,size,callback){
         canvas.setActiveGroup(new fabric.Group(canvas.getObjects())).renderAll();
         var group = canvas.getActiveGroup();
         var br = group.getBoundingRect();
@@ -837,17 +837,17 @@ class FabricCanvas extends Component {
             }
             finalImg.src = tmpCanvas2.toDataURL();
         }
-        img.src = canvas.toDataURL(params);  
+        img.src = canvas.toDataURL(params);
     }
-    
+
     choose () {
          showPicker = true;
     }
     render() {
-        
+
         return (
             <div>
-                
+
                 <div className = "image-list" style = {{height: 300, width: 55, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e', marginLeft: 0.45}}>
                     <LayerTree />
                 </div>
@@ -861,7 +861,7 @@ class FabricCanvas extends Component {
                 </div>
 
                 <div className = "canvas" style = {{height: 300, width: 300, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
-                    <canvas id = "c" width={300} height={300}></canvas>   
+                    <canvas id = "c" width={300} height={300}></canvas>
                 </div>
                 <div className = "image-list" style = {{height: 300, width: 45, float: 'left', borderWidth: 1, borderStyle: 'solid', borderColor: '#13496e'}}>
                     <div className = "library-right-spacing" />
@@ -872,13 +872,13 @@ class FabricCanvas extends Component {
                     <a data-tip data-for='buttonClick'><img onClick = {this.previewClicked} src = {require('../../static/icons/eye.png')} className = "iconButton" /></a>
                     <a data-tip data-for='saveButton'><img onClick = {this.saveButton} src = {require('../../static/icons/upload.png')} className = "iconButton" /></a>
                     <a data-tip data-for='clearCanvas'><img onClick = {this.clearCanvas} src ={require('../../static/icons/trashcan.png')} className = "trashIcon" /></a>
-                    
+
                     <ReactTooltip id='opacityInc' type='warning'>
                       <span>Increase selected image's opacity</span>
                     </ReactTooltip>
                     <ReactTooltip id='opacityDec' type='warning'>
                       <span>Decrease selected image's opacity</span>
-                    </ReactTooltip>                                                                             
+                    </ReactTooltip>
                     <ReactTooltip id='moveObjectForward' type='warning'>
                       <span>Move selected object forward</span>
                     </ReactTooltip>
@@ -924,10 +924,10 @@ class FabricCanvas extends Component {
                         contentLabel = "Group Modal"
                     >
                     <div style = {{padding:'2px 16px', 'backgroundColor':'#13496e',color: 'white'}}>
-                        <p>Create Group Based on Size</p>            
-                    </div>      
-                                 
-                    <div style = {{padding:'2px 16px','fontSize':'12px'}}>               
+                        <p>Create Group Based on Size</p>
+                    </div>
+
+                    <div style = {{padding:'2px 16px','fontSize':'12px'}}>
                         <p>Min = {this.state.range[0]}px</p>
                        <Range id= "group_range" allowCross={false} min={5} max={100} defaultValue={[25,75]} onChange={this.onRangeChange}/>
                         <p>Max = {this.state.range[1]}px</p>
@@ -975,8 +975,8 @@ class FabricCanvas extends Component {
 
                     <button onClick = {this.openColorModal}>Create Group by Color</button>
                     <button onClick = {this.removeWhiteSpace}>Remove Object WhiteSpace</button>
-                </div>  
-            </div>          
+                </div>
+            </div>
         );
     }
 }
@@ -1040,7 +1040,7 @@ function mapDispatchToProps(dispatch) {
         addFreehand: (id) => {dispatch(freehandAdd(id))},
         imageSaved:(key)=>{dispatch(imageRendered(key))},
         saveLayerTree:(endP) => {dispatch(saveLayerTree(endP))},
-        loadLayerTree:(endP_l) => {dispatch(loadLayerTree(endP_l))},    
+        loadLayerTree:(endP_l) => {dispatch(loadLayerTree(endP_l))},
         treeAdd: (im, id)=>{dispatch(treeAdd(im,id))}
     })
 }
@@ -1059,6 +1059,6 @@ const mapStateToProps = (state) => {
 	}
 }
 
-const FabricContainer = connect(mapStateToProps, mapDispatchToProps)(FabricCanvas); 
+const FabricContainer = connect(mapStateToProps, mapDispatchToProps)(FabricCanvas);
 
 export default FabricContainer;

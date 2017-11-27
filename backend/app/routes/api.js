@@ -1,5 +1,7 @@
 var express = require('express');
 var jwt    = require('jsonwebtoken');
+var url  = require('url')
+
 var projectRouter = require('./project');
 var customImageRouter = require('./customImage');
 var standardImageRouter = require('./standardImage');
@@ -56,7 +58,7 @@ router.post('/signup', function(req, res) {
   if (req.body.name == ""){
     res.json({ success: false, message: 'Empty username is not allowed' });
     return;
-  } 
+  }
 
   if (req.body.password == ""){
     res.json({ success: false, message: 'Empty password is not allowed' });
@@ -81,7 +83,7 @@ router.post('/signup', function(req, res) {
 
       // create an user
       var testUser = new User({
-        name: req.body.name, 
+        name: req.body.name,
         password: req.body.password,
         projects: [initialProject]
       });
@@ -104,25 +106,28 @@ router.use(function(req, res, next) {
 
   // verifies secret and checks exp
   if (token) {
-    jwt.verify(token, req.app.get('token_secret'), function(err, decoded) {      
+    jwt.verify(token, req.app.get('token_secret'), function(err, decoded) {
       if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+        return res.json({ success: false, message: 'Failed to authenticate token.' });
       } else {
         // if everything is good, save to request for use in other routes
-        req.decoded = decoded;    
+        req.decoded = decoded;
         next();
       }
     });
 
   } else {
 
-    // if there is no token
-    // return an error
-    return res.status(403).send({ 
-        success: false, 
-        message: 'No token provided.' 
-    });
-    
+    var path = url.parse(req.url).pathname;
+    if(path.split("/")[1] == "standard" ||path.split("/")[1] == "projects"){
+      next();
+    }else{
+      return res.status(403).send({
+          success: false,
+          message: 'No token provided.'
+      })
+    }
+
   }
 });
 
@@ -140,7 +145,7 @@ router.post('/signout', function(req, res) {
 
 
 router.get('/', function(req, res) {
-  res.json({ success: true, message: 'The user is logged in, and the token is valid.' }); 
+  res.json({ success: true, message: 'The user is logged in, and the token is valid.' });
 });
 
 router.use('/projects', projectRouter);

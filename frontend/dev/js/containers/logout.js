@@ -13,6 +13,9 @@ class LogOut extends React.Component{
 		{
 			url : server+"/api/signout",
 			type : "POST",
+			xhrFields: {
+					withCredentials: true
+			},
 			dataType : "json",
 			success : function(data) {
 				if (data.success === true){
