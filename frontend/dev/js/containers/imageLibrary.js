@@ -40,7 +40,7 @@ class ImageLibrary extends Component {
         this.mapToImageCustom = this.mapToImageCustom.bind(this);
         this.handleClickRendered = this.handleClickRendered.bind(this);
         this.handleClickCustom = this.handleClickCustom.bind(this);
-        
+
 
 
         //image upload
@@ -79,24 +79,24 @@ class ImageLibrary extends Component {
         }
         return;
     }
-    
+
     handleClickCustom(e,data,target) {
         var action = data.action;
         var url = target.getElementsByTagName('img')[0].src;
         if (action == "add" && url){
             var image_number = this.state.image_number;
             this.state.image_number = this.state.image_number + 1;
-            this.props.imageClicked(url, image_number);        
+            this.props.imageClicked(url, image_number);
         }else if(action == "delete" && url){
             this.deleteCustom(url);
         }
         return;
     }
-    
+
     imageClick(url){
         var image_number = this.state.image_number;
         this.state.image_number = this.state.image_number + 1;
-        this.props.imageClicked(url, image_number); 
+        this.props.imageClicked(url, image_number);
     }
     componentWillReceiveProps(nextProps){
         if (nextProps.new_imageKey != this.props.new_imageKey){
@@ -123,7 +123,7 @@ class ImageLibrary extends Component {
         a.click();
         document.body.removeChild(a);
     }
-    
+
     deleteImage(url){
         var proj = this.getProjects()[0];
         var index = url.lastIndexOf('/');
@@ -340,6 +340,7 @@ class ImageLibrary extends Component {
 
         request.open("GET", server+"/api/projects", false);
         request.send(null);
+        console.log(request);
 
         var response = JSON.parse(request.response);
 
@@ -354,26 +355,26 @@ class ImageLibrary extends Component {
 
     mapToImageCustom(imageURLs){
 
-        return imageURLs.map((url) => 
+        return imageURLs.map((url) =>
                             <ContextMenuTrigger holdToDisplay={0.1} id="custom_context" renderTag="span" attributes={{'url':url}}>
                              <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 40, width: 40, padding: 10}} /></a>
-                            </ContextMenuTrigger> 
-        );    
+                            </ContextMenuTrigger>
+        );
     }
-        
+
     mapToImageRendered(imageURLs){
 
-        return imageURLs.map((url) => 
+        return imageURLs.map((url) =>
                             <ContextMenuTrigger holdToDisplay={0.1} id="rendered_context" renderTag="span" attributes={{'url':url}}>
                              <a data-tip data-for='image'><img src = {url} className = "iconButton" style={{height: 20, width: 20, padding: 10}} /></a>
-                            </ContextMenuTrigger>        
+                            </ContextMenuTrigger>
         );
     }
     mapToImage(imageURLs){
 
-        return imageURLs.map((url) => 
-                             <img src={url}  onClick={() => this.imageClick(url)} style={{height: 40, width: 40, padding: 10}} />          
-        );      
+        return imageURLs.map((url) =>
+                             <img src={url}  onClick={() => this.imageClick(url)} style={{height: 40, width: 40, padding: 10}} />
+        );
     }
 
     render() {
@@ -436,7 +437,7 @@ class ImageLibrary extends Component {
                     <div>
                         <SizeSlider/>
                     </div>
-                    </TabPanel>      
+                    </TabPanel>
 
                 </Tabs>
                 <ReactTooltip id='image' type='warning'>

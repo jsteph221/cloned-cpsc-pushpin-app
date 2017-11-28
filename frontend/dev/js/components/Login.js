@@ -34,10 +34,10 @@ class LogInScreen extends React.Component{
             }
         })
         .fail(
-            function(data, status) { 
+            function(data, status) {
                 hashHistory.push("/login");
             }
-        ); 
+        );
     }
 
 	componentWillReceiveProps(nextProps) {
@@ -59,6 +59,8 @@ class LogInScreen extends React.Component{
 			alert("Please enter non-blank username or password");
 			return;
 		}
+
+
 		$.ajax(
 		{
 			url : server+"/api/signup",
@@ -79,10 +81,13 @@ class LogInScreen extends React.Component{
 	}
 
 	logIn(){
+		console.log(this.state.name);
+		console.log(this.state.password);
 		if(this.state.name == "" || this.state.password == ""){
 			alert("Please enter non-blank username or password");
 			return;
 		}
+
 		$.ajax(
 		{
 			url : server+"/api/authenticate",

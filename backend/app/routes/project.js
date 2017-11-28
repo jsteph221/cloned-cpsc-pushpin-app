@@ -10,9 +10,10 @@ var router = express.Router();
 
 // get all projects for the user
 router.get('/', function(req, res) {
+  console.log(req.decoded._doc);
   var user = req.decoded._doc;
   var projects = user.projects;
-  res.json({ success: true, projects: projects}); 
+  res.json({ success: true, projects: projects});
 });
 
 // get project(id)
@@ -27,6 +28,6 @@ router.get('/:project_id', function(req, res) {
       res.json({ success: true, message: 'project was successfully found', project: project});
     }
   });
-}); 
+});
 
 module.exports = router;
