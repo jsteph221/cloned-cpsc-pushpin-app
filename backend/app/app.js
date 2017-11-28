@@ -16,12 +16,17 @@ var AWS = require('aws-sdk');
 
 // set CORS
 app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", '*');
+  res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
   res.header("Access-Control-Allow-Credentials", true);
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
+app.use(function(req,res,next){
+  console.log(req.ip);
+  next();
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,11 +45,11 @@ app.use('/api', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  console.log(req);
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
-
 
 // error handlers
 // development error handler
