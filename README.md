@@ -23,3 +23,5 @@ Backend and frontend has been decoupled, and they are developed completely separ
     * React.js: single page application library
     * Webpack: module bundler for creating static assets
     * Jest: testing framework
+    
+    http://pushpin-creator-deploy.s3-website-us-west-2.amazonaws.com/#/
